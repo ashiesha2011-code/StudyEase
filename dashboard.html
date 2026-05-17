@@ -779,7 +779,7 @@ body {
 }
   </style>
 </head>
-<body>
+<body style="opacity:0;transition:opacity 0.4s ease;">
 
 <!-- Loading overlay -->
 <div class="loading-overlay" id="loading-overlay">
@@ -1246,6 +1246,8 @@ supabase.auth.onAuthStateChange(function(event, session) {
     var loader = document.getElementById('loading-overlay');
     loader.classList.add('hidden');
     loader.style.display = 'none';
+    // Fade the page in smoothly
+    document.body.style.opacity = '1';
 
     // Load profile in background — doesn't block anything
     supabase.from('profiles').select('plan, class').eq('id', user.id).single()
