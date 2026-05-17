@@ -1699,7 +1699,12 @@ p { color: var(--text-mid); line-height: 1.75; }
         </div>
         <div class="form-group">
           <label class="form-label" for="login-pass">Password</label>
-          <input class="form-input" type="password" id="login-pass" placeholder="Enter your password" autocomplete="current-password" />
+          <div style="position:relative;">
+            <input class="form-input" type="password" id="login-pass" placeholder="Enter your password" autocomplete="current-password" style="padding-right:44px;" />
+            <button type="button" onclick="togglePassword('login-pass', this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);padding:4px;display:flex;align-items:center;" title="Show/hide password">
+              <svg id="login-pass-eye" width="18" height="18" viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>
+            </button>
+          </div>
         </div>
         <button class="btn btn-primary btn-lg form-submit">Log In</button>
         <p class="form-footer">
@@ -1737,7 +1742,12 @@ p { color: var(--text-mid); line-height: 1.75; }
           </div>
           <div class="form-group">
             <label class="form-label" for="signup-pass">Create password</label>
-            <input class="form-input" type="password" id="signup-pass" placeholder="At least 8 characters" autocomplete="new-password" />
+            <div style="position:relative;">
+              <input class="form-input" type="password" id="signup-pass" placeholder="At least 8 characters" autocomplete="new-password" style="padding-right:44px;" />
+              <button type="button" onclick="togglePassword('signup-pass', this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);padding:4px;display:flex;align-items:center;" title="Show/hide password">
+                <svg id="signup-pass-eye" width="18" height="18" viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>
+              </button>
+            </div>
           </div>
           <button class="btn btn-primary btn-lg form-submit" id="signup-submit-btn">Create Free Account</button>
           <p class="form-footer">
@@ -1789,6 +1799,17 @@ p { color: var(--text-mid); line-height: 1.75; }
   var SUPABASE_URL  = 'https://xiwrvbtryeesfgeydxnf.supabase.co';
   var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd3J2YnRyeWVlc2ZnZXlkeG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMTQ0NDAsImV4cCI6MjA5NDU5MDQ0MH0.3Sp9dlc8cNsrzdHAGy74pCqscjL1MFV9ZWMW90QbhqE';
   var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+  /* ── Password toggle ────────────────────────────────── */
+  window.togglePassword = function(inputId, btn) {
+    var input = document.getElementById(inputId);
+    var isHidden = input.type === 'password';
+    input.type = isHidden ? 'text' : 'password';
+    btn.style.color = isHidden ? 'var(--blue)' : 'var(--text-muted)';
+    btn.innerHTML = isHidden
+      ? '<svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zm4.261 4.26l1.514 1.515a2.003 2.003 0 012.45 2.45l1.514 1.514a4 4 0 00-5.478-5.478z" clip-rule="evenodd"/><path d="M12.454 16.697L9.75 13.992a4 4 0 01-3.742-3.741L2.335 6.578A9.98 9.98 0 00.458 10c1.274 4.057 5.064 7 9.542 7 .847 0 1.669-.105 2.454-.303z"/></svg>'
+      : '<svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>';
+  };
 
   /* ── GOOGLE SIGN IN ──────────────────────────────────── */
   async function signInWithGoogle() {
