@@ -1813,9 +1813,17 @@ p { color: var(--text-mid); line-height: 1.75; }
 
   /* ── GOOGLE SIGN IN ──────────────────────────────────── */
   async function signInWithGoogle() {
+    var baseUrl = window.location.href.split('#')[0].split('?')[0];
+    var dashUrl = baseUrl.replace('index.html', '').replace(/\/$/, '') + '/dashboard.html';
+    // Handle GitHub Pages path
+    if (window.location.hostname.includes('github.io')) {
+      var parts = window.location.pathname.split('/');
+      var repo = parts[1] ? '/' + parts[1] : '';
+      dashUrl = window.location.origin + repo + '/dashboard.html';
+    }
     var { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: window.location.origin + window.location.pathname.replace('index.html','') + 'dashboard.html' }
+      options: { redirectTo: dashUrl }
     });
     if (error) showError('form-login', 'Google sign in failed. Please try again.');
   }
