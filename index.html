@@ -1753,20 +1753,17 @@ p { color: var(--text-mid); line-height: 1.75; }
 
 <!-- ═══════════════════════════════════════════════════════ JAVASCRIPT -->
 <script>
-
+(function() {
   /* ── Supabase setup ──────────────────────────────────── */
-  const SUPABASE_URL  = 'https://xiwrvbtryeesfgeydxnf.supabase.co';
-  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd3J2YnRyeWVlc2ZnZXlkeG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMTQ0NDAsImV4cCI6MjA5NDU5MDQ0MH0.3Sp9dlc8cNsrzdHAGy74pCqscjL1MFV9ZWMW90QbhqE';
-  window._sb = window._sb || window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-  const supabase = window._sb;
+  var SUPABASE_URL  = 'https://xiwrvbtryeesfgeydxnf.supabase.co';
+  var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd3J2YnRyeWVlc2ZnZXlkeG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMTQ0NDAsImV4cCI6MjA5NDU5MDQ0MH0.3Sp9dlc8cNsrzdHAGy74pCqscjL1MFV9ZWMW90QbhqE';
+  var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
   /* ── GOOGLE SIGN IN ──────────────────────────────────── */
   async function signInWithGoogle() {
-    const { error } = await supabase.auth.signInWithOAuth({
+    var { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: {
-        redirectTo: window.location.href
-      }
+      options: { redirectTo: window.location.origin + window.location.pathname.replace('index.html','') + 'dashboard.html' }
     });
     if (error) showError('form-login', 'Google sign in failed. Please try again.');
   }
@@ -1775,28 +1772,29 @@ p { color: var(--text-mid); line-height: 1.75; }
   document.getElementById('google-signup-btn').addEventListener('click', signInWithGoogle);
 
   /* ── Navbar scroll effect ────────────────────────────── */
-  const navbar = document.getElementById('navbar');
-  window.addEventListener('scroll', () => {
+  var navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', function() {
     navbar.classList.toggle('scrolled', window.scrollY > 20);
   }, { passive: true });
 
   /* ── Scroll reveal ───────────────────────────────────── */
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
+  var revealObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
       if (e.isIntersecting) {
         e.target.classList.add('visible');
         revealObserver.unobserve(e.target);
       }
     });
   }, { threshold: 0.12 });
-  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+  document.querySelectorAll('.reveal').forEach(function(el) { revealObserver.observe(el); });
 
   /* ── Modal helpers ───────────────────────────────────── */
-  const overlay = document.getElementById('modal-overlay');
-  const heading = document.getElementById('modal-heading');
-  const sub     = document.getElementById('modal-sub');
+  var overlay = document.getElementById('modal-overlay');
+  var heading = document.getElementById('modal-heading');
+  var sub     = document.getElementById('modal-sub');
 
-  function openModal(tab = 'login') {
+  function openModal(tab) {
+    tab = tab || 'login';
     overlay.classList.add('active');
     document.body.style.overflow = 'hidden';
     switchTab(tab);
@@ -1809,8 +1807,12 @@ p { color: var(--text-mid); line-height: 1.75; }
     clearErrors();
   }
 
+  // Make openModal globally accessible for onclick attributes
+  window.openModal = openModal;
+  window.switchTab = switchTab;
+
   function switchTab(tab) {
-    const isLogin = tab === 'login';
+    var isLogin = tab === 'login';
     document.getElementById('form-login').style.display  = isLogin ? 'block' : 'none';
     document.getElementById('form-signup').style.display = isLogin ? 'none'  : 'block';
     document.getElementById('tab-login').classList.toggle('active',  isLogin);
@@ -1821,23 +1823,24 @@ p { color: var(--text-mid); line-height: 1.75; }
   }
 
   document.getElementById('modal-close').addEventListener('click', closeModal);
-  overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) closeModal(); });
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
 
   /* ── Error / feedback display ────────────────────────── */
   function showError(formId, msg) {
-    let el = document.getElementById(formId + '-error');
+    var el = document.getElementById(formId + '-error');
     if (!el) {
       el = document.createElement('p');
       el.id = formId + '-error';
       el.style.cssText = 'color:#EF4444;font-size:0.82rem;margin-top:10px;text-align:center;font-weight:500;';
       document.getElementById(formId).appendChild(el);
     }
+    el.style.color = '#EF4444';
     el.textContent = msg;
   }
 
   function showSuccess(formId, msg) {
-    let el = document.getElementById(formId + '-error');
+    var el = document.getElementById(formId + '-error');
     if (!el) {
       el = document.createElement('p');
       el.id = formId + '-error';
@@ -1849,8 +1852,8 @@ p { color: var(--text-mid); line-height: 1.75; }
   }
 
   function clearErrors() {
-    ['form-login-error','form-signup-error'].forEach(id => {
-      const el = document.getElementById(id);
+    ['form-login-error','form-signup-error'].forEach(function(id) {
+      var el = document.getElementById(id);
       if (el) el.textContent = '';
     });
   }
@@ -1863,62 +1866,51 @@ p { color: var(--text-mid); line-height: 1.75; }
   }
 
   /* ── SIGN UP ─────────────────────────────────────────── */
-  document.querySelector('#form-signup .form-submit').addEventListener('click', async () => {
-    const name     = document.getElementById('signup-name').value.trim();
-    const email    = document.getElementById('signup-email').value.trim();
-    const classVal = document.getElementById('signup-class').value;
-    const password = document.getElementById('signup-pass').value;
-    const btn      = document.querySelector('#form-signup .form-submit');
+  document.querySelector('#form-signup .form-submit').addEventListener('click', async function() {
+    var name     = document.getElementById('signup-name').value.trim();
+    var email    = document.getElementById('signup-email').value.trim();
+    var classVal = document.getElementById('signup-class').value;
+    var password = document.getElementById('signup-pass').value;
+    var btn      = document.querySelector('#form-signup .form-submit');
 
-    // Basic validation
-    if (!name)        return showError('form-signup', 'Please enter your name.');
-    if (!email)       return showError('form-signup', 'Please enter your email.');
-    if (!classVal)    return showError('form-signup', 'Please select your class.');
+    if (!name)               return showError('form-signup', 'Please enter your name.');
+    if (!email)              return showError('form-signup', 'Please enter your email.');
+    if (!classVal)           return showError('form-signup', 'Please select your class.');
     if (password.length < 8) return showError('form-signup', 'Password must be at least 8 characters.');
 
     setLoading(btn, true, 'Create Free Account');
     clearErrors();
 
     try {
-      // 1. Create auth user
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { data: { name, class: classVal } }
+      var { data, error } = await supabase.auth.signUp({
+        email: email,
+        password: password,
+        options: { data: { name: name, class: classVal } }
       });
-
       if (error) throw error;
 
-      // 2. Insert profile row
       if (data.user) {
         await supabase.from('profiles').insert({
-          id:    data.user.id,
-          name,
-          class: classVal,
-          plan:  'free'
+          id: data.user.id, name: name, class: classVal, plan: 'free'
         });
       }
 
       showSuccess('form-signup', '🎉 Account created! Check your email to confirm, then log in.');
-      setTimeout(() => {
-        closeModal();
-      }, 2500);
+      setTimeout(function() { closeModal(); }, 2500);
 
     } catch (err) {
-      const msg = err.message || 'Something went wrong. Please try again.';
-      showError('form-signup', msg.includes('already registered')
-        ? 'This email is already registered. Try logging in.'
-        : msg);
+      var msg = err.message || 'Something went wrong.';
+      showError('form-signup', msg.includes('already registered') ? 'This email is already registered.' : msg);
     } finally {
       setLoading(btn, false, 'Create Free Account');
     }
   });
 
   /* ── LOG IN ──────────────────────────────────────────── */
-  document.querySelector('#form-login .form-submit').addEventListener('click', async () => {
-    const email    = document.getElementById('login-email').value.trim();
-    const password = document.getElementById('login-pass').value;
-    const btn      = document.querySelector('#form-login .form-submit');
+  document.querySelector('#form-login .form-submit').addEventListener('click', async function() {
+    var email    = document.getElementById('login-email').value.trim();
+    var password = document.getElementById('login-pass').value;
+    var btn      = document.querySelector('#form-login .form-submit');
 
     if (!email)    return showError('form-login', 'Please enter your email.');
     if (!password) return showError('form-login', 'Please enter your password.');
@@ -1927,19 +1919,17 @@ p { color: var(--text-mid); line-height: 1.75; }
     clearErrors();
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      var { data, error } = await supabase.auth.signInWithPassword({ email: email, password: password });
       if (error) throw error;
 
       showSuccess('form-login', '✓ Logged in! Redirecting...');
-      setTimeout(() => {
-        window.location.href = 'dashboard.html';
-      }, 1200);
+      setTimeout(function() { window.location.href = 'dashboard.html'; }, 1200);
 
     } catch (err) {
-      const msg = err.message || '';
+      var msg = err.message || '';
       showError('form-login',
         msg.includes('Invalid') ? 'Incorrect email or password.' :
-        msg.includes('Email not confirmed') ? 'Please confirm your email first.' :
+        msg.includes('not confirmed') ? 'Please confirm your email first.' :
         'Login failed. Please try again.'
       );
     } finally {
@@ -1947,103 +1937,89 @@ p { color: var(--text-mid); line-height: 1.75; }
     }
   });
 
-  /* ── Check if already logged in on page load ─────────── */
+  /* ── Check session on load ───────────────────────────── */
   async function checkSession() {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session?.user) updateNavForLoggedInUser(session.user);
+    var { data: { session } } = await supabase.auth.getSession();
+    if (session && session.user) updateNavForUser(session.user);
   }
 
-  function updateNavForLoggedInUser(user) {
-    const loginBtn  = document.getElementById('nav-login-btn');
-    const signupBtn = document.getElementById('nav-signup-btn');
-    const name = user.user_metadata?.name || user.email.split('@')[0];
-    loginBtn.textContent  = `Hi, ${name}`;
-    loginBtn.onclick = async (e) => {
+  function updateNavForUser(user) {
+    var loginBtn  = document.getElementById('nav-login-btn');
+    var signupBtn = document.getElementById('nav-signup-btn');
+    var name = (user.user_metadata && (user.user_metadata.name || user.user_metadata.full_name)) || user.email.split('@')[0];
+    loginBtn.textContent = 'Hi, ' + name.split(' ')[0];
+    loginBtn.onclick = async function(e) {
       e.preventDefault();
       await supabase.auth.signOut();
-      loginBtn.textContent = 'Log in';
-      loginBtn.onclick = (e) => { e.preventDefault(); openModal('login'); };
-      signupBtn.style.display = 'inline-flex';
+      window.location.reload();
     };
-    signupBtn.style.display = 'none';
+    if (signupBtn) signupBtn.style.display = 'none';
   }
 
   checkSession();
 
   /* ── Navbar buttons ──────────────────────────────────── */
-  document.getElementById('nav-login-btn').addEventListener('click', (e) => {
+  document.getElementById('nav-login-btn').addEventListener('click', function(e) {
     e.preventDefault(); openModal('login');
   });
-  document.getElementById('nav-signup-btn').addEventListener('click', (e) => {
+  document.getElementById('nav-signup-btn').addEventListener('click', function(e) {
     e.preventDefault(); openModal('signup');
   });
-  document.getElementById('hero-signup-btn').addEventListener('click', (e) => {
+  document.getElementById('hero-signup-btn').addEventListener('click', function(e) {
     e.preventDefault(); openModal('signup');
   });
 
   /* ── Auto popup after 10 seconds ────────────────────── */
-  let popupShown = false;
-  setTimeout(async () => {
-    const { data: { session } } = await supabase.auth.getSession();
+  var popupShown = false;
+  setTimeout(async function() {
+    var { data: { session } } = await supabase.auth.getSession();
     if (!popupShown && !overlay.classList.contains('active') && !session) {
       popupShown = true;
       openModal('signup');
     }
   }, 10000);
 
-  document.querySelectorAll('[onclick*="openModal"]').forEach(el => {
-    el.addEventListener('click', () => { popupShown = true; });
+  document.querySelectorAll('[onclick*="openModal"]').forEach(function(el) {
+    el.addEventListener('click', function() { popupShown = true; });
   });
 
   /* ── Pricing toggle ──────────────────────────────────── */
-  const billingToggle = document.getElementById('billing-toggle');
-  const pricingGrid   = document.getElementById('pricing-grid');
-
-  billingToggle.addEventListener('change', () => {
+  var billingToggle = document.getElementById('billing-toggle');
+  billingToggle.addEventListener('change', function() {
     if (billingToggle.checked) {
-      document.querySelectorAll('.price-monthly').forEach(el => el.style.display = 'none');
-      document.querySelectorAll('.price-annual').forEach(el => el.style.display = 'flex');
+      document.querySelectorAll('.price-monthly').forEach(function(el) { el.style.display = 'none'; });
+      document.querySelectorAll('.price-annual').forEach(function(el) { el.style.display = 'flex'; });
     } else {
-      document.querySelectorAll('.price-monthly').forEach(el => el.style.display = 'flex');
-      document.querySelectorAll('.price-annual').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('.price-monthly').forEach(function(el) { el.style.display = 'flex'; });
+      document.querySelectorAll('.price-annual').forEach(function(el) { el.style.display = 'none'; });
     }
   });
 
   /* ── Hamburger (mobile) ──────────────────────────────── */
-  const hamburger = document.getElementById('hamburger');
-  const navLinks  = document.querySelector('.navbar__links');
+  var hamburger = document.getElementById('hamburger');
+  var navLinks  = document.querySelector('.navbar__links');
 
-  hamburger.addEventListener('click', () => {
-    const isOpen = navLinks.style.display === 'flex';
-    navLinks.style.display = isOpen ? '' : 'flex';
-    navLinks.style.position = 'fixed';
-    navLinks.style.top = '68px';
-    navLinks.style.left = '0';
-    navLinks.style.right = '0';
-    navLinks.style.flexDirection = 'column';
-    navLinks.style.background = 'rgba(255,255,255,0.97)';
-    navLinks.style.backdropFilter = 'blur(16px)';
-    navLinks.style.padding = '20px 24px 24px';
-    navLinks.style.boxShadow = '0 8px 32px rgba(10,22,40,0.1)';
-    navLinks.style.zIndex = '800';
-    navLinks.style.gap = '18px';
+  hamburger.addEventListener('click', function() {
+    var isOpen = navLinks.style.display === 'flex';
     if (!isOpen) {
+      navLinks.style.cssText = 'display:flex;position:fixed;top:68px;left:0;right:0;flex-direction:column;background:rgba(255,255,255,0.97);backdrop-filter:blur(16px);padding:20px 24px 24px;box-shadow:0 8px 32px rgba(10,22,40,0.1);z-index:800;gap:18px;';
       hamburger.querySelectorAll('span')[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
       hamburger.querySelectorAll('span')[1].style.opacity = '0';
       hamburger.querySelectorAll('span')[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
     } else {
-      hamburger.querySelectorAll('span').forEach(s => { s.style.transform = ''; s.style.opacity = ''; });
+      navLinks.style.cssText = '';
+      hamburger.querySelectorAll('span').forEach(function(s) { s.style.transform = ''; s.style.opacity = ''; });
     }
   });
 
-  document.querySelectorAll('.navbar__links a').forEach(a => {
-    a.addEventListener('click', () => {
-      navLinks.style.display = '';
-      hamburger.querySelectorAll('span').forEach(s => { s.style.transform = ''; s.style.opacity = ''; });
+  document.querySelectorAll('.navbar__links a').forEach(function(a) {
+    a.addEventListener('click', function() {
+      navLinks.style.cssText = '';
+      hamburger.querySelectorAll('span').forEach(function(s) { s.style.transform = ''; s.style.opacity = ''; });
     });
   });
 
+})();
 </script>
 
 </body>
-</html>
