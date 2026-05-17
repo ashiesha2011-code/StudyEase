@@ -1211,7 +1211,8 @@ body {
 <script>
 const SUPABASE_URL  = 'https://xiwrvbtryeesfgeydxnf.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd3J2YnRyeWVlc2ZnZXlkeG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMTQ0NDAsImV4cCI6MjA5NDU5MDQ0MH0.3Sp9dlc8cNsrzdHAGy74pCqscjL1MFV9ZWMW90QbhqE';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+window._sb = window._sb || window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+const supabase = window._sb;
 
 /* ── Auth guard — redirect to home if not logged in ──── */
 async function initDashboard() {
