@@ -1217,6 +1217,16 @@ const supabase = window._sb;
 /* ── Auth guard — redirect to home if not logged in ──── */
 async function initDashboard() {
   try {
+    // Handle OAuth redirect — Supabase puts the token in the URL hash
+    // This call exchanges it for a real session
+    if (window.location.hash && window.location.hash.includes('access_token')) {
+      const { data, error } = await supabase.auth.getSessionFromUrl({ reHashParams: true });
+      if (!error && data.session) {
+        // Clean the URL so the token isn't visible
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    }
+
     const { data: { session } } = await supabase.auth.getSession();
 
     if (!session) {
