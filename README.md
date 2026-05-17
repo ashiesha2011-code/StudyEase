@@ -92,4 +92,4 @@ python3 -m http.server 3000
 
 ---
 
-Built by **Uthkarsh** · [Zenith Space](https://zenithspace.org) · 2025
+Built by **Uthkarsh** · [Zenith Space](https://zenithspace.org) · 2026
