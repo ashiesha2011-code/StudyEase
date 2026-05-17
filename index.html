@@ -1709,40 +1709,71 @@ p { color: var(--text-mid); line-height: 1.75; }
 
       <!-- Sign up form -->
       <div id="form-signup" style="display:none;">
-        <button class="btn-google" id="google-signup-btn">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z" fill="#34A853"/><path d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.961H.957C.347 6.175 0 7.55 0 9s.348 2.825.957 4.039l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 6.293C4.672 4.166 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
-          Continue with Google
-        </button>
-        <div class="form-divider">or sign up with email</div>
-        <div class="form-group">
-          <label class="form-label" for="signup-name">Your name</label>
-          <input class="form-input" type="text" id="signup-name" placeholder="Your full name" autocomplete="name" />
+
+        <!-- Step 1: signup details -->
+        <div id="signup-step-1">
+          <button class="btn-google" id="google-signup-btn">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z" fill="#34A853"/><path d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.961H.957C.347 6.175 0 7.55 0 9s.348 2.825.957 4.039l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 6.293C4.672 4.166 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+            Continue with Google
+          </button>
+          <div class="form-divider">or sign up with email</div>
+          <div class="form-group">
+            <label class="form-label" for="signup-name">Your name</label>
+            <input class="form-input" type="text" id="signup-name" placeholder="Your full name" autocomplete="name" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="signup-email">Email address</label>
+            <input class="form-input" type="email" id="signup-email" placeholder="you@example.com" autocomplete="email" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="signup-class">Your class</label>
+            <select class="form-input" id="signup-class">
+              <option value="">Select your class</option>
+              <option>Class 9</option>
+              <option>Class 10</option>
+              <option>Class 11</option>
+              <option>Class 12</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="signup-pass">Create password</label>
+            <input class="form-input" type="password" id="signup-pass" placeholder="At least 8 characters" autocomplete="new-password" />
+          </div>
+          <button class="btn btn-primary btn-lg form-submit" id="signup-submit-btn">Create Free Account</button>
+          <p class="form-footer">
+            Already have an account? <a href="#" onclick="switchTab('login');return false;">Log in</a>
+          </p>
+          <p class="form-footer" style="margin-top:8px;font-size:0.75rem;">
+            By signing up you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.
+          </p>
         </div>
-        <div class="form-group">
-          <label class="form-label" for="signup-email">Email address</label>
-          <input class="form-input" type="email" id="signup-email" placeholder="you@example.com" autocomplete="email" />
+
+        <!-- Step 2: OTP verification -->
+        <div id="signup-step-2" style="display:none;">
+          <div style="text-align:center;margin-bottom:20px;">
+            <div style="font-size:2rem;margin-bottom:8px;">📧</div>
+            <h4 style="font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:6px;">Check your email</h4>
+            <p style="font-size:0.82rem;color:var(--text-muted);">We sent a 6-digit code to <strong id="otp-email-display" style="color:var(--navy);"></strong></p>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="otp-input">Enter 6-digit code</label>
+            <input class="form-input" type="text" id="otp-input"
+              placeholder="• • • • • •"
+              maxlength="6"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              autocomplete="one-time-code"
+              style="text-align:center;font-size:1.4rem;font-weight:700;letter-spacing:0.3em;" />
+          </div>
+          <button class="btn btn-primary btn-lg form-submit" id="otp-verify-btn">Verify & Continue</button>
+          <p class="form-footer" style="margin-top:12px;">
+            Didn't receive it? <a href="#" id="resend-otp-btn">Resend code</a>
+          </p>
+          <p class="form-footer" style="margin-top:6px;">
+            <a href="#" onclick="showSignupStep1();return false;">← Go back</a>
+          </p>
         </div>
-        <div class="form-group">
-          <label class="form-label" for="signup-class">Your class</label>
-          <select class="form-input" id="signup-class">
-            <option value="">Select your class</option>
-            <option>Class 9</option>
-            <option>Class 10</option>
-            <option>Class 11</option>
-            <option>Class 12</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="signup-pass">Create password</label>
-          <input class="form-input" type="password" id="signup-pass" placeholder="At least 8 characters" autocomplete="new-password" />
-        </div>
-        <button class="btn btn-primary btn-lg form-submit">Create Free Account</button>
-        <p class="form-footer">
-          Already have an account? <a href="#" onclick="switchTab('login');return false;">Log in</a>
-        </p>
-        <p class="form-footer" style="margin-top:8px;font-size:0.75rem;">
-          By signing up you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.
-        </p>
+
       </div>
     </div>
   </div>
@@ -1865,13 +1896,24 @@ p { color: var(--text-mid); line-height: 1.75; }
     btn.style.opacity = loading ? '0.7' : '1';
   }
 
-  /* ── SIGN UP ─────────────────────────────────────────── */
-  document.querySelector('#form-signup .form-submit').addEventListener('click', async function() {
+  /* ── SIGN UP — Step 1 ───────────────────────────────── */
+  var _signupEmail = '';
+  var _signupName  = '';
+  var _signupClass = '';
+
+  function showSignupStep1() {
+    document.getElementById('signup-step-1').style.display = 'block';
+    document.getElementById('signup-step-2').style.display = 'none';
+    clearErrors();
+  }
+  window.showSignupStep1 = showSignupStep1;
+
+  document.getElementById('signup-submit-btn').addEventListener('click', async function() {
     var name     = document.getElementById('signup-name').value.trim();
     var email    = document.getElementById('signup-email').value.trim();
     var classVal = document.getElementById('signup-class').value;
     var password = document.getElementById('signup-pass').value;
-    var btn      = document.querySelector('#form-signup .form-submit');
+    var btn      = document.getElementById('signup-submit-btn');
 
     if (!name)               return showError('form-signup', 'Please enter your name.');
     if (!email)              return showError('form-signup', 'Please enter your email.');
@@ -1889,20 +1931,87 @@ p { color: var(--text-mid); line-height: 1.75; }
       });
       if (error) throw error;
 
+      // Save for OTP step
+      _signupEmail = email;
+      _signupName  = name;
+      _signupClass = classVal;
+
+      // Store profile data to insert after OTP verified
       if (data.user) {
         await supabase.from('profiles').insert({
           id: data.user.id, name: name, class: classVal, plan: 'free'
-        });
+        }).then(() => {}).catch(() => {});
       }
 
-      showSuccess('form-signup', '🎉 Account created! Check your email to confirm, then log in.');
-      setTimeout(function() { closeModal(); }, 2500);
+      // Show OTP step
+      document.getElementById('otp-email-display').textContent = email;
+      document.getElementById('signup-step-1').style.display = 'none';
+      document.getElementById('signup-step-2').style.display = 'block';
+      document.getElementById('otp-input').focus();
 
     } catch (err) {
       var msg = err.message || 'Something went wrong.';
-      showError('form-signup', msg.includes('already registered') ? 'This email is already registered.' : msg);
+      showError('form-signup', msg.includes('already registered') ? 'This email is already registered. Try logging in.' : msg);
     } finally {
       setLoading(btn, false, 'Create Free Account');
+    }
+  });
+
+  /* ── SIGN UP — Step 2 OTP verify ────────────────────── */
+  document.getElementById('otp-verify-btn').addEventListener('click', async function() {
+    var token = document.getElementById('otp-input').value.trim().replace(/\s/g,'');
+    var btn   = document.getElementById('otp-verify-btn');
+
+    if (token.length !== 6) return showError('form-signup', 'Please enter the 6-digit code.');
+
+    setLoading(btn, true, 'Verify & Continue');
+    clearErrors();
+
+    try {
+      var { data, error } = await supabase.auth.verifyOtp({
+        email: _signupEmail,
+        token: token,
+        type: 'signup'
+      });
+      if (error) throw error;
+
+      showSuccess('form-signup', '✅ Email verified! Redirecting to dashboard...');
+      setTimeout(function() { window.location.href = 'dashboard.html'; }, 1500);
+
+    } catch (err) {
+      var msg = err.message || '';
+      showError('form-signup',
+        msg.includes('expired') ? 'Code expired. Please request a new one.' :
+        msg.includes('invalid') ? 'Incorrect code. Please try again.' :
+        'Verification failed. Check the code and try again.'
+      );
+    } finally {
+      setLoading(btn, false, 'Verify & Continue');
+    }
+  });
+
+  /* Allow Enter key on OTP input */
+  document.getElementById('otp-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') document.getElementById('otp-verify-btn').click();
+  });
+
+  /* Auto-submit when 6 digits entered */
+  document.getElementById('otp-input').addEventListener('input', function() {
+    this.value = this.value.replace(/[^0-9]/g, '');
+    if (this.value.length === 6) {
+      setTimeout(function() { document.getElementById('otp-verify-btn').click(); }, 300);
+    }
+  });
+
+  /* Resend OTP */
+  document.getElementById('resend-otp-btn').addEventListener('click', async function(e) {
+    e.preventDefault();
+    if (!_signupEmail) return;
+    var { error } = await supabase.auth.resend({ type: 'signup', email: _signupEmail });
+    if (!error) {
+      showSuccess('form-signup', '📧 New code sent! Check your email.');
+    } else {
+      showError('form-signup', 'Could not resend. Please wait a moment and try again.');
     }
   });
 
