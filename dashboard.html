@@ -1214,81 +1214,59 @@ const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
 window._sb = window._sb || window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 const supabase = window._sb;
 
-/* ── Auth guard — redirect to home if not logged in ──── */
-async function initDashboard() {
-  try {
-    // Handle OAuth redirect — Supabase puts the token in the URL hash
-    // This call exchanges it for a real session
-    if (window.location.hash && window.location.hash.includes('access_token')) {
-      const { data, error } = await supabase.auth.getSessionFromUrl({ reHashParams: true });
-      if (!error && data.session) {
-        // Clean the URL so the token isn't visible
-        window.history.replaceState({}, document.title, window.location.pathname);
-      }
-    }
-
-    const { data: { session } } = await supabase.auth.getSession();
-
-    if (!session) {
-      window.location.href = 'index.html';
-      return;
-    }
-
-    const user = session.user;
-    const name = (user.user_metadata && (user.user_metadata.name || user.user_metadata.full_name)) || user.email.split('@')[0];
-    const initial = name.charAt(0).toUpperCase();
-
-    // Update UI with user info
-    document.getElementById('sidebar-username').textContent = name;
-    document.getElementById('sidebar-avatar').textContent = initial;
-    document.getElementById('topbar-avatar').textContent = initial;
-
-    // Greeting based on time
-    const hour = new Date().getHours();
-    const greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
-    document.getElementById('topbar-greeting').textContent = greet + ', ' + name.split(' ')[0] + '! 👋';
-
-    // Date
-    const now = new Date();
-    document.getElementById('topbar-date').textContent = now.toLocaleDateString('en-IN', {
-      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
-    });
-
-    // Get plan from profiles table — don't crash if missing
-    try {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('plan, class')
-        .eq('id', user.id)
-        .single();
-
-      if (profile) {
-        const planName = profile.plan === 'achiever' ? 'Achiever Plan' :
-                         profile.plan === 'scholar'  ? 'Scholar Plan'  : 'Free Plan';
-        document.getElementById('sidebar-plan-name').textContent = planName;
-        document.getElementById('sidebar-userplan').textContent = profile.class ? profile.class + ' · ' + planName : planName;
-        if (profile.plan !== 'free') {
-          document.querySelector('.sidebar__plan-upgrade').textContent = '🌟 ' + planName;
-          document.querySelector('.sidebar__plan-upgrade').style.background = 'var(--emerald)';
-        }
-      }
-    } catch(profileErr) {
-      // Profile not found — that's okay, still show dashboard
-    }
-
-  } catch(err) {
-    // Any auth error — redirect home
+/* ── Dashboard init — reads session from localStorage instantly ── */
+supabase.auth.onAuthStateChange(function(event, session) {
+  if (event === 'SIGNED_OUT') {
     window.location.href = 'index.html';
     return;
   }
 
-  // Always hide loading overlay — even if something above failed
-  const loader = document.getElementById('loading-overlay');
-  loader.classList.add('hidden');
-  setTimeout(function() { loader.style.display = 'none'; }, 400);
-}
+  if (session && session.user) {
+    var user = session.user;
+    var name = (user.user_metadata &&
+      (user.user_metadata.name || user.user_metadata.full_name))
+      || user.email.split('@')[0];
+    var initial = name.charAt(0).toUpperCase();
 
-initDashboard();
+    // Fill in user info
+    document.getElementById('sidebar-username').textContent = name;
+    document.getElementById('sidebar-avatar').textContent = initial;
+    document.getElementById('topbar-avatar').textContent = initial;
+
+    var hour = new Date().getHours();
+    var greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+    document.getElementById('topbar-greeting').textContent = greet + ', ' + name.split(' ')[0] + '! 👋';
+
+    var now = new Date();
+    document.getElementById('topbar-date').textContent = now.toLocaleDateString('en-IN', {
+      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+    });
+
+    // Hide loader immediately
+    var loader = document.getElementById('loading-overlay');
+    loader.classList.add('hidden');
+    loader.style.display = 'none';
+
+    // Load profile in background — doesn't block anything
+    supabase.from('profiles').select('plan, class').eq('id', user.id).single()
+      .then(function(res) {
+        if (!res.data) return;
+        var p = res.data;
+        var planName = p.plan === 'achiever' ? 'Achiever Plan' :
+                       p.plan === 'scholar'  ? 'Scholar Plan'  : 'Free Plan';
+        document.getElementById('sidebar-plan-name').textContent = planName;
+        document.getElementById('sidebar-userplan').textContent =
+          p.class ? p.class + ' · ' + planName : planName;
+        if (p.plan !== 'free') {
+          document.querySelector('.sidebar__plan-upgrade').textContent = '🌟 ' + planName;
+          document.querySelector('.sidebar__plan-upgrade').style.background = 'var(--emerald)';
+        }
+      }).catch(function() {});
+  } else if (event === 'INITIAL_SESSION' && !session) {
+    // No session at all — go back to homepage
+    window.location.href = 'index.html';
+  }
+});
 
 /* ── Logout ──────────────────────────────────────────── */
 document.getElementById('logout-btn').addEventListener('click', async () => {
