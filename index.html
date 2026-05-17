@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StudyEase — AI Study Companion for CBSE Students</title>
+  <meta name="description" content="India's first AI study companion that actually remembers you. Solve CBSE doubts, master board exam writing, and manage exam stress — starting at ₹0." />
+  <link rel="stylesheet" href="css/style.css" />
+  <!-- Favicon placeholder -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230A1628'/><text y='22' x='6' font-size='18' font-family='system-ui' font-weight='700' fill='%233B82F6'>S</text></svg>" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════ NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="container">
+    <div class="navbar__inner">
+
+      <!-- Logo -->
+      <a href="index.html" class="navbar__logo">
+        <div class="navbar__logo-mark">
+          <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="2" width="6" height="8" rx="1.5" fill="#3B82F6"/>
+            <rect x="10" y="2" width="6" height="5" rx="1.5" fill="rgba(255,255,255,0.4)"/>
+            <rect x="2" y="12" width="14" height="2.5" rx="1.25" fill="rgba(255,255,255,0.2)"/>
+            <rect x="10" y="9" width="6" height="2.5" rx="1.25" fill="rgba(255,255,255,0.35)"/>
+          </svg>
+        </div>
+        StudyEase
+      </a>
+
+      <!-- Nav links -->
+      <div class="navbar__links">
+        <a href="#features">Features</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#testimonials">Reviews</a>
+      </div>
+
+      <!-- CTA -->
+      <div class="navbar__cta">
+        <a href="#" class="nav-login" id="nav-login-btn">Log in</a>
+        <a href="#" class="btn btn-primary btn-sm" id="nav-signup-btn">Get Started Free</a>
+      </div>
+
+      <!-- Hamburger -->
+      <button class="navbar__hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════ HERO -->
+<section class="hero" id="hero">
+  <div class="hero__bg">
+    <div class="hero__bg-grid"></div>
+    <div class="hero__bg-circle hero__bg-circle--1"></div>
+    <div class="hero__bg-circle hero__bg-circle--2"></div>
+  </div>
+
+  <div class="container" style="position:relative; z-index:1; width:100%;">
+    <div style="display:flex; align-items:center; gap:40px;">
+
+      <!-- Left content -->
+      <div class="hero__inner" style="flex:1;">
+        <div class="hero__eyebrow">
+          <div class="hero__eyebrow-line"></div>
+          <span class="badge badge-blue">🇮🇳 Built for India's CBSE Students</span>
+        </div>
+
+        <h1 class="hero__title">
+          The AI companion that<br>
+          <em>remembers you.</em>
+        </h1>
+
+        <p class="hero__sub">
+          Not just another doubt solver. StudyEase learns your weak spots, teaches you <strong style="color:var(--navy);font-weight:600;">how to write answers for maximum marks</strong>, and supports you through exam pressure — all for less than ₹99/month.
+        </p>
+
+        <div class="hero__actions">
+          <a href="#" class="btn btn-primary btn-lg" id="hero-signup-btn">
+            Start for Free
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a href="#pricing" class="btn btn-ghost btn-lg">See Pricing</a>
+        </div>
+
+        <div class="hero__trust">
+          <div class="hero__trust-item">
+            <svg viewBox="0 0 14 14" fill="currentColor" style="color:var(--emerald);width:14px;height:14px;flex-shrink:0">
+              <path d="M7 0L8.8 5.2H14L9.6 8.4L11.4 13.6L7 10.4L2.6 13.6L4.4 8.4L0 5.2H5.2L7 0Z"/>
+            </svg>
+            No credit card needed
+          </div>
+          <div class="hero__trust-divider"></div>
+          <div class="hero__trust-item">
+            <svg viewBox="0 0 14 14" fill="currentColor" style="color:var(--emerald);width:14px;height:14px;flex-shrink:0">
+              <path d="M7 0L8.8 5.2H14L9.6 8.4L11.4 13.6L7 10.4L2.6 13.6L4.4 8.4L0 5.2H5.2L7 0Z"/>
+            </svg>
+            CBSE Class 9–12
+          </div>
+          <div class="hero__trust-divider"></div>
+          <div class="hero__trust-item">
+            <svg viewBox="0 0 14 14" fill="currentColor" style="color:var(--emerald);width:14px;height:14px;flex-shrink:0">
+              <path d="M7 0L8.8 5.2H14L9.6 8.4L11.4 13.6L7 10.4L2.6 13.6L4.4 8.4L0 5.2H5.2L7 0Z"/>
+            </svg>
+            Available 24/7
+          </div>
+        </div>
+      </div>
+
+      <!-- Right chat card -->
+      <div class="hero__card" style="flex-shrink:0;">
+        <div class="chat-card">
+          <div class="chat-card__header">
+            <div class="chat-card__header-dots">
+              <div class="chat-card__header-dot"></div>
+              <div class="chat-card__header-dot"></div>
+              <div class="chat-card__header-dot"></div>
+            </div>
+            <span class="chat-card__title">StudyEase AI</span>
+          </div>
+          <div class="chat-card__body">
+            <div class="chat-msg chat-msg--user">
+              <div class="chat-avatar chat-avatar--user">A</div>
+              <div class="chat-bubble chat-bubble--user">
+                Explain photosynthesis for 5 marks CBSE
+              </div>
+            </div>
+            <div class="chat-msg chat-msg--ai">
+              <div class="chat-avatar chat-avatar--ai">SE</div>
+              <div class="chat-bubble chat-bubble--ai">
+                <strong>Photosynthesis</strong> is the process by which green plants prepare food using sunlight, water &amp; CO₂.<br><br>
+                Key points to write:<br>
+                • 6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂<br>
+                • Occurs in <strong>chloroplasts</strong><br>
+                • Light &amp; dark reactions
+              </div>
+            </div>
+            <div class="chat-tip">
+              <strong>Examiner Tip:</strong> Always write the balanced equation and mention chloroplast — examiners specifically look for these keywords for full marks.
+            </div>
+            <div class="chat-msg chat-msg--ai" style="margin-top:4px;">
+              <div class="chat-avatar chat-avatar--ai">SE</div>
+              <div class="chat-bubble chat-bubble--ai" style="font-size:0.72rem;color:var(--text-muted);">
+                📌 You've asked about photosynthesis 3 times — I've added it to your weak topics revision list.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ STATS -->
+<section class="stats">
+  <div class="container">
+    <div class="stats__grid">
+      <div class="stats__item">
+        <div class="stats__number">₹<span class="stats__accent">99</span></div>
+        <div class="stats__label">per month — less than one tuition hour</div>
+      </div>
+      <div class="stats__item">
+        <div class="stats__number"><span class="stats__accent">20</span></div>
+        <div class="stats__label">students needed to break even</div>
+      </div>
+      <div class="stats__item">
+        <div class="stats__number"><span class="stats__accent">2Cr+</span></div>
+        <div class="stats__label">CBSE students enrolled annually</div>
+      </div>
+      <div class="stats__item">
+        <div class="stats__number"><span class="stats__accent">99%</span></div>
+        <div class="stats__label">cheaper than elite coaching institutes</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ FEATURES -->
+<section class="section" id="features">
+  <div class="container">
+    <div class="section-label reveal">
+      <div class="section-label__line"></div>
+      <h5>What Makes Us Different</h5>
+    </div>
+    <h2 class="reveal">Everything a student needs,<br>finally in one place.</h2>
+    <p class="reveal" style="max-width:520px;margin-top:12px;">
+      Not a generic study app. A companion that knows your gaps, your style, and your exam date — and gets smarter every session.
+    </p>
+
+    <div class="features__grid">
+
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon fi-blue">🧠</div>
+        <h4>AI That Remembers You</h4>
+        <p>Every mistake, every weak topic, every question — tracked and fed back into your next session. Gets more personal the longer you use it.</p>
+      </div>
+
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-icon fi-green">📋</div>
+        <h4>Selection-to-Chat Notes</h4>
+        <p>Reading NCERT notes and confused? Select any text, tap Ask AI, and get an instant explanation — with your past conversation context included.</p>
+      </div>
+
+      <div class="feature-card reveal reveal-delay-3">
+        <div class="feature-icon fi-amber">🎯</div>
+        <h4>Board Examiner Intelligence</h4>
+        <p>Know exactly which keywords examiners look for, how many points to write, and how to present answers to score maximum marks.</p>
+      </div>
+
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon fi-rose">💙</div>
+        <h4>Mental Health Check-ins</h4>
+        <p>A weekly gentle check-in designed around Indian student pressure — board anxiety, parental expectations, comparison culture. Available on every plan.</p>
+      </div>
+
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-icon fi-purple">📊</div>
+        <h4>Practice &amp; Mock Tests</h4>
+        <p>Questions organised exactly like real CBSE boards — MCQ, short, long, diagram, case-based. Every wrong answer explained in board format.</p>
+      </div>
+
+      <div class="feature-card reveal reveal-delay-3">
+        <div class="feature-icon fi-navy">👨‍👩‍👧</div>
+        <h4>Parent Dashboard</h4>
+        <p>Parents see weak areas, study consistency, and exam readiness — without accessing private conversations. Less conflict, more understanding.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ HOW IT WORKS -->
+<section class="section how" id="how-it-works">
+  <div class="container">
+    <div class="section-label reveal">
+      <div class="section-label__line"></div>
+      <h5>How It Works</h5>
+    </div>
+    <h2 class="reveal">Simple to start.<br>Powerful over time.</h2>
+
+    <div class="how__steps">
+      <div class="step reveal reveal-delay-1">
+        <div class="step__num">01</div>
+        <h4>Sign Up Free</h4>
+        <p>Create your account in 30 seconds. No credit card. No complicated setup. Just your name, class, and exam date.</p>
+      </div>
+      <div class="step reveal reveal-delay-2">
+        <div class="step__num">02</div>
+        <h4>Ask, Practice, Explore</h4>
+        <p>Use the AI companion for doubts, read smart NCERT notes, practice questions, and take mock tests — all in one place.</p>
+      </div>
+      <div class="step reveal reveal-delay-3">
+        <div class="step__num">03</div>
+        <h4>Watch Yourself Improve</h4>
+        <p>Your weak topic dashboard updates after every session. Your AI companion gets smarter about you. Your marks go up.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ PRICING -->
+<section class="section" id="pricing">
+  <div class="container">
+    <div class="pricing__intro reveal">
+      <div class="section-label" style="justify-content:center;">
+        <div class="section-label__line"></div>
+        <h5>Pricing</h5>
+        <div class="section-label__line"></div>
+      </div>
+      <h2 style="margin-top:12px;">Honest pricing.<br>No hidden fees.</h2>
+      <p>Less than one hour of private tuition — for an entire month of personalised AI support.</p>
+      <div class="pricing__toggle">
+        <span>Monthly</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="billing-toggle" />
+          <div class="toggle-track"></div>
+        </label>
+        <span>Annual <span class="toggle-save">Save 20%</span></span>
+      </div>
+    </div>
+
+    <div class="pricing__grid" id="pricing-grid">
+
+      <!-- FREE -->
+      <div class="plan-card reveal reveal-delay-1">
+        <div class="plan-name">Free</div>
+        <div class="plan-price price-monthly">
+          <span class="plan-price__currency">₹</span>
+          <span class="plan-price__amount">0</span>
+        </div>
+        <div class="plan-price price-annual" style="display:none;">
+          <span class="plan-price__currency">₹</span>
+          <span class="plan-price__amount">0</span>
+        </div>
+        <div class="plan-price__period">forever free</div>
+        <div class="plan-tagline">Genuinely useful. Not a trial.</div>
+        <div class="plan-divider"></div>
+        <div class="plan-features">
+          <div class="plan-feature">
+            <svg class="plan-feature__icon plan-feature__icon--check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>AI Companion — <strong>50 messages/month</strong></span>
+          </div>
+          <div class="plan-feature">
+            <svg class="plan-feature__icon plan-feature__icon--check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>NCERT Notes (basic)</span>
+          </div>
+          <div class="plan-feature">
+            <svg class="plan-feature__icon plan-feature__icon--check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Practice questions — <strong>30/month</strong></span>
+          </div>
+          <div class="plan-feature">
+            <svg class="plan-feature__icon plan-feature__icon--check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Previous year papers (last 3 years)</span>
+          </div>
+          <div class="plan-feature">
+            <svg class="plan-feature__icon plan-feature__icon--check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>1 Mock test per month</span>
+          </div>
+          <div class="plan-feature">
+            <svg class="plan-feature__icon plan-feature__icon--check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>💙 Mental health weekly check-in</span>
+          </div>
+          <div class="plan-feature">
+            <svg class="plan-feature__icon plan-feature__icon--check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Community forum</span>
+          </div>
+          <div class="plan-feature" style="opacity:0.4;">
+            <svg class="plan-feature__icon plan-feature__icon--cross" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5.5 10.5l5-5M10.5 10.5l-5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <span>Mistake memory &amp; tracking</span>
+          </div>
+        </div>
+        <a href="#" class="btn btn-ghost plan-cta" onclick="openModal('signup');return false;">Get Started Free</a>
+      </div>
+
+      <!-- ACHIEVER (featured) -->
+      <div class="plan-card plan-card--featured reveal reveal-delay-2">
+        <div class="plan-badge">MOST POPULAR</div>
+        <div class="plan-name">Achiever</div>
+        <div class="plan-price price-monthly">
+          <span class="plan-price__currency">₹</span>
+          <span class="plan-price__amount">99</span>
+        </div>
+        <div class="plan-price price-annual" style="display:none;">
+          <span class="plan-price__currency">₹</span>
+          <span class="plan-price__amount">79</span>
+        </div>
+        <div class="plan-price__period">per month · less than one hour of tuition</div>
+        <div class="plan-tagline">For students who are serious about boards.</div>
+        <div class="plan-divider"></div>
+        <div class="plan-features">
+          <div class="plan-feature">
+            <svg class="plan-feature__icon plan-feature__icon--check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span><strong>Unlimited</strong> AI Companion messages</span>
+          </div>
+          <div class="plan-feature">
+            <svg class="plan-feature__icon plan-feature__icon--check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>AI-Refined NCERT Notes</span>
+          </div>
+          <div class="plan-feature">
+            <svg class="plan-feature__icon plan-feature__icon--check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Selection-to-Chat in notes</span>
+          </div>
+          <div class="plan-feature">
+            <svg class="plan-feature__icon plan-feature__icon--check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>🎯 <strong>Board Examiner Intelligence</strong></span>
+          </div>
+          <div class="plan-feature">
+            <svg class="plan-feature__icon plan-feature__icon--check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Mistake memory &amp; tracking</span>
+          </div>
+          <div class="plan-feature">
+            <svg class="plan-feature__icon plan-feature__icon--check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span><strong>Unlimited</strong> practice questions</span>
+          </div>
+          <div class="plan-feature">
+            <svg class="plan-feature__icon plan-feature__icon--check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>All 10 years of papers</span>
+          </div>
+          <div class="plan-feature">
+            <svg class="plan-feature__icon plan-feature__icon--check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>💙 Mental health weekly check-in</span>
+          </div>
+        </div>
+        <a href="#" class="btn btn-primary plan-cta" onclick="openModal('signup');return false;">Start Achiever Plan</a>
+      </div>
+
+      <!-- SCHOLAR -->
+      <div class="plan-card reveal reveal-delay-3">
+        <div class="plan-name">Scholar</div>
+        <div class="plan-price price-monthly">
+          <span class="plan-price__currency">₹</span>
+          <span class="plan-price__amount">199</span>
+        </div>
+        <div class="plan-price price-annual" style="display:none;">
+          <span class="plan-price__currency">₹</span>
+          <span class="plan-price__amount">159</span>
+        </div>
+        <div class="plan-price__period">per month · vs ₹3,00,000/yr coaching</div>
+        <div class="plan-tagline">For students who want every possible advantage.</div>
+        <div class="plan-divider"></div>
+        <div class="plan-features">
+          <div class="plan-feature">
+            <svg class="plan-feature__icon plan-feature__icon--check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Everything in Achiever</span>
+          </div>
+          <div class="plan-feature">
+            <svg class="plan-feature__icon plan-feature__icon--check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>🔍 Root Cause Analyser</span>
+          </div>
+          <div class="plan-feature">
+            <svg class="plan-feature__icon plan-feature__icon--check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Unlimited note refinements</span>
+          </div>
+          <div class="plan-feature">
+            <svg class="plan-feature__icon plan-feature__icon--check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Personalised 30-day revision plan</span>
+          </div>
+          <div class="plan-feature">
+            <svg class="plan-feature__icon plan-feature__icon--check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>👨‍👩‍👧 Parent Dashboard</span>
+          </div>
+          <div class="plan-feature">
+            <svg class="plan-feature__icon plan-feature__icon--check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>💙 Mental health weekly check-in</span>
+          </div>
+          <div class="plan-feature">
+            <svg class="plan-feature__icon plan-feature__icon--check" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Priority AI responses</span>
+          </div>
+        </div>
+        <a href="#" class="btn btn-navy plan-cta" onclick="openModal('signup');return false;">Start Scholar Plan</a>
+      </div>
+
+    </div>
+
+    <!-- Comparison note -->
+    <p class="reveal" style="text-align:center;margin-top:28px;font-size:0.82rem;color:var(--text-muted);">
+      💙 Mental health weekly check-in is included on <strong>every plan</strong> — because every student deserves support.
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ TESTIMONIALS -->
+<section class="section testimonials" id="testimonials">
+  <div class="container">
+    <div class="section-label reveal">
+      <div class="section-label__line"></div>
+      <h5>Early Feedback</h5>
+    </div>
+    <h2 class="reveal">Students who tried it<br>said this.</h2>
+
+    <div class="testi__grid">
+      <div class="testi-card reveal reveal-delay-1">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"The examiner tip at the end of every answer is something I've never seen before. It literally tells me what words to write. My Biology marks went up by 18 points in one month."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:#3B82F6;">P</div>
+          <div>
+            <div class="testi-name">Priya S.</div>
+            <div class="testi-class">Class 12, CBSE Science · Jaipur</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testi-card reveal reveal-delay-2">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"I used to use ChatGPT but it gave me random answers. StudyEase gives me answers in exactly the format my teacher wants. The board format thing is genuinely different."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:#0A1628;">R</div>
+          <div>
+            <div class="testi-name">Rahul K.</div>
+            <div class="testi-class">Class 10, CBSE · Delhi</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testi-card reveal reveal-delay-3">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"The weekly check-in surprised me. It asked how I was actually doing with board stress. No other app does that. It made me feel like someone actually cares."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:#10B981;">A</div>
+          <div>
+            <div class="testi-name">Ananya M.</div>
+            <div class="testi-class">Class 11, CBSE Commerce · Pune</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ CTA BANNER -->
+<section class="cta-banner">
+  <div class="cta-banner__bg">
+    <div class="cta-banner__bg-blob cta-banner__bg-blob--1"></div>
+    <div class="cta-banner__bg-blob cta-banner__bg-blob--2"></div>
+  </div>
+  <div class="container">
+    <div class="cta-banner__inner reveal">
+      <h2>Start for free.<br>Upgrade when you're ready.</h2>
+      <p>No credit card. No commitment. 50 AI messages every month — on us.</p>
+      <div class="cta-banner__actions">
+        <a href="#" class="btn btn-white btn-lg" onclick="openModal('signup');return false;">
+          Create Free Account
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#pricing" class="btn btn-outline-white btn-lg">See All Plans</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <div class="navbar__logo" style="color:rgba(255,255,255,0.8);">
+          <div class="navbar__logo-mark">
+            <svg viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="6" height="8" rx="1.5" fill="#3B82F6"/><rect x="10" y="2" width="6" height="5" rx="1.5" fill="rgba(255,255,255,0.4)"/><rect x="2" y="12" width="14" height="2.5" rx="1.25" fill="rgba(255,255,255,0.2)"/><rect x="10" y="9" width="6" height="2.5" rx="1.25" fill="rgba(255,255,255,0.35)"/></svg>
+          </div>
+          StudyEase
+        </div>
+        <p>AI-powered CBSE board exam preparation for every Indian student — not just the privileged ones.</p>
+      </div>
+      <div class="footer__col">
+        <h5>Product</h5>
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#">Dashboard</a>
+      </div>
+      <div class="footer__col">
+        <h5>Resources</h5>
+        <a href="#">CBSE Papers</a>
+        <a href="#">NCERT Notes</a>
+        <a href="#">Practice Tests</a>
+        <a href="#">Study Planner</a>
+      </div>
+      <div class="footer__col">
+        <h5>Company</h5>
+        <a href="#">About</a>
+        <a href="#">Blog</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Use</a>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p>© 2025 StudyEase. Built with ❤ by Uthkarsh — Zenith Space.</p>
+      <p class="footer__logo">studyease.in</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════ LOGIN MODAL -->
+<div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-label="Login / Sign Up">
+  <div class="modal" id="modal">
+    <div class="modal__header">
+      <button class="modal__close" id="modal-close" aria-label="Close">✕</button>
+      <h3 id="modal-heading">Welcome back</h3>
+      <p id="modal-sub">Sign in to continue your study journey</p>
+    </div>
+    <div class="modal__body">
+      <!-- Tabs -->
+      <div class="modal__tabs" role="tablist">
+        <button class="modal__tab active" id="tab-login" role="tab" onclick="switchTab('login')">Log in</button>
+        <button class="modal__tab" id="tab-signup" role="tab" onclick="switchTab('signup')">Sign up</button>
+      </div>
+
+      <!-- Login form -->
+      <div id="form-login">
+        <div class="form-group">
+          <label class="form-label" for="login-email">Email address</label>
+          <input class="form-input" type="email" id="login-email" placeholder="you@example.com" autocomplete="email" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="login-pass">Password</label>
+          <input class="form-input" type="password" id="login-pass" placeholder="Enter your password" autocomplete="current-password" />
+        </div>
+        <button class="btn btn-primary btn-lg form-submit">Log In</button>
+        <p class="form-footer">
+          Don't have an account? <a href="#" onclick="switchTab('signup');return false;">Sign up free</a>
+        </p>
+      </div>
+
+      <!-- Sign up form -->
+      <div id="form-signup" style="display:none;">
+        <div class="form-group">
+          <label class="form-label" for="signup-name">Your name</label>
+          <input class="form-input" type="text" id="signup-name" placeholder="Uthkarsh" autocomplete="name" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="signup-email">Email address</label>
+          <input class="form-input" type="email" id="signup-email" placeholder="you@example.com" autocomplete="email" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="signup-class">Your class</label>
+          <select class="form-input" id="signup-class">
+            <option value="">Select your class</option>
+            <option>Class 9</option>
+            <option>Class 10</option>
+            <option>Class 11</option>
+            <option>Class 12</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="signup-pass">Create password</label>
+          <input class="form-input" type="password" id="signup-pass" placeholder="At least 8 characters" autocomplete="new-password" />
+        </div>
+        <button class="btn btn-primary btn-lg form-submit">Create Free Account</button>
+        <p class="form-footer">
+          Already have an account? <a href="#" onclick="switchTab('login');return false;">Log in</a>
+        </p>
+        <p class="form-footer" style="margin-top:8px;font-size:0.75rem;">
+          By signing up you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ JAVASCRIPT -->
+<script>
+  /* ── Navbar scroll effect ────────────────────────────── */
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 20);
+  }, { passive: true });
+
+  /* ── Scroll reveal ───────────────────────────────────── */
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        revealObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  /* ── Modal ───────────────────────────────────────────── */
+  const overlay  = document.getElementById('modal-overlay');
+  const heading  = document.getElementById('modal-heading');
+  const sub      = document.getElementById('modal-sub');
+
+  function openModal(tab = 'login') {
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    switchTab(tab);
+    overlay.querySelector('.modal__tab').focus();
+  }
+
+  function closeModal() {
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  function switchTab(tab) {
+    const isLogin = tab === 'login';
+    document.getElementById('form-login').style.display  = isLogin ? 'block' : 'none';
+    document.getElementById('form-signup').style.display = isLogin ? 'none'  : 'block';
+    document.getElementById('tab-login').classList.toggle('active', isLogin);
+    document.getElementById('tab-signup').classList.toggle('active', !isLogin);
+    heading.textContent = isLogin ? 'Welcome back'          : 'Create your account';
+    sub.textContent     = isLogin ? 'Sign in to continue'  : 'Free forever. No credit card needed.';
+  }
+
+  document.getElementById('modal-close').addEventListener('click', closeModal);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+  /* Navbar buttons */
+  document.getElementById('nav-login-btn').addEventListener('click', (e) => {
+    e.preventDefault(); openModal('login');
+  });
+  document.getElementById('nav-signup-btn').addEventListener('click', (e) => {
+    e.preventDefault(); openModal('signup');
+  });
+  document.getElementById('hero-signup-btn').addEventListener('click', (e) => {
+    e.preventDefault(); openModal('signup');
+  });
+
+  /* ── Auto login popup after 10 seconds ──────────────── */
+  let popupShown = false;
+  setTimeout(() => {
+    if (!popupShown && !overlay.classList.contains('active')) {
+      popupShown = true;
+      openModal('signup');
+    }
+  }, 10000);
+
+  /* Dismiss auto-popup if user interacts with a CTA before 10s */
+  document.querySelectorAll('[onclick*="openModal"]').forEach(el => {
+    el.addEventListener('click', () => { popupShown = true; });
+  });
+
+  /* ── Pricing toggle ──────────────────────────────────── */
+  const billingToggle = document.getElementById('billing-toggle');
+  const pricingGrid   = document.getElementById('pricing-grid');
+
+  billingToggle.addEventListener('change', () => {
+    if (billingToggle.checked) {
+      pricingGrid.classList.add('show-annual');
+      document.querySelectorAll('.price-monthly').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('.price-annual').forEach(el => el.style.display = 'flex');
+    } else {
+      pricingGrid.classList.remove('show-annual');
+      document.querySelectorAll('.price-monthly').forEach(el => el.style.display = 'flex');
+      document.querySelectorAll('.price-annual').forEach(el => el.style.display = 'none');
+    }
+  });
+
+  /* ── Hamburger (mobile) ──────────────────────────────── */
+  const hamburger = document.getElementById('hamburger');
+  const navLinks  = document.querySelector('.navbar__links');
+
+  hamburger.addEventListener('click', () => {
+    const isOpen = navLinks.style.display === 'flex';
+    navLinks.style.display = isOpen ? '' : 'flex';
+    navLinks.style.position = 'fixed';
+    navLinks.style.top = '68px';
+    navLinks.style.left = '0';
+    navLinks.style.right = '0';
+    navLinks.style.flexDirection = 'column';
+    navLinks.style.background = 'rgba(255,255,255,0.97)';
+    navLinks.style.backdropFilter = 'blur(16px)';
+    navLinks.style.padding = '20px 24px 24px';
+    navLinks.style.boxShadow = '0 8px 32px rgba(10,22,40,0.1)';
+    navLinks.style.zIndex = '800';
+    navLinks.style.gap = '18px';
+    if (!isOpen) {
+      hamburger.querySelectorAll('span')[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+      hamburger.querySelectorAll('span')[1].style.opacity = '0';
+      hamburger.querySelectorAll('span')[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
+    } else {
+      hamburger.querySelectorAll('span').forEach(s => { s.style.transform = ''; s.style.opacity = ''; });
+    }
+  });
+
+  /* Close mobile nav on link click */
+  document.querySelectorAll('.navbar__links a').forEach(a => {
+    a.addEventListener('click', () => {
+      navLinks.style.display = '';
+      hamburger.querySelectorAll('span').forEach(s => { s.style.transform = ''; s.style.opacity = ''; });
+    });
+  });
+</script>
+
+</body>
+</html>
