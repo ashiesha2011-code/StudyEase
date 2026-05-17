@@ -1209,10 +1209,10 @@ body {
 <!-- ═══════════════════════════════════════════════════════ SUPABASE -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL  = 'https://xiwrvbtryeesfgeydxnf.supabase.co';
-const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd3J2YnRyeWVlc2ZnZXlkeG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMTQ0NDAsImV4cCI6MjA5NDU5MDQ0MH0.3Sp9dlc8cNsrzdHAGy74pCqscjL1MFV9ZWMW90QbhqE';
-window._sb = window._sb || window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-const supabase = window._sb;
+(function() {
+var SUPABASE_URL  = 'https://xiwrvbtryeesfgeydxnf.supabase.co';
+var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd3J2YnRyeWVlc2ZnZXlkeG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMTQ0NDAsImV4cCI6MjA5NDU5MDQ0MH0.3Sp9dlc8cNsrzdHAGy74pCqscjL1MFV9ZWMW90QbhqE';
+var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
 /* ── Dashboard init — reads session from localStorage instantly ── */
 supabase.auth.onAuthStateChange(function(event, session) {
@@ -1358,6 +1358,8 @@ overlay.addEventListener('click', () => {
   sidebar.classList.remove('open');
   overlay.classList.remove('open');
 });
+
+})();
 </script>
 </body>
 </html>
