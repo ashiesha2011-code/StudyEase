@@ -1792,15 +1792,28 @@ p { color: var(--text-mid); line-height: 1.75; }
 <!-- ═══════════════════════════════════════════════════════ SUPABASE SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-  // Auto-redirect to dashboard if already logged in
+  // Auto-redirect to dashboard if already logged in — with smooth fade
   (function() {
     var url    = 'https://xiwrvbtryeesfgeydxnf.supabase.co';
     var key    = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd3J2YnRyeWVlc2ZnZXlkeG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMTQ0NDAsImV4cCI6MjA5NDU5MDQ0MH0.3Sp9dlc8cNsrzdHAGy74pCqscjL1MFV9ZWMW90QbhqE';
     var client = window.supabase.createClient(url, key);
+
+    // Hide page instantly while we check — no flash of homepage
+    document.documentElement.style.opacity = '0';
+    document.documentElement.style.transition = 'opacity 0.4s ease';
+
     client.auth.getSession().then(function(res) {
       if (res.data && res.data.session) {
-        window.location.href = 'dashboard.html';
+        // Smoothly fade out then redirect
+        setTimeout(function() {
+          window.location.href = 'dashboard.html';
+        }, 100);
+      } else {
+        // No session — fade the homepage in smoothly
+        document.documentElement.style.opacity = '1';
       }
+    }).catch(function() {
+      document.documentElement.style.opacity = '1';
     });
   })();
 </script>
