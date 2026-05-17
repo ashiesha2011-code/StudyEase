@@ -1216,56 +1216,66 @@ const supabase = window._sb;
 
 /* ── Auth guard — redirect to home if not logged in ──── */
 async function initDashboard() {
-  const { data: { session } } = await supabase.auth.getSession();
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
 
-  if (!session) {
+    if (!session) {
+      window.location.href = 'index.html';
+      return;
+    }
+
+    const user = session.user;
+    const name = (user.user_metadata && (user.user_metadata.name || user.user_metadata.full_name)) || user.email.split('@')[0];
+    const initial = name.charAt(0).toUpperCase();
+
+    // Update UI with user info
+    document.getElementById('sidebar-username').textContent = name;
+    document.getElementById('sidebar-avatar').textContent = initial;
+    document.getElementById('topbar-avatar').textContent = initial;
+
+    // Greeting based on time
+    const hour = new Date().getHours();
+    const greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+    document.getElementById('topbar-greeting').textContent = greet + ', ' + name.split(' ')[0] + '! 👋';
+
+    // Date
+    const now = new Date();
+    document.getElementById('topbar-date').textContent = now.toLocaleDateString('en-IN', {
+      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+    });
+
+    // Get plan from profiles table — don't crash if missing
+    try {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('plan, class')
+        .eq('id', user.id)
+        .single();
+
+      if (profile) {
+        const planName = profile.plan === 'achiever' ? 'Achiever Plan' :
+                         profile.plan === 'scholar'  ? 'Scholar Plan'  : 'Free Plan';
+        document.getElementById('sidebar-plan-name').textContent = planName;
+        document.getElementById('sidebar-userplan').textContent = profile.class ? profile.class + ' · ' + planName : planName;
+        if (profile.plan !== 'free') {
+          document.querySelector('.sidebar__plan-upgrade').textContent = '🌟 ' + planName;
+          document.querySelector('.sidebar__plan-upgrade').style.background = 'var(--emerald)';
+        }
+      }
+    } catch(profileErr) {
+      // Profile not found — that's okay, still show dashboard
+    }
+
+  } catch(err) {
+    // Any auth error — redirect home
     window.location.href = 'index.html';
     return;
   }
 
-  const user = session.user;
-  const name = user.user_metadata?.name || user.user_metadata?.full_name || user.email.split('@')[0];
-  const initial = name.charAt(0).toUpperCase();
-
-  // Update UI with user info
-  document.getElementById('sidebar-username').textContent = name;
-  document.getElementById('sidebar-avatar').textContent = initial;
-  document.getElementById('topbar-avatar').textContent = initial;
-
-  // Greeting based on time
-  const hour = new Date().getHours();
-  const greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
-  document.getElementById('topbar-greeting').textContent = `${greet}, ${name.split(' ')[0]}! 👋`;
-
-  // Date
-  const now = new Date();
-  document.getElementById('topbar-date').textContent = now.toLocaleDateString('en-IN', {
-    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
-  });
-
-  // Get plan from profiles table
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('plan, class')
-    .eq('id', user.id)
-    .single();
-
-  if (profile) {
-    const planName = profile.plan === 'achiever' ? 'Achiever Plan' :
-                     profile.plan === 'scholar'  ? 'Scholar Plan'  : 'Free Plan';
-    document.getElementById('sidebar-userplan').textContent = planName;
-    document.getElementById('sidebar-plan-name').textContent = planName;
-    document.getElementById('sidebar-userplan').textContent = profile.class ? `${profile.class} · ${planName}` : planName;
-    if (profile.plan !== 'free') {
-      document.querySelector('.sidebar__plan-upgrade').textContent = '🌟 ' + planName;
-      document.querySelector('.sidebar__plan-upgrade').style.background = 'var(--emerald)';
-    }
-  }
-
-  // Hide loading overlay
+  // Always hide loading overlay — even if something above failed
   const loader = document.getElementById('loading-overlay');
   loader.classList.add('hidden');
-  setTimeout(() => loader.style.display = 'none', 400);
+  setTimeout(function() { loader.style.display = 'none'; }, 400);
 }
 
 initDashboard();
