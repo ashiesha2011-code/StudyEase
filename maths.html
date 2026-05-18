@@ -334,6 +334,19 @@ body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--off-whit
         <!-- Content panel -->
         <div class="content-panel">
 
+          <!-- NCERT / Advanced section switcher -->
+          <div style="display:flex;gap:8px;margin-bottom:4px;">
+            <button id="sect-ncert" onclick="switchSection('ncert')" style="flex:1;padding:11px 16px;border-radius:10px;border:1.5px solid var(--accent);background:var(--accent-bg);color:var(--accent);font-family:inherit;font-size:.88rem;font-weight:700;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px;">
+              <span style="font-size:1.1rem">📘</span> NCERT <span style="font-size:.7rem;padding:2px 8px;background:var(--accent);color:white;border-radius:99px;margin-left:2px">Standard</span>
+            </button>
+            <button id="sect-adv" onclick="switchSection('advanced')" style="flex:1;padding:11px 16px;border-radius:10px;border:1.5px solid var(--border);background:white;color:var(--text-mid);font-family:inherit;font-size:.88rem;font-weight:700;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px;">
+              <span style="font-size:1.1rem">🚀</span> Advanced <span style="font-size:.7rem;padding:2px 8px;background:var(--amber-bg);color:var(--amber);border-radius:99px;margin-left:2px;border:1px solid #FDE68A">Coming</span>
+            </button>
+          </div>
+
+          <!-- NCERT Section (shown by default) -->
+          <div id="section-ncert">
+
           <!-- Tabs -->
           <div class="tabs-bar">
             <button class="tab-btn active" onclick="switchTab('videos', this)">
@@ -474,10 +487,32 @@ body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--off-whit
               </div>
 
               <div class="notes-upload-notice">
-                📂 <strong>Full chapter notes</strong> for all 5 chapters will be uploaded soon by the StudyEase team. Check back in a few days!
+                📂 <strong>Full chapter notes</strong> for all chapters will be uploaded soon. Check back in a few days!
               </div>
             </div>
           </div>
+
+          </div><!-- /section-ncert -->
+
+          <!-- Advanced Section (hidden by default) -->
+          <div id="section-advanced" style="display:none">
+            <div style="background:white;border:1px solid var(--border);border-radius:14px;padding:36px 28px;text-align:center;">
+              <div style="font-size:2.5rem;margin-bottom:16px">🚀</div>
+              <div style="font-size:1.1rem;font-weight:700;color:var(--navy);margin-bottom:8px">Advanced Mathematics — Coming Soon</div>
+              <div style="font-size:.86rem;color:var(--text-mid);line-height:1.65;max-width:400px;margin:0 auto 20px">
+                Advanced section will include <strong>JEE-level problems</strong>, harder conceptual videos, and topics beyond NCERT — perfect for students aiming above and beyond boards.
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:20px">
+                <span style="padding:6px 14px;background:var(--purple-bg);border:1px solid #DDD6FE;border-radius:99px;font-size:.8rem;font-weight:600;color:var(--purple)">Complex Polynomials</span>
+                <span style="padding:6px 14px;background:var(--purple-bg);border:1px solid #DDD6FE;border-radius:99px;font-size:.8rem;font-weight:600;color:var(--purple)">Higher Degree Equations</span>
+                <span style="padding:6px 14px;background:var(--purple-bg);border:1px solid #DDD6FE;border-radius:99px;font-size:.8rem;font-weight:600;color:var(--purple)">Competition Problems</span>
+                <span style="padding:6px 14px;background:var(--purple-bg);border:1px solid #DDD6FE;border-radius:99px;font-size:.8rem;font-weight:600;color:var(--purple)">Olympiad Prep</span>
+              </div>
+              <div style="background:var(--amber-bg);border:1px solid #FDE68A;border-radius:8px;padding:12px 16px;font-size:.82rem;color:#92400E;max-width:360px;margin:0 auto">
+                🔔 Available in <strong>Achiever & Scholar plans</strong>. We're building it — drop into the AI companion and let us know what topics you want first!
+              </div>
+            </div>
+          </div><!-- /section-advanced -->
 
         </div><!-- /content-panel -->
       </div><!-- /subject-layout -->
