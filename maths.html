@@ -279,7 +279,7 @@ body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--off-whit
         <div class="breadcrumb">
           <a href="dashboard.html">Dashboard</a>
           <span class="breadcrumb-sep">›</span>
-          <span class="breadcrumb-current">📐 Physics</span>
+          <span class="breadcrumb-current">📐 Mathematics</span>
         </div>
       </div>
       <div class="topbar-r">
@@ -309,25 +309,61 @@ body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--off-whit
         <!-- Chapters panel -->
         <div class="chapters-panel">
           <div class="panel-head">Chapters</div>
-          <a class="chapter-item active" onclick="selectChapter(this, 'electricity')">
+          <a class="chapter-item" onclick="selectChapter(this,'real-numbers')">
             <span class="ch-num">01</span>
-            <span class="ch-name">Electricity</span>
+            <span class="ch-name">Real Numbers</span>
           </a>
-          <a class="chapter-item" onclick="selectChapter(this, 'magnetic')">
+          <a class="chapter-item active" href="video-player.html">
             <span class="ch-num">02</span>
-            <span class="ch-name">Magnetic Effects of Electric Current</span>
+            <span class="ch-name">Polynomials ▶</span>
           </a>
-          <a class="chapter-item" onclick="selectChapter(this, 'light-reflection')">
+          <a class="chapter-item" onclick="selectChapter(this,'linear-equations')">
             <span class="ch-num">03</span>
-            <span class="ch-name">Light — Reflection and Refraction</span>
+            <span class="ch-name">Pair of Linear Equations</span>
           </a>
-          <a class="chapter-item" onclick="selectChapter(this, 'human-eye')">
+          <a class="chapter-item" onclick="selectChapter(this,'quadratic')">
             <span class="ch-num">04</span>
-            <span class="ch-name">Human Eye and the Colourful World</span>
+            <span class="ch-name">Quadratic Equations</span>
           </a>
-          <a class="chapter-item" onclick="selectChapter(this, 'sources')">
+          <a class="chapter-item" onclick="selectChapter(this,'ap')">
             <span class="ch-num">05</span>
-            <span class="ch-name">Sources of Energy</span>
+            <span class="ch-name">Arithmetic Progressions</span>
+          </a>
+          <a class="chapter-item" onclick="selectChapter(this,'triangles')">
+            <span class="ch-num">06</span>
+            <span class="ch-name">Triangles</span>
+          </a>
+          <a class="chapter-item" onclick="selectChapter(this,'coordinates')">
+            <span class="ch-num">07</span>
+            <span class="ch-name">Coordinate Geometry</span>
+          </a>
+          <a class="chapter-item" onclick="selectChapter(this,'trig-intro')">
+            <span class="ch-num">08</span>
+            <span class="ch-name">Introduction to Trigonometry</span>
+          </a>
+          <a class="chapter-item" onclick="selectChapter(this,'trig-apps')">
+            <span class="ch-num">09</span>
+            <span class="ch-name">Some Applications of Trigonometry</span>
+          </a>
+          <a class="chapter-item" onclick="selectChapter(this,'circles')">
+            <span class="ch-num">10</span>
+            <span class="ch-name">Circles</span>
+          </a>
+          <a class="chapter-item" onclick="selectChapter(this,'areas')">
+            <span class="ch-num">11</span>
+            <span class="ch-name">Areas Related to Circles</span>
+          </a>
+          <a class="chapter-item" onclick="selectChapter(this,'surface-volumes')">
+            <span class="ch-num">12</span>
+            <span class="ch-name">Surface Areas and Volumes</span>
+          </a>
+          <a class="chapter-item" onclick="selectChapter(this,'statistics')">
+            <span class="ch-num">13</span>
+            <span class="ch-name">Statistics</span>
+          </a>
+          <a class="chapter-item" onclick="selectChapter(this,'probability')">
+            <span class="ch-num">14</span>
+            <span class="ch-name">Probability</span>
           </a>
         </div>
 
@@ -365,16 +401,24 @@ body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--off-whit
 
           <!-- Videos tab -->
           <div class="tab-panel active" id="tab-videos">
-            <div class="coming-soon-card">
-              <div class="cs-icon">🎬</div>
-              <div class="cs-title">Video Lectures — Coming Soon</div>
-              <div class="cs-sub">
-                Curated video explanations for every Physics chapter — clear, concise, and CBSE-focused. We're uploading them chapter by chapter. <strong>Electricity is up first!</strong>
+            <!-- Chapter 2 — READY -->
+            <a href="video-player.html" style="display:flex;align-items:center;gap:14px;padding:18px 20px;background:white;border:1.5px solid var(--accent-mid);border-radius:12px;text-decoration:none;margin-bottom:12px;transition:all .18s" onmouseover="this.style.boxShadow='0 4px 18px rgba(139,92,246,.12)';this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='none';this.style.transform='none'">
+              <div style="width:52px;height:52px;border-radius:12px;background:var(--accent-bg);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0">📐</div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:.68rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);margin-bottom:2px">Chapter 2 · NotebookLM Audio</div>
+                <div style="font-size:.97rem;font-weight:700;color:var(--navy)">Polynomials</div>
+                <div style="font-size:.75rem;color:var(--text-muted);margin-top:2px">Zeroes · Coefficients · Division Algorithm · ~20 min</div>
               </div>
-              <div class="cs-badge">
-                <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/></svg>
-                Uploading soon — check back!
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0">
+                <span style="background:var(--emerald-bg);color:var(--emerald);font-size:.7rem;font-weight:700;padding:4px 12px;border-radius:99px;border:1px solid #6EE7B7">▶ Watch Now</span>
+                <span style="background:var(--accent-bg);border:1px solid var(--accent-mid);color:var(--accent);font-size:.7rem;font-weight:600;padding:3px 10px;border-radius:99px">CC · Ask AI · Speed</span>
               </div>
+            </a>
+            <!-- Other chapters — coming soon -->
+            <div style="background:var(--off-white);border:1px dashed var(--border);border-radius:12px;padding:22px;text-align:center">
+              <div style="font-size:1.6rem;margin-bottom:10px">🎬</div>
+              <div style="font-size:.9rem;font-weight:700;color:var(--navy);margin-bottom:5px">More chapters being recorded</div>
+              <div style="font-size:.8rem;color:var(--text-muted)">Real Numbers, Quadratic Equations, AP, Triangles and more — uploading chapter by chapter.</div>
             </div>
           </div>
 
@@ -382,63 +426,63 @@ body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--off-whit
           <div class="tab-panel" id="tab-practice">
             <div class="practice-card">
               <div class="practice-head">
-                <span class="practice-title">Electricity — Practice Questions</span>
+                <span class="practice-title">Polynomials — Practice Questions</span>
                 <span class="practice-meta">Free: 5 questions · Achiever: Unlimited</span>
               </div>
               <div class="q-list">
                 <div class="q-item">
                   <div class="q-row">
                     <span class="q-num">Q1</span>
-                    <span class="q-text">What is the SI unit of electric charge? State Ohm's Law and write its mathematical expression.</span>
+                    <span class="q-text">Find the zeroes of the quadratic polynomial x² − 3x − 10 and verify the relationship between zeroes and coefficients.</span>
                   </div>
                   <div class="q-tags">
-                    <span class="q-tag q-tag--marks">2 marks</span>
+                    <span class="q-tag q-tag--marks">3 marks</span>
                     <span class="q-tag q-tag--type">Short Answer</span>
-                    <span class="q-tag q-tag--chapter">Electricity</span>
+                    <span class="q-tag q-tag--chapter">Polynomials</span>
                   </div>
                 </div>
                 <div class="q-item">
                   <div class="q-row">
                     <span class="q-num">Q2</span>
-                    <span class="q-text">A wire of resistance 8 Ω is bent in the form of a closed circle. What is the effective resistance between the two points at the end of a diameter?</span>
+                    <span class="q-text">If α and β are zeroes of the polynomial 2x² + 5x + k, and αβ = −3, find the value of k.</span>
                   </div>
                   <div class="q-tags">
-                    <span class="q-tag q-tag--marks">3 marks</span>
-                    <span class="q-tag q-tag--type">Numerical</span>
-                    <span class="q-tag q-tag--chapter">Electricity</span>
+                    <span class="q-tag q-tag--marks">2 marks</span>
+                    <span class="q-tag q-tag--type">Short Answer</span>
+                    <span class="q-tag q-tag--chapter">Polynomials</span>
                   </div>
                 </div>
                 <div class="q-item">
                   <div class="q-row">
                     <span class="q-num">Q3</span>
-                    <span class="q-text">Draw a circuit diagram showing three resistors R₁, R₂ and R₃ connected in parallel. Derive the formula for their equivalent resistance.</span>
+                    <span class="q-text">On dividing x³ − 3x² + x + 2 by a polynomial g(x), the quotient and remainder are (x − 2) and (−2x + 4) respectively. Find g(x).</span>
                   </div>
                   <div class="q-tags">
-                    <span class="q-tag q-tag--marks">5 marks</span>
-                    <span class="q-tag q-tag--type">Long Answer</span>
-                    <span class="q-tag q-tag--chapter">Electricity</span>
+                    <span class="q-tag q-tag--marks">3 marks</span>
+                    <span class="q-tag q-tag--type">Application</span>
+                    <span class="q-tag q-tag--chapter">Polynomials</span>
                   </div>
                 </div>
                 <div class="q-item">
                   <div class="q-row">
                     <span class="q-num">Q4</span>
-                    <span class="q-text">An electric bulb is rated 220 V and 100 W. When it is operated on 110 V, what will be the power consumed?</span>
+                    <span class="q-text">Find a quadratic polynomial whose sum of zeroes is −3 and product of zeroes is 2.</span>
                   </div>
                   <div class="q-tags">
-                    <span class="q-tag q-tag--marks">3 marks</span>
-                    <span class="q-tag q-tag--type">Numerical</span>
-                    <span class="q-tag q-tag--chapter">Electricity</span>
+                    <span class="q-tag q-tag--marks">2 marks</span>
+                    <span class="q-tag q-tag--type">Short Answer</span>
+                    <span class="q-tag q-tag--chapter">Polynomials</span>
                   </div>
                 </div>
                 <div class="q-item">
                   <div class="q-row">
                     <span class="q-num">Q5</span>
-                    <span class="q-text">Why are electric bulbs filled with chemically inactive nitrogen or argon gas instead of air?</span>
+                    <span class="q-text">If the zeroes of the cubic polynomial x³ − 6x² + 3x + 10 are of the form a − b, a, a + b, find all three zeroes.</span>
                   </div>
                   <div class="q-tags">
-                    <span class="q-tag q-tag--marks">1 mark</span>
-                    <span class="q-tag q-tag--type">MCQ</span>
-                    <span class="q-tag q-tag--chapter">Electricity</span>
+                    <span class="q-tag q-tag--marks">4 marks</span>
+                    <span class="q-tag q-tag--type">Long Answer</span>
+                    <span class="q-tag q-tag--chapter">Polynomials</span>
                   </div>
                 </div>
                 <div class="q-locked">
@@ -451,39 +495,42 @@ body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--off-whit
           <!-- Notes tab -->
           <div class="tab-panel" id="tab-notes">
             <div class="notes-card">
-              <div class="notes-chapter-title">Chapter 1 — Electricity</div>
+              <div class="notes-chapter-title">Chapter 2 — Polynomials</div>
 
               <div class="notes-section">
                 <div class="notes-section-head">
                   <div class="notes-accent-bar"></div>
-                  Electric Charge and Current
+                  Zeroes of a Polynomial
                 </div>
                 <div class="notes-text">
-                  <strong>Electric charge</strong> is the property of matter due to which it experiences a force when placed in an electric field. SI unit is <strong>Coulomb (C)</strong>.<br><br>
-                  <strong>Electric current</strong> is the rate of flow of electric charge. If charge Q flows through a conductor in time t, then:
+                  A <strong>zero of a polynomial p(x)</strong> is a value k such that p(k) = 0. Geometrically, the zeroes of p(x) are the <strong>x-coordinates of the points where the graph y = p(x) intersects the x-axis</strong>. A quadratic polynomial has at most 2 zeroes; a cubic has at most 3.
                 </div>
-                <div class="notes-formula">I = Q / t</div>
-                <div class="notes-text">SI unit of current is <strong>Ampere (A)</strong>. 1 A = 1 C/s. Current is measured by an <strong>ammeter</strong>, which is always connected in <strong>series</strong>.</div>
                 <div class="notes-exam-tip">
                   <span class="tip-icon">💡</span>
-                  <span class="tip-text"><strong>Examiner tip:</strong> In 2-mark questions, always state the formula AND the unit. Writing "I = Q/t" without mentioning Ampere loses half a mark in CBSE.</span>
+                  <span class="tip-text"><strong>Examiner tip:</strong> Always say "x-coordinate of the point where the graph intersects the x-axis" — not just "where it touches the x-axis." That phrasing gets full marks.</span>
                 </div>
               </div>
 
               <div class="notes-section">
                 <div class="notes-section-head">
                   <div class="notes-accent-bar"></div>
-                  Ohm's Law
+                  Relationship Between Zeroes and Coefficients
                 </div>
-                <div class="notes-text">
-                  At constant temperature, the <strong>current flowing through a conductor is directly proportional to the potential difference</strong> across its ends.
-                </div>
-                <div class="notes-formula">V = IR &nbsp;&nbsp;&nbsp;or&nbsp;&nbsp;&nbsp; R = V/I</div>
-                <div class="notes-text">Where R is the <strong>resistance</strong> of the conductor. Unit: <strong>Ohm (Ω)</strong>. Resistance depends on: nature of material, length (↑ L → ↑ R), area (↑ A → ↓ R), temperature.</div>
+                <div class="notes-text">For a quadratic polynomial <strong>ax² + bx + c</strong> with zeroes α and β:</div>
+                <div class="notes-formula">α + β = −b/a &nbsp;&nbsp;&nbsp; αβ = c/a</div>
+                <div class="notes-text">For a cubic polynomial <strong>ax³ + bx² + cx + d</strong> with zeroes α, β, γ:</div>
+                <div class="notes-formula">α+β+γ = −b/a &nbsp;&nbsp; αβ+βγ+γα = c/a &nbsp;&nbsp; αβγ = −d/a</div>
                 <div class="notes-exam-tip">
                   <span class="tip-icon">⭐</span>
-                  <span class="tip-text"><strong>High-value question area:</strong> Resistors in series and parallel derivations come for 5 marks almost every year. Make sure you can draw the circuit diagram correctly.</span>
+                  <span class="tip-text"><strong>High-value area:</strong> These formulas appear in almost every board paper for 2–3 marks. Remember: Sum = −(coeff of x)/(coeff of x²), Product = constant/(coeff of x²).</span>
                 </div>
+              </div>
+
+              <div class="notes-upload-notice">
+                📂 <strong>Full chapter notes</strong> for all chapters will be uploaded soon. Check back in a few days!
+              </div>
+            </div>
+          </div>
               </div>
 
               <div class="notes-upload-notice">
