@@ -129,7 +129,6 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--off-white);colo
 .fab-dot{width:7px;height:7px;border-radius:50%;background:#4ADE80;animation:pdot 1.4s infinite}
 
 /* Poll overlay */
-.poll-overlay{display:none;position:fixed;inset:0;background:rgba(7,15,29,.87);backdrop-filter:blur(6px);z-index:5000;align-items:center;justify-content:center;padding:20px}
 .poll-overlay.show{display:flex}
 .poll-card{background:white;border-radius:20px;width:100%;max-width:520px;overflow:hidden;box-shadow:0 32px 80px rgba(7,15,29,.5);animation:slideup .32s cubic-bezier(.34,1.56,.64,1)}
 @keyframes slideup{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:translateY(0)}}
@@ -241,42 +240,6 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--off-white);colo
 </div>
 <div class="overlay" id="overlay"></div>
 
-<!-- POLL OVERLAY -->
-<div class="poll-overlay" id="poll-overlay">
-  <div class="poll-card">
-    <div class="poll-head">
-      <div class="poll-head-l">
-        <div>
-          <div class="poll-qnum" id="poll-qnum">Question 1 of 5</div>
-          <div class="poll-head-title">📊 Interactive Poll</div>
-        </div>
-        <div class="poll-live"></div>
-      </div>
-      <div class="timer-wrap">
-        <svg class="timer-svg" width="50" height="50" viewBox="0 0 50 50">
-          <circle class="t-bg" cx="25" cy="25" r="20"/>
-          <circle class="t-fill" id="timer-circle" cx="25" cy="25" r="20"/>
-        </svg>
-        <div class="t-num" id="timer-num">30</div>
-      </div>
-    </div>
-    <div class="poll-body">
-      <div class="poll-q" id="poll-q"></div>
-      <div class="poll-opts" id="poll-opts"></div>
-      <button class="poll-submit" id="poll-submit" onclick="submitPoll()" disabled>Select an answer first</button>
-      <div class="poll-result" id="poll-result">
-        <div class="res-badge" id="res-badge"></div>
-        <div class="res-exp" id="res-exp"></div>
-        <div class="res-formula" id="res-formula" style="display:none"></div>
-        <button class="continue-btn" onclick="closePoll()">
-          <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
-          Continue watching
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <div class="layout">
   <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
@@ -342,11 +305,11 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--off-white);colo
           <div class="mode-meta">NotebookLM Masterclass · HCF · LCM · Euclid's Division · Irrationals</div>
         </div>
         <div class="mode-btns">
-          <button class="mode-btn btn-watch active" id="btn-watch" onclick="setMode('watch')">
+          <button class="mode-btn btn-watch active" id="btn-watch" onclick="startWatch()">
             <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zm12.553 1.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z"/></svg>
             Watch
           </button>
-          <button class="mode-btn btn-session" id="btn-session" onclick="setMode('session')">
+          <button class="mode-btn btn-session" id="btn-session" onclick="startSession()">
             <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/></svg>
             Start Session
           </button>
@@ -366,7 +329,42 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--off-white);colo
       <div class="session-score" id="session-score"></div>
 
       <!-- VIDEO PLAYER -->
-      <div class="player-wrap">
+      <div class="player-wrap" id="player-wrap">
+        <!-- Poll overlay INSIDE player so it shows in fullscreen -->
+        <div class="poll-overlay" id="poll-overlay" style="display:none;position:absolute;inset:0;background:rgba(7,15,29,.87);backdrop-filter:blur(6px);z-index:500;align-items:center;justify-content:center;padding:20px">
+          <div class="poll-card">
+            <div class="poll-head">
+              <div class="poll-head-l">
+                <div>
+                  <div class="poll-qnum" id="poll-qnum">Question 1 of 8</div>
+                  <div class="poll-head-title">📊 Interactive Poll</div>
+                </div>
+                <div class="poll-live"></div>
+              </div>
+              <div class="timer-wrap">
+                <svg class="timer-svg" width="50" height="50" viewBox="0 0 50 50">
+                  <circle class="t-bg" cx="25" cy="25" r="20"/>
+                  <circle class="t-fill" id="timer-circle" cx="25" cy="25" r="20"/>
+                </svg>
+                <div class="t-num" id="timer-num">30</div>
+              </div>
+            </div>
+            <div class="poll-body">
+              <div class="poll-q" id="poll-q"></div>
+              <div class="poll-opts" id="poll-opts"></div>
+              <button class="poll-submit" id="poll-submit" onclick="submitPoll()" disabled>Select an answer first</button>
+              <div class="poll-result" id="poll-result">
+                <div class="res-badge" id="res-badge"></div>
+                <div class="res-exp" id="res-exp"></div>
+                <div class="res-formula" id="res-formula" style="display:none"></div>
+                <button class="continue-btn" onclick="closePoll()">
+                  <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
+                  Continue watching
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="player-video-area">
           <video id="main-video" preload="metadata" crossorigin="anonymous">
             <source src="https://pub-a103011de70941ba8ab9e8eaeed0d9cb.r2.dev/real%20numbers%20masterclass.mp4" type="video/mp4">
@@ -587,6 +585,26 @@ function updateCaption(t){
   else{subText.textContent='';subOverlay.style.opacity='0';}
 }
 
+/* WATCH — play + go fullscreen */
+window.startWatch=function(){
+  setMode('watch');
+  vid.play().then(function(){
+    var el=document.getElementById('player-wrap');
+    if(el.requestFullscreen) el.requestFullscreen();
+    else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+  }).catch(function(){});
+};
+
+/* SESSION — activate session + play fullscreen (polls auto-fire) */
+window.startSession=function(){
+  setMode('session');
+  vid.play().then(function(){
+    var el=document.getElementById('player-wrap');
+    if(el.requestFullscreen) el.requestFullscreen();
+    else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+  }).catch(function(){});
+};
+
 /* MODE — no paywall */
 var sessionActive=false;
 window.setMode=function(mode){
@@ -729,7 +747,7 @@ window.openPoll=function(idx){
   sb2.textContent='Select an answer first';sb2.disabled=true;sb2.style.display='block';
   tLeft=30;updateTimer(30);clearInterval(timerInt);
   timerInt=setInterval(function(){tLeft--;updateTimer(tLeft);if(tLeft<=0){clearInterval(timerInt);if(!pollDone)autoSub()}},1000);
-  document.getElementById('poll-overlay').classList.add('show');
+  document.getElementById('poll-overlay').style.display='flex';
 };
 
 function selectOpt(idx,btn){
@@ -776,7 +794,7 @@ function showResult(ok,noAns){
 }
 
 window.closePoll=function(){
-  document.getElementById('poll-overlay').classList.remove('show');
+  document.getElementById('poll-overlay').style.display='none';
   document.getElementById('poll-submit').style.display='block';
   clearInterval(timerInt);
   renderMarkers();
