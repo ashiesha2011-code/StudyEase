@@ -3,31 +3,28 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Polynomials — Chapter 2 · StudyEase</title>
+  <title>Real Numbers — Chapter 1 · StudyEase</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230A1628'/><text y='22' x='6' font-size='18' font-family='system-ui' font-weight='700' fill='%233B82F6'>S</text></svg>"/>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --navy:#0A1628;--navy-mid:#132038;--navy-deep:#070F1D;
-  --blue:#3B82F6;--blue-dark:#2563EB;--blue-light:#EFF6FF;--blue-mid:#BFDBFE;
-  --white:#FFFFFF;--off-white:#F4F6F9;--surface:#FAFBFC;
+  --navy:#0A1628;--blue:#3B82F6;--blue-dark:#2563EB;--blue-light:#EFF6FF;--blue-mid:#BFDBFE;
+  --white:#fff;--off-white:#F4F6F9;
   --text:#1E293B;--text-mid:#475569;--text-muted:#94A3B8;
   --border:#E4E8EE;--border-soft:#F0F2F6;
   --emerald:#10B981;--emerald-bg:#ECFDF5;
   --amber:#F59E0B;--amber-bg:#FFFBEB;
-  --purple:#8B5CF6;--purple-bg:#F5F3FF;
-  --red:#EF4444;
-  --sidebar-w:224px;--topbar-h:62px;
-  --player-bg:#0D1117;
-  --radius:10px;--radius-lg:14px;
+  --purple:#8B5CF6;--purple-bg:#F5F3FF;--purple-dark:#7C3AED;
+  --red:#EF4444;--red-bg:#FEF2F2;
+  --sidebar-w:224px;--topbar-h:62px;--radius:10px;--radius-lg:14px;
 }
 html{-webkit-font-smoothing:antialiased}
 body{font-family:'DM Sans',system-ui,sans-serif;background:var(--off-white);color:var(--text);min-height:100vh;overflow-x:hidden}
 .layout{display:flex;min-height:100vh}
 
-/* ── Sidebar (same across all pages) ──────────────────── */
+/* Sidebar */
 .sidebar{width:var(--sidebar-w);background:var(--navy);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:200;transition:transform .28s cubic-bezier(.4,0,.2,1)}
 .sb-logo{display:flex;align-items:center;gap:9px;padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0}
 .sb-logo-mark{width:30px;height:30px;border-radius:8px;background:var(--blue);display:flex;align-items:center;justify-content:center}
@@ -39,8 +36,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--off-white);colo
 .sb-item:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.85)}
 .sb-item.active{background:rgba(59,130,246,.15);color:white}
 .sb-item.active .sb-icon{color:var(--blue);opacity:1}
-.sb-icon{width:17px;height:17px;flex-shrink:0;opacity:.55;transition:opacity .14s}
-.sb-item:hover .sb-icon{opacity:.85}
+.sb-icon{width:17px;height:17px;flex-shrink:0;opacity:.55}
 .sb-badge{margin-left:auto;background:var(--blue);color:white;font-size:.58rem;font-weight:700;padding:2px 6px;border-radius:99px}
 .sb-bottom{flex-shrink:0;padding:10px 8px;border-top:1px solid rgba(255,255,255,.07)}
 .sb-user{display:flex;align-items:center;gap:9px;padding:4px 2px}
@@ -51,363 +47,185 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--off-white);colo
 .sb-logout{width:26px;height:26px;border-radius:6px;background:rgba(255,255,255,.06);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.35);transition:all .14s;flex-shrink:0}
 .sb-logout:hover{background:rgba(239,68,68,.15);color:var(--red)}
 
-/* ── Main ──────────────────────────────────────────────── */
+/* Main */
 .main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh}
-
-/* ── Topbar ─────────────────────────────────────────────── */
 .topbar{height:var(--topbar-h);background:white;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:100}
 .topbar-l{display:flex;align-items:center;gap:10px}
 .hamburger{display:none;width:34px;height:34px;border-radius:8px;border:1px solid var(--border);background:white;align-items:center;justify-content:center;cursor:pointer;color:var(--navy);flex-direction:column;gap:4px;padding:8px}
 .hamburger span{display:block;width:16px;height:1.5px;background:currentColor;border-radius:2px}
 .breadcrumb{display:flex;align-items:center;gap:7px;font-size:.87rem;flex-wrap:wrap}
-.breadcrumb a{color:var(--text-muted);text-decoration:none;font-weight:500;transition:color .14s}
+.breadcrumb a{color:var(--text-muted);text-decoration:none;font-weight:500}
 .breadcrumb a:hover{color:var(--navy)}
 .breadcrumb-sep{color:var(--border)}
 .breadcrumb-current{font-weight:700;color:var(--navy)}
-.topbar-r{display:flex;align-items:center;gap:10px}
-.t-avatar{width:34px;height:34px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;color:white;cursor:pointer}
+.t-avatar{width:34px;height:34px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;color:white}
+.content{padding:24px 28px;flex:1;max-width:900px;margin:0 auto;width:100%}
 
-/* ── Content layout ─────────────────────────────────────── */
-.content{padding:24px 28px;flex:1}
+/* Mode card */
+.mode-card{background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 22px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.mode-label{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:3px}
+.mode-title{font-size:1.05rem;font-weight:800;color:var(--navy);margin-bottom:2px}
+.mode-meta{font-size:.79rem;color:var(--text-muted)}
+.mode-btns{display:flex;gap:9px;flex-shrink:0}
+.mode-btn{display:flex;align-items:center;gap:7px;padding:10px 18px;border-radius:9px;font-family:inherit;font-size:.86rem;font-weight:700;cursor:pointer;transition:all .17s;border:2px solid transparent;white-space:nowrap}
+.btn-watch{background:white;border-color:var(--border);color:var(--text-mid)}
+.btn-watch:hover{border-color:var(--navy);color:var(--navy)}
+.btn-watch.active{background:var(--navy);border-color:var(--navy);color:white}
+.btn-session{background:var(--purple);color:white;border-color:var(--purple);box-shadow:0 4px 16px rgba(139,92,246,.3)}
+.btn-session:hover{background:var(--purple-dark);transform:translateY(-1px)}
+.btn-session.active{background:var(--purple-dark)}
 
-/* ── Video + AI panel layout ────────────────────────────── */
-.video-layout{
-  display:grid;
-  grid-template-columns:1fr 380px;
-  gap:20px;
-  align-items:start;
-}
-.video-layout.ai-hidden{grid-template-columns:1fr}
+/* Session bar */
+.session-bar{background:white;border:1px solid rgba(139,92,246,.25);border-left:3px solid var(--purple);border-radius:var(--radius);padding:13px 17px;margin-bottom:14px;display:none}
+.session-bar.show{display:block}
+.session-bar-head{font-size:.72rem;font-weight:700;color:var(--purple);letter-spacing:.08em;text-transform:uppercase;margin-bottom:9px;display:flex;align-items:center;gap:7px}
+.sess-dot{width:7px;height:7px;border-radius:50%;background:var(--purple);animation:pdot 1.4s ease-in-out infinite}
+@keyframes pdot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.7)}}
+.q-markers{display:flex;gap:7px;flex-wrap:wrap}
+.q-marker{display:flex;align-items:center;gap:6px;padding:6px 13px;border-radius:7px;font-family:inherit;font-size:.79rem;font-weight:600;cursor:pointer;transition:all .15s;border:1.5px solid}
+.q-marker--pending{background:var(--purple-bg);border-color:rgba(139,92,246,.3);color:var(--purple)}
+.q-marker--pending:hover{background:var(--purple);color:white;border-color:var(--purple);transform:translateY(-1px)}
+.q-marker--done-correct{background:var(--emerald-bg);border-color:rgba(16,185,129,.3);color:var(--emerald);cursor:default}
+.q-marker--done-wrong{background:var(--red-bg);border-color:rgba(239,68,68,.3);color:var(--red);cursor:default}
 
-/* ── Video column ───────────────────────────────────────── */
-.video-col{display:flex;flex-direction:column;gap:16px;min-width:0}
+/* Session score */
+.session-score{display:none;background:white;border:1.5px solid rgba(139,92,246,.2);border-radius:var(--radius-lg);padding:18px 20px;margin-bottom:14px}
+.session-score.show{display:block}
 
-/* ── Chapter info bar ───────────────────────────────────── */
-.chapter-bar{
-  background:white;border:1px solid var(--border);border-radius:var(--radius-lg);
-  padding:18px 22px;display:flex;align-items:center;gap:16px;
-}
-.chapter-bar-icon{
-  width:44px;height:44px;border-radius:12px;background:var(--purple-bg);
-  display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;
-}
-.chapter-bar-info{flex:1;min-width:0}
-.chapter-bar-subject{font-size:.72rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--purple);margin-bottom:2px}
-.chapter-bar-name{font-size:1.05rem;font-weight:700;color:var(--navy);letter-spacing:-.01em}
-.chapter-bar-meta{font-size:.78rem;color:var(--text-muted);margin-top:2px}
-.chapter-bar-tags{display:flex;gap:6px}
-.ctag{font-size:.7rem;font-weight:600;padding:4px 10px;border-radius:99px;background:var(--off-white);border:1px solid var(--border);color:var(--text-mid)}
-.ctag--ncert{background:var(--blue-light);border-color:var(--blue-mid);color:var(--blue)}
+/* ── VIDEO PLAYER ── */
+.player-wrap{background:#0D1117;border-radius:var(--radius-lg);overflow:hidden;margin-bottom:14px;position:relative}
+.player-video-area{width:100%;aspect-ratio:16/9;background:#0D1117;position:relative}
+#main-video{width:100%;height:100%;display:block;background:#000}
 
-/* ── THE VIDEO PLAYER ───────────────────────────────────── */
-.player-wrap{
-  background:var(--player-bg);
-  border-radius:var(--radius-lg);
-  overflow:hidden;
-  position:relative;
-}
-/* The <video> or YouTube embed */
-.player-video-area{
-  width:100%;
-  aspect-ratio:16/9;
-  background:var(--player-bg);
-  position:relative;
-  cursor:pointer;
-}
-.player-video-area video,
-.player-video-area iframe{
-  width:100%;height:100%;
-  display:block;border:none;
-}
-/* Subtitles overlay */
-.subtitles-overlay{
-  position:absolute;bottom:70px;left:50%;transform:translateX(-50%);
-  max-width:80%;text-align:center;pointer-events:none;
-  transition:opacity .2s;
-}
-.subtitle-text{
-  display:inline-block;
-  background:rgba(0,0,0,.78);
-  color:white;
-  font-size:1rem;
-  font-weight:500;
-  padding:5px 14px;
-  border-radius:6px;
-  line-height:1.5;
-  letter-spacing:.01em;
-  backdrop-filter:blur(4px);
-}
-/* Ask AI floating button ON the video */
-.ask-ai-fab{
-  position:absolute;top:14px;right:14px;
-  display:flex;align-items:center;gap:7px;
-  background:rgba(59,130,246,.92);
-  border:none;border-radius:99px;
-  padding:8px 16px;
-  font-family:inherit;font-size:.82rem;font-weight:700;
-  color:white;cursor:pointer;
-  backdrop-filter:blur(8px);
-  transition:all .18s;
-  z-index:10;
-  box-shadow:0 4px 20px rgba(59,130,246,.35);
-}
-.ask-ai-fab:hover{background:var(--blue);transform:scale(1.04)}
-.ask-ai-fab-dot{width:7px;height:7px;border-radius:50%;background:var(--emerald);animation:pulse-dot 1.4s ease-in-out infinite}
-@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.8)}}
-
-/* Placeholder when no video is loaded */
-.player-placeholder{
-  width:100%;aspect-ratio:16/9;
-  background:linear-gradient(135deg,#0D1117 0%,#132038 100%);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
-  position:relative;
-}
-.placeholder-icon{font-size:3rem;opacity:.4}
-.placeholder-title{font-size:1rem;font-weight:700;color:rgba(255,255,255,.6);text-align:center;max-width:280px;line-height:1.5}
-.placeholder-sub{font-size:.82rem;color:rgba(255,255,255,.3);text-align:center;max-width:280px}
-.url-input-wrap{display:flex;gap:8px;margin-top:8px;width:100%;max-width:400px;padding:0 20px}
-.url-input{
-  flex:1;padding:10px 14px;background:rgba(255,255,255,.08);
-  border:1px solid rgba(255,255,255,.15);border-radius:8px;
-  color:white;font-family:inherit;font-size:.83rem;outline:none;
-  transition:border-color .14s;
-}
-.url-input::placeholder{color:rgba(255,255,255,.3)}
-.url-input:focus{border-color:var(--blue)}
-.url-load-btn{
-  padding:10px 18px;background:var(--blue);border:none;border-radius:8px;
-  color:white;font-family:inherit;font-size:.83rem;font-weight:600;
-  cursor:pointer;white-space:nowrap;transition:background .14s;
-}
-.url-load-btn:hover{background:var(--blue-dark)}
-
-/* ── Custom player controls ─────────────────────────────── */
-.player-controls{
-  background:rgba(13,17,23,.97);
-  padding:12px 18px 14px;
-  display:flex;flex-direction:column;gap:10px;
-  border-top:1px solid rgba(255,255,255,.06);
-}
-/* Progress bar */
-.progress-track{
-  width:100%;height:4px;background:rgba(255,255,255,.15);
-  border-radius:99px;cursor:pointer;position:relative;
-  transition:height .12s;
-}
-.progress-track:hover{height:6px}
-.progress-fill{height:100%;border-radius:99px;background:var(--blue);pointer-events:none;transition:width .1s linear}
-.progress-thumb{
-  width:12px;height:12px;border-radius:50%;background:white;
-  position:absolute;top:50%;transform:translate(-50%,-50%);
-  pointer-events:none;box-shadow:0 1px 4px rgba(0,0,0,.4);
-  opacity:0;transition:opacity .12s;
-}
-.progress-track:hover .progress-thumb{opacity:1}
-
-/* Controls row */
+/* Custom controls */
+.player-controls{background:rgba(13,17,23,.97);padding:10px 16px 12px}
+.progress-row{margin-bottom:9px;position:relative;cursor:pointer}
+.progress-bg{width:100%;height:4px;background:rgba(255,255,255,.15);border-radius:99px;transition:height .12s}
+.progress-row:hover .progress-bg{height:6px}
+.progress-fill{height:100%;background:var(--blue);border-radius:99px;pointer-events:none;transition:width .1s linear}
+.progress-thumb{width:13px;height:13px;border-radius:50%;background:white;position:absolute;top:50%;transform:translate(-50%,-50%);pointer-events:none;opacity:0;transition:opacity .12s;box-shadow:0 1px 4px rgba(0,0,0,.5)}
+.progress-row:hover .progress-thumb{opacity:1}
 .controls-row{display:flex;align-items:center;gap:8px}
-.ctrl-btn{
-  width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,.06);
-  border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
-  color:rgba(255,255,255,.8);transition:all .14s;flex-shrink:0;
-}
-.ctrl-btn:hover{background:rgba(255,255,255,.12);color:white}
-.ctrl-btn--play{width:38px;height:38px;border-radius:50%;background:white;color:var(--navy)}
-.ctrl-btn--play:hover{background:var(--blue-mid);transform:scale(1.05)}
-.ctrl-btn--ai{
-  display:flex;align-items:center;gap:6px;width:auto;padding:0 14px;
-  background:rgba(59,130,246,.2);border:1px solid rgba(59,130,246,.35);
-  color:rgba(255,255,255,.9);font-size:.78rem;font-weight:600;font-family:inherit;
-  border-radius:99px;height:34px;
-}
-.ctrl-btn--ai:hover{background:rgba(59,130,246,.35);color:white}
-.time-display{font-size:.8rem;font-weight:500;color:rgba(255,255,255,.6);font-family:'DM Mono',monospace;white-space:nowrap;flex-shrink:0}
+.c-btn{width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,.07);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.75);transition:all .14s;flex-shrink:0;font-family:inherit}
+.c-btn:hover{background:rgba(255,255,255,.14);color:white}
+.c-btn--play{width:38px;height:38px;border-radius:50%;background:white;color:var(--navy)}
+.c-btn--play:hover{background:#dbeafe;transform:scale(1.05)}
+.c-btn--ai{display:flex;align-items:center;gap:6px;width:auto;padding:0 13px;background:rgba(139,92,246,.2);border:1px solid rgba(139,92,246,.4);color:rgba(255,255,255,.9);font-size:.77rem;font-weight:600;border-radius:99px;height:34px}
+.c-btn--ai:hover{background:rgba(139,92,246,.35);color:white}
+.time-txt{font-size:.78rem;color:rgba(255,255,255,.55);font-family:'DM Mono',monospace;white-space:nowrap;flex-shrink:0}
 .spacer{flex:1}
-/* Speed selector */
-.speed-select{
-  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
-  border-radius:6px;color:rgba(255,255,255,.8);font-family:inherit;
-  font-size:.76rem;font-weight:600;padding:4px 8px;cursor:pointer;outline:none;
-}
-.speed-select:focus{border-color:var(--blue)}
-/* Subtitle toggle */
-.sub-toggle{
-  display:flex;align-items:center;gap:5px;font-size:.74rem;font-weight:600;
-  color:rgba(255,255,255,.5);cursor:pointer;padding:4px 8px;border-radius:6px;
-  border:1px solid transparent;transition:all .14s;background:none;font-family:inherit;
-}
-.sub-toggle.on{color:var(--blue);border-color:rgba(59,130,246,.3);background:rgba(59,130,246,.1)}
+.speed-sel{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:6px;color:rgba(255,255,255,.75);font-family:inherit;font-size:.75rem;font-weight:600;padding:4px 8px;cursor:pointer;outline:none}
+.speed-sel:focus{border-color:var(--blue)}
+.cc-btn{display:flex;align-items:center;gap:5px;font-size:.73rem;font-weight:600;color:rgba(255,255,255,.4);cursor:pointer;padding:4px 8px;border-radius:6px;border:1px solid transparent;transition:all .14s;background:none;font-family:inherit}
+.cc-btn.on{color:var(--blue);border-color:rgba(59,130,246,.35);background:rgba(59,130,246,.1)}
 
-/* ── Key concepts bar (under video) ────────────────────── */
-.concepts-bar{
-  background:white;border:1px solid var(--border);border-radius:var(--radius-lg);
-  padding:16px 20px;
-}
-.concepts-title{font-size:.78rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}
-.concepts-list{display:flex;flex-wrap:wrap;gap:8px}
-.concept-chip{
-  display:flex;align-items:center;gap:6px;
-  padding:6px 12px;background:var(--off-white);border:1px solid var(--border);
-  border-radius:99px;font-size:.8rem;font-weight:500;color:var(--text-mid);
-  cursor:pointer;transition:all .15s;
-}
-.concept-chip:hover{border-color:var(--purple);color:var(--purple);background:var(--purple-bg)}
-.concept-chip-dot{width:6px;height:6px;border-radius:50%;background:var(--purple);flex-shrink:0}
+/* Subtitle overlay */
+.sub-overlay{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);pointer-events:none;text-align:center;max-width:80%;z-index:5}
+.sub-text{display:inline-block;background:rgba(0,0,0,.8);color:white;font-size:.95rem;font-weight:500;padding:5px 14px;border-radius:6px;line-height:1.5;backdrop-filter:blur(3px)}
 
-/* ── Chapters list below ────────────────────────────────── */
-.chapters-list-card{
-  background:white;border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;
-}
-.chapters-list-head{
-  padding:14px 20px;border-bottom:1px solid var(--border-soft);
-  display:flex;align-items:center;justify-content:space-between;
-}
-.chapters-list-title{font-size:.88rem;font-weight:700;color:var(--navy)}
-.chapters-list-sub{font-size:.75rem;color:var(--text-muted)}
-.chapter-row{
-  display:flex;align-items:center;gap:14px;padding:12px 20px;
-  transition:background .12s;cursor:pointer;border-bottom:1px solid var(--border-soft);
-  text-decoration:none;
-}
-.chapter-row:last-child{border-bottom:none}
-.chapter-row:hover{background:var(--off-white)}
-.chapter-row.active{background:var(--purple-bg)}
-.chapter-row-num{
-  width:28px;height:28px;border-radius:8px;
-  background:var(--off-white);border:1px solid var(--border);
-  display:flex;align-items:center;justify-content:center;
-  font-size:.72rem;font-weight:700;color:var(--text-muted);flex-shrink:0;
-}
-.chapter-row.active .chapter-row-num{background:var(--purple);border-color:var(--purple);color:white}
-.chapter-row-info{flex:1;min-width:0}
-.chapter-row-name{font-size:.85rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.chapter-row.active .chapter-row-name{color:var(--navy)}
-.chapter-row-sub{font-size:.73rem;color:var(--text-muted);margin-top:1px}
-.chapter-row-badge{font-size:.67rem;font-weight:700;padding:3px 8px;border-radius:99px;flex-shrink:0}
-.badge-ready{background:var(--emerald-bg);color:var(--emerald)}
-.badge-soon{background:var(--off-white);color:var(--text-muted);border:1px solid var(--border)}
+/* Ask AI FAB */
+.ask-ai-fab{position:absolute;top:13px;right:13px;display:flex;align-items:center;gap:6px;background:rgba(59,130,246,.88);border:none;border-radius:99px;padding:7px 15px;font-family:inherit;font-size:.81rem;font-weight:700;color:white;cursor:pointer;backdrop-filter:blur(6px);transition:all .17s;z-index:10;box-shadow:0 4px 18px rgba(59,130,246,.3)}
+.ask-ai-fab:hover{background:var(--blue);transform:scale(1.04)}
+.fab-dot{width:7px;height:7px;border-radius:50%;background:#4ADE80;animation:pdot 1.4s infinite}
 
-/* ══════════════════════════════════════════════════════════
-   AI PANEL (right column)
-══════════════════════════════════════════════════════════ */
-.ai-panel{
-  background:white;border:1px solid var(--border);border-radius:var(--radius-lg);
-  display:flex;flex-direction:column;
-  position:sticky;top:calc(var(--topbar-h) + 20px);
-  max-height:calc(100vh - var(--topbar-h) - 40px);
-  overflow:hidden;
-}
-.ai-panel-head{
-  padding:16px 18px;border-bottom:1px solid var(--border-soft);
-  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;
-}
-.ai-panel-title{display:flex;align-items:center;gap:8px;font-size:.9rem;font-weight:700;color:var(--navy)}
-.ai-panel-dot{width:8px;height:8px;border-radius:50%;background:var(--emerald);animation:pulse-dot 1.4s ease-in-out infinite}
-.ai-close-btn{
-  width:26px;height:26px;border-radius:6px;border:1px solid var(--border);
-  background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
-  color:var(--text-muted);transition:all .14s;
-}
-.ai-close-btn:hover{background:var(--red-bg);color:var(--red);border-color:var(--red)}
+/* Poll overlay */
+.poll-overlay{display:none;position:fixed;inset:0;background:rgba(7,15,29,.87);backdrop-filter:blur(6px);z-index:5000;align-items:center;justify-content:center;padding:20px}
+.poll-overlay.show{display:flex}
+.poll-card{background:white;border-radius:20px;width:100%;max-width:520px;overflow:hidden;box-shadow:0 32px 80px rgba(7,15,29,.5);animation:slideup .32s cubic-bezier(.34,1.56,.64,1)}
+@keyframes slideup{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:translateY(0)}}
+.poll-head{background:var(--purple);padding:15px 20px;display:flex;align-items:center;justify-content:space-between}
+.poll-head-l{display:flex;align-items:center;gap:9px}
+.poll-qnum{font-size:.67rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.65)}
+.poll-live{width:8px;height:8px;border-radius:50%;background:#4ADE80;animation:pdot 1s infinite}
+.poll-head-title{font-size:.88rem;font-weight:700;color:white}
+.timer-wrap{position:relative;width:50px;height:50px;flex-shrink:0}
+.timer-svg{transform:rotate(-90deg)}
+.t-bg{fill:none;stroke:rgba(255,255,255,.2);stroke-width:4}
+.t-fill{fill:none;stroke:white;stroke-width:4;stroke-linecap:round;stroke-dasharray:125.6;stroke-dashoffset:0;transition:stroke-dashoffset .9s linear}
+.t-fill.warn{stroke:#FCD34D}
+.t-fill.danger{stroke:#F87171}
+.t-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.95rem;font-weight:800;color:white;font-family:'DM Mono',monospace}
+.poll-body{padding:20px}
+.poll-q{font-size:.97rem;font-weight:700;color:var(--navy);line-height:1.5;margin-bottom:16px}
+.poll-opts{display:flex;flex-direction:column;gap:9px;margin-bottom:16px}
+.poll-opt{display:flex;align-items:center;gap:11px;padding:12px 15px;border-radius:9px;border:2px solid var(--border);background:var(--off-white);cursor:pointer;transition:all .14s;font-family:inherit;text-align:left;width:100%}
+.poll-opt:hover:not(:disabled){border-color:var(--purple);background:var(--purple-bg)}
+.poll-opt.selected{border-color:var(--purple);background:var(--purple-bg)}
+.poll-opt.correct{border-color:var(--emerald);background:var(--emerald-bg);cursor:default}
+.poll-opt.wrong{border-color:var(--red);background:var(--red-bg);cursor:default}
+.poll-opt.reveal{border-color:var(--emerald);background:var(--emerald-bg);cursor:default}
+.poll-opt:disabled{cursor:default}
+.opt-l{width:27px;height:27px;border-radius:7px;background:white;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.77rem;font-weight:800;color:var(--text-muted);flex-shrink:0;transition:all .14s}
+.poll-opt.selected .opt-l{background:var(--purple);border-color:var(--purple);color:white}
+.poll-opt.correct .opt-l,.poll-opt.reveal .opt-l{background:var(--emerald);border-color:var(--emerald);color:white}
+.poll-opt.wrong .opt-l{background:var(--red);border-color:var(--red);color:white}
+.opt-txt{font-size:.86rem;font-weight:500;color:var(--text);line-height:1.4}
+.opt-ico{margin-left:auto;font-size:.95rem;flex-shrink:0}
+.poll-submit{width:100%;padding:12px;background:var(--purple);color:white;border:none;border-radius:9px;font-family:inherit;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .14s}
+.poll-submit:hover:not(:disabled){background:var(--purple-dark);transform:translateY(-1px)}
+.poll-submit:disabled{background:var(--text-muted);cursor:default;transform:none}
+.poll-result{display:none;margin-top:14px;border-top:1px solid var(--border-soft);padding-top:14px}
+.poll-result.show{display:block}
+.res-badge{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:99px;font-size:.84rem;font-weight:700;margin-bottom:10px}
+.res-correct{background:var(--emerald-bg);color:var(--emerald)}
+.res-wrong{background:var(--red-bg);color:var(--red)}
+.res-exp{background:var(--amber-bg);border:1px solid #FDE68A;border-radius:9px;padding:12px 14px;font-size:.83rem;color:#92400E;line-height:1.6;margin-bottom:12px}
+.res-exp strong{font-weight:700;color:#78350F}
+.res-formula{background:var(--purple-bg);border:1px solid rgba(139,92,246,.2);border-radius:7px;padding:9px 13px;font-family:'DM Mono',monospace;font-size:.84rem;color:var(--navy);margin-bottom:12px;text-align:center}
+.continue-btn{width:100%;padding:11px;background:var(--navy);color:white;border:none;border-radius:9px;font-family:inherit;font-size:.88rem;font-weight:700;cursor:pointer;transition:background .14s;display:flex;align-items:center;justify-content:center;gap:7px}
+.continue-btn:hover{background:#132038}
 
-/* Context strip — shows current video timestamp */
-.ai-context-strip{
-  background:var(--blue-light);border-bottom:1px solid var(--blue-mid);
-  padding:9px 18px;display:flex;align-items:center;gap:8px;flex-shrink:0;
-}
-.ai-context-text{font-size:.76rem;color:var(--blue);font-weight:500}
-.ai-context-time{font-size:.74rem;font-weight:700;color:var(--blue);font-family:'DM Mono',monospace}
-
-/* Messages */
-.ai-msgs{
-  flex:1;padding:14px 16px;overflow-y:auto;
-  display:flex;flex-direction:column;gap:12px;
-  scrollbar-width:thin;scrollbar-color:var(--border) transparent;
-}
-.ai-msg{display:flex;gap:9px;align-items:flex-start}
+/* AI panel */
+.ai-panel{background:white;border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:14px;overflow:hidden;display:none}
+.ai-panel-head{padding:13px 17px;border-bottom:1px solid var(--border-soft);display:flex;align-items:center;justify-content:space-between}
+.ai-panel-title{display:flex;align-items:center;gap:7px;font-size:.87rem;font-weight:700;color:var(--navy)}
+.ai-dot{width:7px;height:7px;border-radius:50%;background:var(--emerald);animation:pdot 1.4s ease-in-out infinite}
+.ai-msgs{padding:13px 15px;overflow-y:auto;display:flex;flex-direction:column;gap:11px;max-height:240px;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.ai-msg{display:flex;gap:8px;align-items:flex-start}
 .ai-msg--user{flex-direction:row-reverse}
-.ai-msg-av{
-  width:26px;height:26px;border-radius:50%;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;
-  font-weight:700;font-size:.63rem;margin-top:1px;
-}
-.ai-msg-av--ai{background:var(--navy);color:white}
-.ai-msg-av--user{background:var(--blue);color:white}
-.ai-msg-bubble{
-  max-width:84%;padding:10px 13px;border-radius:12px;
-  font-size:.83rem;line-height:1.6;
-}
-.ai-msg-bubble--ai{
-  background:var(--off-white);border:1px solid var(--border-soft);
-  color:var(--text);border-bottom-left-radius:3px;
-}
-.ai-msg-bubble--user{background:var(--blue);color:white;border-bottom-right-radius:3px}
-.ai-msg-formula{
-  background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.2);
-  border-radius:6px;padding:8px 12px;margin-top:8px;
-  font-family:'DM Mono',monospace;font-size:.83rem;color:var(--navy);
-}
-.ai-msg-tip{
-  background:var(--amber-bg);border:1px solid #FDE68A;
-  border-radius:6px;padding:7px 11px;margin-top:7px;
-  font-size:.78rem;color:#92400E;
-}
-/* Typing dots */
+.ai-av{width:25px;height:25px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.62rem;flex-shrink:0}
+.ai-av--ai{background:var(--navy);color:white}
+.ai-av--user{background:var(--blue);color:white}
+.ai-bubble{max-width:85%;padding:9px 12px;border-radius:11px;font-size:.82rem;line-height:1.55}
+.ai-bubble--ai{background:var(--off-white);border:1px solid var(--border-soft);color:var(--text);border-bottom-left-radius:3px}
+.ai-bubble--user{background:var(--blue);color:white;border-bottom-right-radius:3px}
+.ai-formula{background:var(--purple-bg);border:1px solid rgba(139,92,246,.2);border-radius:6px;padding:7px 11px;margin-top:6px;font-family:'DM Mono',monospace;font-size:.8rem;color:var(--navy)}
+.ai-tip{background:var(--amber-bg);border:1px solid #FDE68A;border-radius:6px;padding:6px 10px;margin-top:6px;font-size:.77rem;color:#92400E}
 .ai-typing{display:flex;gap:4px;align-items:center;padding:3px 0}
-.ai-typing-dot{width:6px;height:6px;border-radius:50%;background:var(--text-muted);animation:blink 1.2s infinite}
-.ai-typing-dot:nth-child(2){animation-delay:.2s}
-.ai-typing-dot:nth-child(3){animation-delay:.4s}
+.ai-tdot{width:5px;height:5px;border-radius:50%;background:var(--text-muted);animation:blink 1.2s infinite}
+.ai-tdot:nth-child(2){animation-delay:.2s}.ai-tdot:nth-child(3){animation-delay:.4s}
 @keyframes blink{0%,80%,100%{opacity:.25}40%{opacity:1}}
-
-/* Suggested questions */
-.ai-suggestions{
-  padding:10px 16px;border-top:1px solid var(--border-soft);flex-shrink:0;
-}
-.ai-sugg-label{font-size:.68rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
-.sugg-chips{display:flex;flex-wrap:wrap;gap:6px}
-.sugg-chip{
-  padding:5px 11px;background:var(--off-white);border:1px solid var(--border);
-  border-radius:99px;font-size:.75rem;font-weight:500;color:var(--text-mid);
-  cursor:pointer;transition:all .14s;font-family:inherit;
-}
+.ai-sugg{padding:9px 15px;border-top:1px solid var(--border-soft);display:flex;flex-wrap:wrap;gap:6px}
+.sugg-chip{padding:5px 10px;background:var(--off-white);border:1px solid var(--border);border-radius:99px;font-size:.74rem;font-weight:500;color:var(--text-mid);cursor:pointer;transition:all .13s;font-family:inherit}
 .sugg-chip:hover{border-color:var(--purple);color:var(--purple);background:var(--purple-bg)}
-
-/* Input row */
-.ai-input-row{
-  display:flex;gap:8px;padding:12px 14px;
-  border-top:1px solid var(--border-soft);flex-shrink:0;
-}
-.ai-inp{
-  flex:1;padding:9px 14px;border:1px solid var(--border);
-  border-radius:99px;font-family:inherit;font-size:.82rem;
-  outline:none;background:var(--off-white);transition:all .14s;
-}
+.ai-input-row{display:flex;gap:7px;padding:9px 13px;border-top:1px solid var(--border-soft)}
+.ai-inp{flex:1;padding:8px 13px;border:1px solid var(--border);border-radius:99px;font-family:inherit;font-size:.81rem;outline:none;background:var(--off-white);transition:all .13s}
 .ai-inp:focus{border-color:var(--purple);background:white}
-.ai-send{
-  width:36px;height:36px;border-radius:50%;background:var(--purple);
-  border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
-  color:white;transition:background .14s;flex-shrink:0;
-}
-.ai-send:hover{background:#7C3AED}
+.ai-send-btn{width:34px;height:34px;border-radius:50%;background:var(--purple);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:white;transition:background .13s;flex-shrink:0}
+.ai-send-btn:hover{background:var(--purple-dark)}
 
-/* ── Loader ─────────────────────────────────────────────── */
+/* Concepts */
+.concepts-bar{background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:15px 18px;margin-bottom:14px}
+.concepts-title{font-size:.71rem;font-weight:700;color:var(--text-muted);letter-spacing:.09em;text-transform:uppercase;margin-bottom:9px}
+.concepts-list{display:flex;flex-wrap:wrap;gap:7px}
+.concept-chip{display:flex;align-items:center;gap:5px;padding:6px 11px;background:var(--off-white);border:1px solid var(--border);border-radius:99px;font-size:.79rem;font-weight:500;color:var(--text-mid);cursor:pointer;transition:all .14s}
+.concept-chip:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-light)}
+.c-dot{width:6px;height:6px;border-radius:50%;background:var(--blue);flex-shrink:0}
+
+/* Loader */
 .loader{position:fixed;inset:0;background:var(--navy);display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity .4s}
 .loader.gone{opacity:0;pointer-events:none}
-.loader-inner{display:flex;flex-direction:column;align-items:center;gap:14px}
-.loader-mark{width:48px;height:48px;border-radius:13px;background:var(--blue);display:flex;align-items:center;justify-content:center;animation:pulse 1.5s ease-in-out infinite}
+.loader-inner{display:flex;flex-direction:column;align-items:center;gap:13px}
+.loader-mark{width:46px;height:46px;border-radius:12px;background:var(--blue);display:flex;align-items:center;justify-content:center;animation:pulse 1.5s ease-in-out infinite}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(.93)}}
-.loader-txt{font-size:.82rem;color:rgba(255,255,255,.35);font-weight:500}
+.loader-txt{font-size:.81rem;color:rgba(255,255,255,.35);font-weight:500}
 .overlay{display:none;position:fixed;inset:0;background:rgba(10,22,40,.5);z-index:150}
 
-/* ── Responsive ─────────────────────────────────────────── */
-@media(max-width:1200px){.video-layout{grid-template-columns:1fr}}
 @media(max-width:768px){
-  .sidebar{transform:translateX(-100%)}
-  .sidebar.open{transform:translateX(0)}
-  .overlay.open{display:block}
-  .main{margin-left:0}
-  .hamburger{display:flex}
-  .content{padding:16px}
+  .sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}
+  .overlay.open{display:block}.main{margin-left:0}.hamburger{display:flex}
+  .content{padding:14px}.mode-card{flex-direction:column;align-items:flex-start}
+  .mode-btns{width:100%}.mode-btn{flex:1;justify-content:center}
 }
   </style>
 </head>
@@ -416,16 +234,51 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--off-white);colo
 <div class="loader" id="loader">
   <div class="loader-inner">
     <div class="loader-mark">
-      <svg width="26" height="26" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="6" height="8" rx="1.5" fill="white"/><rect x="10" y="2" width="6" height="5" rx="1.5" fill="rgba(255,255,255,0.5)"/><rect x="2" y="12" width="14" height="2.5" rx="1.25" fill="rgba(255,255,255,0.3)"/><rect x="10" y="9" width="6" height="2.5" rx="1.25" fill="rgba(255,255,255,0.4)"/></svg>
+      <svg width="24" height="24" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="6" height="8" rx="1.5" fill="white"/><rect x="10" y="2" width="6" height="5" rx="1.5" fill="rgba(255,255,255,0.5)"/><rect x="2" y="12" width="14" height="2.5" rx="1.25" fill="rgba(255,255,255,0.3)"/><rect x="10" y="9" width="6" height="2.5" rx="1.25" fill="rgba(255,255,255,0.4)"/></svg>
     </div>
     <span class="loader-txt">Loading video…</span>
   </div>
 </div>
 <div class="overlay" id="overlay"></div>
 
-<div class="layout">
+<!-- POLL OVERLAY -->
+<div class="poll-overlay" id="poll-overlay">
+  <div class="poll-card">
+    <div class="poll-head">
+      <div class="poll-head-l">
+        <div>
+          <div class="poll-qnum" id="poll-qnum">Question 1 of 5</div>
+          <div class="poll-head-title">📊 Interactive Poll</div>
+        </div>
+        <div class="poll-live"></div>
+      </div>
+      <div class="timer-wrap">
+        <svg class="timer-svg" width="50" height="50" viewBox="0 0 50 50">
+          <circle class="t-bg" cx="25" cy="25" r="20"/>
+          <circle class="t-fill" id="timer-circle" cx="25" cy="25" r="20"/>
+        </svg>
+        <div class="t-num" id="timer-num">30</div>
+      </div>
+    </div>
+    <div class="poll-body">
+      <div class="poll-q" id="poll-q"></div>
+      <div class="poll-opts" id="poll-opts"></div>
+      <button class="poll-submit" id="poll-submit" onclick="submitPoll()" disabled>Select an answer first</button>
+      <div class="poll-result" id="poll-result">
+        <div class="res-badge" id="res-badge"></div>
+        <div class="res-exp" id="res-exp"></div>
+        <div class="res-formula" id="res-formula" style="display:none"></div>
+        <button class="continue-btn" onclick="closePoll()">
+          <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
+          Continue watching
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
-  <!-- ═══ SIDEBAR ═══ -->
+<div class="layout">
+  <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
     <div class="sb-logo">
       <div class="sb-logo-mark"><svg width="16" height="16" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="6" height="8" rx="1.5" fill="white"/><rect x="10" y="2" width="6" height="5" rx="1.5" fill="rgba(255,255,255,0.5)"/><rect x="2" y="12" width="14" height="2.5" rx="1.25" fill="rgba(255,255,255,0.3)"/><rect x="10" y="9" width="6" height="2.5" rx="1.25" fill="rgba(255,255,255,0.4)"/></svg></div>
@@ -458,7 +311,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--off-white);colo
     </div>
   </aside>
 
-  <!-- ═══ MAIN ═══ -->
+  <!-- MAIN -->
   <main class="main">
     <div class="topbar">
       <div class="topbar-l">
@@ -470,351 +323,499 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--off-white);colo
           <span class="breadcrumb-sep">›</span>
           <a href="maths.html">NCERT</a>
           <span class="breadcrumb-sep">›</span>
-          <span class="breadcrumb-current">Ch. 2 — Polynomials</span>
+          <span class="breadcrumb-current">Ch. 1 — Real Numbers</span>
         </div>
       </div>
-      <div class="topbar-r">
+      <div style="display:flex;align-items:center;gap:9px">
+        <div id="mode-badge" style="font-size:.72rem;font-weight:700;padding:4px 11px;border-radius:99px;background:var(--off-white);color:var(--text-muted);border:1px solid var(--border)">Watch Mode</div>
         <div class="t-avatar" id="topbar-avatar">?</div>
       </div>
     </div>
 
     <div class="content">
-      <div class="video-layout" id="video-layout">
 
-        <!-- LEFT: video column -->
-        <div class="video-col">
+      <!-- Mode card -->
+      <div class="mode-card">
+        <div>
+          <div class="mode-label">Mathematics · NCERT · Chapter 1</div>
+          <div class="mode-title">Real Numbers</div>
+          <div class="mode-meta">NotebookLM Masterclass · HCF · LCM · Euclid's Division · Irrationals</div>
+        </div>
+        <div class="mode-btns">
+          <button class="mode-btn btn-watch active" id="btn-watch" onclick="setMode('watch')">
+            <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zm12.553 1.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z"/></svg>
+            Watch
+          </button>
+          <button class="mode-btn btn-session" id="btn-session" onclick="setMode('session')">
+            <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/></svg>
+            Start Session
+            <span id="sess-tag" style="font-size:.67rem;padding:2px 7px;background:rgba(255,255,255,.22);border-radius:99px">Achiever+</span>
+          </button>
+        </div>
+      </div>
 
-          <!-- Chapter info -->
-          <div class="chapter-bar">
-            <div class="chapter-bar-icon">📐</div>
-            <div class="chapter-bar-info">
-              <div class="chapter-bar-subject">Mathematics · NCERT</div>
-              <div class="chapter-bar-name">Chapter 2 — Polynomials</div>
-              <div class="chapter-bar-meta">Class 10 · Zeroes, Coefficients, Division Algorithm</div>
+      <!-- Session bar -->
+      <div class="session-bar" id="session-bar">
+        <div class="session-bar-head">
+          <div class="sess-dot"></div>
+          Session active — video auto-pauses at each question
+        </div>
+        <div class="q-markers" id="q-markers"></div>
+      </div>
+
+      <!-- Session score -->
+      <div class="session-score" id="session-score"></div>
+
+      <!-- VIDEO PLAYER -->
+      <div class="player-wrap">
+        <div class="player-video-area">
+          <video id="main-video" preload="metadata">
+            <source src="https://pub-a103011de70941ba8ab9e8eaeed0d9cb.r2.dev/real%20numbers%20masterclass.mp4" type="video/mp4">
+            <track id="sub-track" src="https://pub-a103011de70941ba8ab9e8eaeed0d9cb.r2.dev/real%20numbers%20masterclass.vtt" kind="subtitles" srclang="en" label="English">
+          </video>
+          <div class="sub-overlay" id="sub-overlay"><span class="sub-text" id="sub-text"></span></div>
+          <button class="ask-ai-fab" onclick="showAI()"><div class="fab-dot"></div>Ask AI</button>
+        </div>
+        <div class="player-controls">
+          <div class="progress-row" id="progress-row">
+            <div class="progress-bg">
+              <div class="progress-fill" id="progress-fill" style="width:0%"></div>
             </div>
-            <div class="chapter-bar-tags">
-              <span class="ctag ctag--ncert">NCERT</span>
-              <span class="ctag">🎙 NotebookLM</span>
-            </div>
+            <div class="progress-thumb" id="progress-thumb" style="left:0%"></div>
           </div>
-
-          <!-- Video player -->
-          <div class="player-wrap" id="player-wrap">
-            <div id="video-container" style="position:relative">
-              <div class="player-video-area">
-                <video id="main-video" preload="metadata" style="display:none"></video>
-                <iframe id="yt-iframe"
-                  style="width:100%;height:100%;position:absolute;inset:0;border:none;display:block"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowfullscreen></iframe>
-                <!-- Ask AI FAB floating on video -->
-                <button class="ask-ai-fab" onclick="showAIComingSoon()">
-                  <div class="ask-ai-fab-dot"></div>
-                  Ask AI
-                </button>
-              </div>
-              <!-- Slim bar below video: just Ask AI + open fullscreen -->
-              <div style="background:rgba(13,17,23,.97);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid rgba(255,255,255,.06)">
-                <span style="font-size:.78rem;color:rgba(255,255,255,.4)">Use Google Drive's built-in controls to play, pause and seek</span>
-                <div style="display:flex;gap:8px;align-items:center;flex-shrink:0">
-                  <button class="ctrl-btn ctrl-btn--ai" onclick="showAIComingSoon()" style="white-space:nowrap">
-                    <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"/></svg>
-                    Ask AI
-                  </button>
-                  <a href="https://drive.google.com/file/d/1wVmCzhjNLBAwKdWAn0XBqV5UsPo9I2ds/view" target="_blank" style="display:flex;align-items:center;gap:5px;padding:6px 12px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:6px;font-size:.76rem;font-weight:600;color:rgba(255,255,255,.6);text-decoration:none;transition:all .14s" onmouseover="this.style.background='rgba(255,255,255,.14)'" onmouseout="this.style.background='rgba(255,255,255,.08)'">
-                    <svg width="12" height="12" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"/><path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"/></svg>
-                    Full screen
-                  </a>
-                </div>
-              </div>
-            </div><!-- /video-container -->
-          </div><!-- /player-wrap -->
-
-          <!-- Key concepts from this chapter -->
-          <div class="concepts-bar">
-            <div class="concepts-title">Key concepts in this chapter</div>
-            <div class="concepts-list">
-              <div class="concept-chip" onclick="askConcept('What is a zero of a polynomial?')"><div class="concept-chip-dot"></div>Zeroes of a Polynomial</div>
-              <div class="concept-chip" onclick="askConcept('Explain the geometrical meaning of zeroes of a quadratic polynomial')"><div class="concept-chip-dot"></div>Geometrical Meaning</div>
-              <div class="concept-chip" onclick="askConcept('What is the relationship between zeroes and coefficients?')"><div class="concept-chip-dot"></div>Zeroes & Coefficients</div>
-              <div class="concept-chip" onclick="askConcept('Explain the division algorithm for polynomials')"><div class="concept-chip-dot"></div>Division Algorithm</div>
-              <div class="concept-chip" onclick="askConcept('How do you find zeroes of a quadratic polynomial by factorisation?')"><div class="concept-chip-dot"></div>Factorisation Method</div>
-              <div class="concept-chip" onclick="askConcept('What is a parabola and how is it related to polynomials?')"><div class="concept-chip-dot"></div>Parabolas</div>
-            </div>
-          </div>
-
-          <!-- Chapter list -->
-          <div class="chapters-list-card">
-            <div class="chapters-list-head">
-              <span class="chapters-list-title">All Chapters · Mathematics NCERT</span>
-              <span class="chapters-list-sub">Class 10</span>
-            </div>
-            <a class="chapter-row" href="#">
-              <div class="chapter-row-num">01</div>
-              <div class="chapter-row-info">
-                <div class="chapter-row-name">Real Numbers</div>
-                <div class="chapter-row-sub">Euclid's Division Lemma · Irrational Numbers</div>
-              </div>
-              <span class="chapter-row-badge badge-soon">Soon</span>
-            </a>
-            <a class="chapter-row active" href="video-player.html">
-              <div class="chapter-row-num">02</div>
-              <div class="chapter-row-info">
-                <div class="chapter-row-name">Polynomials</div>
-                <div class="chapter-row-sub">Zeroes · Coefficients · Division Algorithm</div>
-              </div>
-              <span class="chapter-row-badge badge-ready">▶ Ready</span>
-            </a>
-            <a class="chapter-row" href="#">
-              <div class="chapter-row-num">03</div>
-              <div class="chapter-row-info">
-                <div class="chapter-row-name">Pair of Linear Equations</div>
-                <div class="chapter-row-sub">Graphical & Algebraic Methods</div>
-              </div>
-              <span class="chapter-row-badge badge-soon">Soon</span>
-            </a>
-            <a class="chapter-row" href="#">
-              <div class="chapter-row-num">04</div>
-              <div class="chapter-row-info">
-                <div class="chapter-row-name">Quadratic Equations</div>
-                <div class="chapter-row-sub">Factorisation · Completing the Square · Formula</div>
-              </div>
-              <span class="chapter-row-badge badge-soon">Soon</span>
-            </a>
-            <a class="chapter-row" href="#">
-              <div class="chapter-row-num">05</div>
-              <div class="chapter-row-info">
-                <div class="chapter-row-name">Arithmetic Progressions</div>
-                <div class="chapter-row-sub">nth term · Sum of n terms</div>
-              </div>
-              <span class="chapter-row-badge badge-soon">Soon</span>
-            </a>
-          </div>
-
-        </div><!-- /video-col -->
-
-        <!-- RIGHT: AI panel -->
-        <div class="ai-panel" id="ai-panel">
-          <div class="ai-panel-head">
-            <div class="ai-panel-title">
-              <div class="ai-panel-dot"></div>
-              Ask AI — Polynomials
-            </div>
-            <button class="ai-close-btn" onclick="closeAIPanel()" title="Close">
-              <svg width="12" height="12" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+          <div class="controls-row">
+            <button class="c-btn" onclick="skip(-10)" title="-10s">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/><text x="8" y="15" font-size="6" font-weight="700" fill="currentColor" stroke="none" font-family="sans-serif">10</text></svg>
+            </button>
+            <button class="c-btn c-btn--play" id="play-btn" onclick="togglePlay()">
+              <svg id="play-icon" width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
+            </button>
+            <button class="c-btn" onclick="skip(10)" title="+10s">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.49-3.5"/><text x="8" y="15" font-size="6" font-weight="700" fill="currentColor" stroke="none" font-family="sans-serif">10</text></svg>
+            </button>
+            <span class="time-txt" id="time-txt">0:00 / 0:00</span>
+            <div class="spacer"></div>
+            <button class="cc-btn on" id="cc-btn" onclick="toggleCC()">CC</button>
+            <select class="speed-sel" onchange="setSpeed(this.value)">
+              <option value="0.5">0.5×</option>
+              <option value="0.75">0.75×</option>
+              <option value="1" selected>1×</option>
+              <option value="1.25">1.25×</option>
+              <option value="1.5">1.5×</option>
+              <option value="2">2×</option>
+            </select>
+            <button class="c-btn c-btn--ai" onclick="showAI()">
+              <svg width="12" height="12" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"/></svg>
+              Ask AI
             </button>
           </div>
-          <div class="ai-context-strip">
-            <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor" style="color:var(--blue);flex-shrink:0"><path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zm12.553 1.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z"/></svg>
-            <span class="ai-context-text">Video paused at</span>
-            <span class="ai-context-time" id="ai-context-time">0:00</span>
-            <span class="ai-context-text">· Ch.2 Polynomials</span>
-          </div>
-          <div class="ai-msgs" id="ai-msgs">
-            <div class="ai-msg ai-msg--ai">
-              <div class="ai-msg-av ai-msg-av--ai">SE</div>
-              <div class="ai-msg-bubble ai-msg-bubble--ai">
-                Hi! I'm watching Chapter 2 — Polynomials with you. Ask me anything mid-video and I'll explain it in CBSE exam format. 📐
-                <div class="ai-msg-tip">💡 <strong>Pro tip:</strong> Tap any "Key concept" chip below the video to get an instant explanation of that topic!</div>
-              </div>
-            </div>
-          </div>
-          <div class="ai-suggestions">
-            <div class="ai-sugg-label">Quick questions</div>
-            <div class="sugg-chips">
-              <button class="sugg-chip" onclick="sendSuggestion(this)">What is α + β = −b/a?</button>
-              <button class="sugg-chip" onclick="sendSuggestion(this)">Why does a parabola touch x-axis?</button>
-              <button class="sugg-chip" onclick="sendSuggestion(this)">How to find zeroes by factoring?</button>
-              <button class="sugg-chip" onclick="sendSuggestion(this)">What is the Division Algorithm?</button>
-            </div>
-          </div>
-          <div class="ai-input-row">
-            <input class="ai-inp" id="ai-inp" type="text" placeholder="Ask anything about this chapter…"/>
-            <button class="ai-send" id="ai-send">
-              <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/></svg>
-            </button>
-          </div>
-        </div><!-- /ai-panel -->
+        </div>
+      </div>
 
-      </div><!-- /video-layout -->
-    </div><!-- /content -->
+      <!-- AI panel -->
+      <div class="ai-panel" id="ai-panel">
+        <div class="ai-panel-head">
+          <div class="ai-panel-title"><div class="ai-dot"></div>Ask AI — Real Numbers</div>
+          <button onclick="document.getElementById('ai-panel').style.display='none'" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:1.1rem;line-height:1;padding:0">✕</button>
+        </div>
+        <div class="ai-msgs" id="ai-msgs">
+          <div class="ai-msg ai-msg--ai">
+            <div class="ai-av ai-av--ai">SE</div>
+            <div class="ai-bubble ai-bubble--ai">Hi! Ask me anything about Chapter 1 Real Numbers — I'll explain it in CBSE board format. 📐</div>
+          </div>
+        </div>
+        <div class="ai-sugg">
+          <button class="sugg-chip" onclick="sendSugg(this)">What is Euclid's Division Lemma?</button>
+          <button class="sugg-chip" onclick="sendSugg(this)">HCF × LCM = a × b proof</button>
+          <button class="sugg-chip" onclick="sendSugg(this)">How to prove √2 is irrational?</button>
+          <button class="sugg-chip" onclick="sendSugg(this)">What is a rational number?</button>
+        </div>
+        <div class="ai-input-row">
+          <input class="ai-inp" id="ai-inp" type="text" placeholder="Ask anything…"/>
+          <button class="ai-send-btn" id="ai-send"><svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/></svg></button>
+        </div>
+      </div>
+
+      <!-- Concepts -->
+      <div class="concepts-bar">
+        <div class="concepts-title">Key concepts — click to ask AI</div>
+        <div class="concepts-list">
+          <div class="concept-chip" onclick="askC("Explain Euclid\'s Division Lemma")"><div class="c-dot"></div>Euclid's Division Lemma</div>
+          <div class="concept-chip" onclick="askC("What is the Fundamental Theorem of Arithmetic?")"><div class="c-dot"></div>Fundamental Theorem</div>
+          <div class="concept-chip" onclick="askC("HCF times LCM equals product of two numbers — prove it")"><div class="c-dot"></div>HCF × LCM = a × b</div>
+          <div class="concept-chip" onclick="askC("How to prove root 2 is irrational?")"><div class="c-dot"></div>√2 is irrational</div>
+          <div class="concept-chip" onclick="askC("What are rational and irrational numbers?")"><div class="c-dot"></div>Rational vs Irrational</div>
+          <div class="concept-chip" onclick="askC("How to find HCF using Euclid division algorithm?")"><div class="c-dot"></div>HCF by Euclid's Algorithm</div>
+        </div>
+      </div>
+
+    </div>
   </main>
 </div>
 
-<!-- Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (function(){
-  /* ── Supabase auth ── */
-  var SUPABASE_URL  = 'https://xiwrvbtryeesfgeydxnf.supabase.co';
-  var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd3J2YnRyeWVlc2ZnZXlkeG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMTQ0NDAsImV4cCI6MjA5NDU5MDQ0MH0.3Sp9dlc8cNsrzdHAGy74pCqscjL1MFV9ZWMW90QbhqE';
-  var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-  sb.auth.onAuthStateChange(function(event, session){
-    if(event==='SIGNED_OUT'){window.location.href='index.html';return}
-    if(session&&session.user){
-      var name=(session.user.user_metadata&&(session.user.user_metadata.name||session.user.user_metadata.full_name))||session.user.email.split('@')[0];
-      var init=name.charAt(0).toUpperCase();
-      document.getElementById('sb-avatar').textContent=init;
-      document.getElementById('topbar-avatar').textContent=init;
-      document.getElementById('sb-username').textContent=name;
-      document.getElementById('loader').classList.add('gone');
-      setTimeout(function(){document.getElementById('loader').style.display='none'},420);
-      document.body.style.opacity='1';
-      sb.from('profiles').select('plan,class').eq('id',session.user.id).single().then(function(r){
-        if(!r.data)return;
-        var plan=r.data.plan==='achiever'?'Achiever Plan':r.data.plan==='scholar'?'Scholar Plan':'Free Plan';
-        document.getElementById('sb-userplan').textContent=r.data.class?r.data.class+' · '+plan:plan;
-      }).catch(function(){});
-    }else if(event==='INITIAL_SESSION'&&!session){window.location.href='index.html'}
-  });
-  document.getElementById('logout-btn').addEventListener('click',async function(){await sb.auth.signOut();window.location.href='index.html'});
 
-  /* ════════════════════════════════════════════════════════
-     VIDEO PLAYER
-  ════════════════════════════════════════════════════════ */
-  var videoEl = document.getElementById('main-video');
-  var ytIframe = document.getElementById('yt-iframe');
-  var isYT = true;
+/* AUTH */
+var SURL='https://xiwrvbtryeesfgeydxnf.supabase.co';
+var SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd3J2YnRyeWVlc2ZnZXlkeG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMTQ0NDAsImV4cCI6MjA5NDU5MDQ0MH0.3Sp9dlc8cNsrzdHAGy74pCqscjL1MFV9ZWMW90QbhqE';
+var sb=window.supabase.createClient(SURL,SKEY);
+var userPlan='free',userAvatar='?';
 
-  /* ── Load video — Google Drive embed ── */
-  var DRIVE_FILE_ID = '1wVmCzhjNLBAwKdWAn0XBqV5UsPo9I2ds';
-  ytIframe.src = 'https://drive.google.com/file/d/' + DRIVE_FILE_ID + '/preview';
+sb.auth.onAuthStateChange(function(ev,sess){
+  if(ev==='SIGNED_OUT'){window.location.href='index.html';return}
+  if(sess&&sess.user){
+    var u=sess.user;
+    var name=(u.user_metadata&&(u.user_metadata.name||u.user_metadata.full_name))||u.email.split('@')[0];
+    var init=name.charAt(0).toUpperCase();
+    document.getElementById('sb-avatar').textContent=init;
+    document.getElementById('topbar-avatar').textContent=init;
+    document.getElementById('sb-username').textContent=name;
+    userAvatar=init;
+    document.getElementById('loader').classList.add('gone');
+    setTimeout(function(){document.getElementById('loader').style.display='none'},420);
+    document.body.style.opacity='1';
+    sb.from('profiles').select('plan').eq('id',u.id).single().then(function(r){
+      if(!r.data)return;
+      userPlan=r.data.plan||'free';
+      var pn=userPlan==='achiever'?'Achiever Plan':userPlan==='scholar'?'Scholar Plan':'Free Plan';
+      document.getElementById('sb-userplan').textContent=pn;
+      if(userPlan!=='free'){var t=document.getElementById('sess-tag');if(t)t.style.display='none';}
+    }).catch(function(){});
+  }else if(ev==='INITIAL_SESSION'&&!sess){window.location.href='index.html'}
+});
+document.getElementById('logout-btn').addEventListener('click',async function(){await sb.auth.signOut();window.location.href='index.html'});
 
-  /* ── Controls ── (Drive handles all playback) */
-  window.togglePlay=function(){};
-  window.skipTime=function(){};
-  window.changeSpeed=function(){};
+/* VIDEO */
+var vid=document.getElementById('main-video');
+var ccOn=true,subText=document.getElementById('sub-text'),subOverlay=document.getElementById('sub-overlay');
 
-  /* ════════════════════════════════════════════════════════
-     AI PANEL
-  ════════════════════════════════════════════════════════ */
-  var aiPanelOpen = true;
+/* Native subtitle rendering via TextTrack API */
+vid.addEventListener('loadedmetadata',function(){
+  var tracks=vid.textTracks;
+  if(tracks.length>0){
+    tracks[0].mode='hidden'; /* we render manually for style control */
+    tracks[0].addEventListener('cuechange',function(){
+      var cue=this.activeCues&&this.activeCues[0];
+      if(cue&&ccOn){
+        subText.textContent=cue.text.replace(/<[^>]+>/g,'');
+        subOverlay.style.opacity='1';
+      }else{
+        subText.textContent='';
+        subOverlay.style.opacity='0';
+      }
+    });
+  }
+});
 
-  window.openAIPanel=function(){
-    document.getElementById('ai-panel').style.display='flex';
-    document.getElementById('video-layout').classList.remove('ai-hidden');
-    aiPanelOpen=true;
-    document.getElementById('ai-inp').focus();
-  };
-  window.closeAIPanel=function(){
-    document.getElementById('ai-panel').style.display='none';
-    document.getElementById('video-layout').classList.add('ai-hidden');
-    aiPanelOpen=false;
-  };
+vid.addEventListener('timeupdate',function(){
+  updateProgress();
+  if(sessionActive) checkPolls();
+});
+vid.addEventListener('play',function(){
+  document.getElementById('play-icon').innerHTML='<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>';
+});
+vid.addEventListener('pause',function(){
+  document.getElementById('play-icon').innerHTML='<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/>';
+});
 
-  /* AI responses — smart pre-written answers from the PDF content */
-  var aiAnswers = {
-    'zeroes': {
-      text: 'A <strong>zero of a polynomial p(x)</strong> is a real number k such that p(k) = 0. Geometrically, zeroes are the <strong>x-coordinates of points where the graph y = p(x) intersects the x-axis</strong>.',
-      formula: 'p(k) = 0  →  k is a zero of p(x)',
-      tip: '📝 Board tip: Always say "x-coordinate of the point where graph intersects x-axis" for full marks in 2-mark questions.'
-    },
-    'α + β': {
-      text: 'For a quadratic polynomial ax² + bx + c with zeroes α and β:',
-      formula: 'α + β = −b/a\nαβ = c/a',
-      tip: '📝 These are the most asked formulas in this chapter. Memorise them as: Sum = −(coefficient of x)/(coefficient of x²), Product = constant term/(coefficient of x²).'
-    },
-    'parabola': {
-      text: 'The graph of y = ax² + bx + c is a <strong>parabola</strong>. If a > 0, it opens upward (∪ shape). If a < 0, it opens downward (∩ shape). The parabola can cross the x-axis at 0, 1, or 2 points — these x-coordinates are the zeroes.',
-      tip: '📝 Remember: 0 points = no real zeroes, 1 point = repeated/equal zeroes, 2 points = two distinct zeroes.'
-    },
-    'factori': {
-      text: 'To find zeroes by factorisation, split the middle term. For 2x² − 8x + 6:\n1. Multiply: 2 × 6 = 12\n2. Find two numbers that multiply to 12 and add to −8: −6 and −2\n3. Split: 2x² − 6x − 2x + 6 = 2x(x−3) − 2(x−3) = 2(x−1)(x−3)\n4. Zeroes: x = 1 and x = 3',
-      formula: '2x² − 8x + 6 = 2(x−1)(x−3)',
-      tip: '📝 Always verify: Sum of zeroes = 1+3 = 4 = −(−8)/2 = 4 ✓'
-    },
-    'division': {
-      text: 'The <strong>Division Algorithm for Polynomials</strong>: For any two polynomials p(x) and g(x) (g(x) ≠ 0), there exist unique polynomials q(x) and r(x) such that:',
-      formula: 'p(x) = g(x) × q(x) + r(x)\nwhere degree r(x) < degree g(x)',
-      tip: '📝 This is exactly like dividing integers: dividend = divisor × quotient + remainder.'
-    },
-    'default': {
-      text: 'Great question about Polynomials! The full AI companion (powered by Claude API) is coming soon and will give you detailed CBSE-format answers with examiner tips for any doubt you have.',
-      tip: '📚 For now, try the concept chips below the video — they give instant explanations of all key topics from Chapter 2!'
+document.getElementById('progress-row').addEventListener('click',function(e){
+  if(!vid.duration)return;
+  var r=this.getBoundingClientRect();
+  vid.currentTime=((e.clientX-r.left)/r.width)*vid.duration;
+});
+
+function updateProgress(){
+  if(!vid.duration)return;
+  var p=(vid.currentTime/vid.duration)*100;
+  document.getElementById('progress-fill').style.width=p+'%';
+  document.getElementById('progress-thumb').style.left=p+'%';
+  document.getElementById('time-txt').textContent=fmt(vid.currentTime)+' / '+fmt(vid.duration);
+}
+function fmt(s){
+  if(!s||isNaN(s))return'0:00';
+  var m=Math.floor(s/60),sec=Math.floor(s%60);
+  return m+':'+(sec<10?'0':'')+sec;
+}
+
+window.togglePlay=function(){vid.paused?vid.play():vid.pause()};
+window.skip=function(s){vid.currentTime=Math.max(0,Math.min(vid.duration||0,vid.currentTime+s))};
+window.setSpeed=function(v){vid.playbackRate=parseFloat(v)};
+window.toggleCC=function(){
+  ccOn=!ccOn;
+  var btn=document.getElementById('cc-btn');
+  btn.classList.toggle('on',ccOn);
+  if(!ccOn){subText.textContent='';subOverlay.style.opacity='0';}
+};
+
+/* MODE */
+var sessionActive=false;
+window.setMode=function(mode){
+  if(mode==='session'&&userPlan==='free'){showUpgrade();return}
+  sessionActive=(mode==='session');
+  var wb=document.getElementById('btn-watch'),sb2=document.getElementById('btn-session');
+  var bar=document.getElementById('session-bar'),badge=document.getElementById('mode-badge');
+  if(sessionActive){
+    wb.classList.remove('active');sb2.classList.add('active');
+    bar.classList.add('show');
+    badge.textContent='Session Mode';badge.style.background='var(--purple-bg)';badge.style.color='var(--purple)';badge.style.borderColor='rgba(139,92,246,.3)';
+    resetSession();renderMarkers();
+  }else{
+    wb.classList.add('active');sb2.classList.remove('active');
+    bar.classList.remove('show');
+    badge.textContent='Watch Mode';badge.style.background='var(--off-white)';badge.style.color='var(--text-muted)';badge.style.borderColor='var(--border)';
+  }
+};
+
+/* QUESTIONS — answers exactly as stated in transcript:
+   Q1=B(1), Q2=B(1), Q3=B(1), Q4=C(2), Q5=B(1), Q6=B(1), Q7=D(3), Q8=B(1)
+*/
+var QS=[
+  {
+    id:1, ts:72, label:'Q1 · ~1:12', triggered:false, done:false, correct:null,
+    q:'Prime factorise 3750 using a factor tree. What is the exponent of 5 in the result?',
+    opts:['3', '4', '5', '2'],
+    ans:1,
+    exp:'3750 = 375 × 10 = (5³ × 3) × (5 × 2) = 2¹ × 3¹ × 5⁴. Combining the 5s: 5³ × 5¹ = 5⁴. The exponent of 5 is 4.',
+    formula:'3750 = 2¹ × 3¹ × 5⁴  →  exponent of 5 = 4'
+  },
+  {
+    id:2, ts:112, label:'Q2 · ~1:52', triggered:false, done:false, correct:null,
+    q:'If n is divisible by 6, what is in its prime factors?',
+    opts:['It contains only the prime 2', 'It contains both 2 and 3 as factors', 'It must be divisible by 12', 'It has exactly 2 prime factors'],
+    ans:1,
+    exp:'Since 6 = 2 × 3, any number divisible by 6 must carry both 2 and 3 in its prime DNA. Direct result of the Fundamental Theorem of Arithmetic.',
+    formula:'6 = 2 × 3  →  2 and 3 must both appear in prime factorisation of n'
+  },
+  {
+    id:3, ts:158, label:'Q3 · ~2:38', triggered:false, done:false, correct:null,
+    q:'HCF of two numbers is 40. Their LCM is 252k. The two numbers are 2520 and 6600. Find k.',
+    opts:['825', '1650', '3300', '412'],
+    ans:1,
+    exp:'HCF × LCM = a × b: 40 × 252k = 2520 × 6600. Pro tip — divide both sides by 252 first: 40k = 10 × 6600 = 66000. So k = 66000 ÷ 40 = 1650.',
+    formula:'40 × 252k = 2520 × 6600  →  k = 1650'
+  },
+  {
+    id:4, ts:206, label:'Q4 · ~3:26', triggered:false, done:false, correct:null,
+    q:'The LCM of two numbers is 1200. Which of the following CANNOT be their HCF?',
+    opts:['200', '400', '500', '600'],
+    ans:2,
+    exp:'HCF must always divide LCM exactly — no remainders. 1200 ÷ 200 = 6 ✓, 1200 ÷ 400 = 3 ✓, 1200 ÷ 600 = 2 ✓. But 1200 ÷ 500 = 2.4 ✗ — leaves a messy remainder. 500 is the odd one out.',
+    formula:'HCF must divide LCM. 1200 ÷ 500 = 2.4 ✗  →  500 cannot be HCF'
+  },
+  {
+    id:5, ts:290, label:'Q5 · ~4:50', triggered:false, done:false, correct:null,
+    q:'What is the smallest irrational number you can multiply √18 by to make the result rational?',
+    opts:['√3', '√2', '√18', '√6'],
+    ans:1,
+    exp:'Simplify: √18 = 3√2. The irrational part is just √2. Multiply by √2: 3√2 × √2 = 3 × 2 = 6 — perfectly rational. √2 is the smallest irrational that cures it.',
+    formula:'√18 = 3√2  →  3√2 × √2 = 6  ✓ rational'
+  },
+  {
+    id:6, ts:335, label:'Q6 · ~5:35', triggered:false, done:false, correct:null,
+    q:'p = √(32/50). What is the true nature of p?',
+    opts:['Irrational', 'Rational', 'Real', 'None of these'],
+    ans:1,
+    exp:'Always simplify first! 32/50 = 16/25. Then √(16/25) = 4/5 = 0.8. A terminating decimal — perfectly rational. Don\'t let big fractions fool you on exam day.',
+    formula:'√(32/50) = √(16/25) = 4/5 = 0.8  →  Rational'
+  },
+  {
+    id:7, ts:398, label:'Q7 · ~6:38', triggered:false, done:false, correct:null,
+    q:'What exactly is the decimal expansion of π (pi)?',
+    opts:['Terminating', 'Non-terminating and repeating', 'Terminating and repeating', 'Non-terminating and non-repeating'],
+    ans:3,
+    exp:'π is irrational — it cannot be written as a fraction. Its decimal expansion is non-terminating AND non-repeating: it never ends and never falls into a pattern. Don\'t confuse this with recurring decimals, which are rational!',
+    formula:'π = 3.14159265… (never ends, never repeats)'
+  },
+  {
+    id:8, ts:428, label:'Q8 · ~7:08', triggered:false, done:false, correct:null,
+    q:'A number has prime factorisation 2³ × 3² × 5⁴ × 7. How many trailing consecutive zeros does it have?',
+    opts:['4', '3', '2', '5'],
+    ans:1,
+    exp:'Trailing zeros come only from pairs of 2 × 5 = 10. We have 2³ and 5⁴. Complete pairs = min(3, 4) = 3. The smaller exponent always dictates how many zeros you get.',
+    formula:'Trailing zeros = min(exp of 2, exp of 5) = min(3,4) = 3'
+  }
+];
+
+var curQIdx=-1,timerInt=null,tLeft=30,selOpt=-1,pollDone=false;
+
+function resetSession(){
+  QS.forEach(function(q){q.triggered=false;q.done=false;q.correct=null});
+  document.getElementById('session-score').classList.remove('show');
+}
+
+function renderMarkers(){
+  var w=document.getElementById('q-markers');w.innerHTML='';
+  QS.forEach(function(q,i){
+    var b=document.createElement('button');
+    if(!q.done){
+      b.className='q-marker q-marker--pending';
+      b.textContent=q.label+' ▶';
+      b.onclick=function(){openPoll(i)};
+    }else{
+      b.className='q-marker '+(q.correct?'q-marker--done-correct':'q-marker--done-wrong');
+      b.textContent=q.label+' '+(q.correct?'✓':'✗');
     }
-  };
+    w.appendChild(b);
+  });
+}
 
-  function getAIAnswer(q){
-    var ql=q.toLowerCase();
-    if(ql.includes('zero')||ql.includes('zeroes')) return aiAnswers['zeroes'];
-    if(ql.includes('α')||ql.includes('alpha')||ql.includes('sum')||ql.includes('product')||ql.includes('coefficient')) return aiAnswers['α + β'];
-    if(ql.includes('parabola')||ql.includes('graph')||ql.includes('geometri')) return aiAnswers['parabola'];
-    if(ql.includes('factor')||ql.includes('split')||ql.includes('middle')) return aiAnswers['factori'];
-    if(ql.includes('division')||ql.includes('algorithm')||ql.includes('remainder')) return aiAnswers['division'];
-    return aiAnswers['default'];
-  }
+/* Auto-trigger polls at timestamps */
+function checkPolls(){
+  QS.forEach(function(q,i){
+    if(!q.triggered&&!q.done&&vid.currentTime>=q.ts&&vid.currentTime<q.ts+3){
+      q.triggered=true;
+      vid.pause();
+      setTimeout(function(){openPoll(i)},300);
+    }
+  });
+}
 
-  function addAIMsg(text,formula,tip,type){
-    var msgs=document.getElementById('ai-msgs');
-    var d=document.createElement('div');
-    d.className='ai-msg ai-msg--'+type;
-    var av=type==='user'?(document.getElementById('sb-avatar').textContent||'U'):'SE';
-    var inner='<div class="ai-msg-av ai-msg-av--'+type+'">'+av+'</div>'
-      +'<div class="ai-msg-bubble ai-msg-bubble--'+type+'">'+text;
-    if(formula) inner+='<div class="ai-msg-formula">'+formula.replace(/\n/g,'<br>')+'</div>';
-    if(tip) inner+='<div class="ai-msg-tip">'+tip+'</div>';
-    inner+='</div>';
-    d.innerHTML=inner;
-    msgs.appendChild(d);
-    msgs.scrollTop=msgs.scrollHeight;
-  }
-  function addTypingDots(){
-    var msgs=document.getElementById('ai-msgs');
-    var d=document.createElement('div');
-    d.className='ai-msg ai-msg--ai';d.id='ai-typing';
-    d.innerHTML='<div class="ai-msg-av ai-msg-av--ai">SE</div>'
-      +'<div class="ai-msg-bubble ai-msg-bubble--ai"><div class="ai-typing"><div class="ai-typing-dot"></div><div class="ai-typing-dot"></div><div class="ai-typing-dot"></div></div></div>';
-    msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;
-  }
+window.openPoll=function(idx){
+  curQIdx=idx;selOpt=-1;pollDone=false;
+  var q=QS[idx];
+  document.getElementById('poll-qnum').textContent='Question '+(idx+1)+' of '+QS.length;
+  document.getElementById('poll-q').textContent=q.q;
+  document.getElementById('poll-result').classList.remove('show');
+  var opts=document.getElementById('poll-opts');opts.innerHTML='';
+  q.opts.forEach(function(opt,i){
+    var b=document.createElement('button');
+    b.className='poll-opt';
+    b.innerHTML='<span class="opt-l">'+['A','B','C','D'][i]+'</span><span class="opt-txt">'+opt+'</span><span class="opt-ico"></span>';
+    b.onclick=function(){selectOpt(i,b)};
+    opts.appendChild(b);
+  });
+  var sb2=document.getElementById('poll-submit');
+  sb2.textContent='Select an answer first';sb2.disabled=true;sb2.style.display='block';
+  tLeft=30;updateTimer(30);clearInterval(timerInt);
+  timerInt=setInterval(function(){tLeft--;updateTimer(tLeft);if(tLeft<=0){clearInterval(timerInt);if(!pollDone)autoSub()}},1000);
+  document.getElementById('poll-overlay').classList.add('show');
+};
 
-  function sendAI(question){
-    if(!question.trim())return;
-    openAIPanel();
-    addAIMsg(question,null,null,'user');
-    addTypingDots();
-    setTimeout(function(){
-      var t=document.getElementById('ai-typing');if(t)t.remove();
-      var ans=getAIAnswer(question);
-      addAIMsg(ans.text,ans.formula||null,ans.tip||null,'ai');
-    },900);
-  }
+function selectOpt(idx,btn){
+  if(pollDone)return;
+  selOpt=idx;
+  document.querySelectorAll('.poll-opt').forEach(function(b,i){b.classList.toggle('selected',i===idx)});
+  var s=document.getElementById('poll-submit');s.disabled=false;s.textContent='Submit Answer →';
+}
 
-  window.askConcept=function(q){sendAI(q)};
-  window.sendSuggestion=function(btn){sendSuggestion(btn.textContent)};
+function updateTimer(t){
+  var c=document.getElementById('timer-circle'),n=document.getElementById('timer-num');
+  c.style.strokeDashoffset=125.6-(125.6*(t/30));n.textContent=t;
+  c.classList.remove('warn','danger');
+  if(t<=10)c.classList.add('danger');else if(t<=20)c.classList.add('warn');
+}
 
-  /* ── Ask AI — coming soon ── */
-  window.showAIComingSoon = function(){
-    document.getElementById('ai-coming-soon-modal').style.display='flex';
-  };
+function autoSub(){if(selOpt===-1){pollDone=true;showResult(false,true)}else{submitPoll()}}
 
-  var aiSend=document.getElementById('ai-send');
-  var aiInp=document.getElementById('ai-inp');
-  aiSend.addEventListener('click',function(){var v=aiInp.value.trim();if(v){sendAI(v);aiInp.value=''}});
-  aiInp.addEventListener('keydown',function(e){if(e.key==='Enter'){var v=aiInp.value.trim();if(v){sendAI(v);aiInp.value=''}}});
+window.submitPoll=function(){
+  if(pollDone||selOpt===-1)return;
+  clearInterval(timerInt);pollDone=true;
+  var q=QS[curQIdx];var ok=(selOpt===q.ans);
+  document.querySelectorAll('.poll-opt').forEach(function(b,i){
+    b.disabled=true;
+    if(i===q.ans)b.classList.add('reveal');
+    else if(i===selOpt&&!ok)b.classList.add('wrong');
+    var ic=b.querySelector('.opt-ico');
+    if(i===q.ans)ic.textContent='✓';
+    else if(i===selOpt&&!ok)ic.textContent='✗';
+  });
+  showResult(ok,false);
+};
 
-  /* ── Mobile sidebar ── */
-  var sidebarEl=document.getElementById('sidebar');
-  var overlayEl=document.getElementById('overlay');
-  document.getElementById('hamburger').addEventListener('click',function(){sidebarEl.classList.toggle('open');overlayEl.classList.toggle('open')});
-  overlayEl.addEventListener('click',function(){sidebarEl.classList.remove('open');overlayEl.classList.remove('open')});
+function showResult(ok,noAns){
+  var q=QS[curQIdx];q.done=true;q.correct=ok;
+  var badge=document.getElementById('res-badge'),exp=document.getElementById('res-exp'),frm=document.getElementById('res-formula');
+  document.getElementById('poll-submit').style.display='none';
+  if(noAns){badge.className='res-badge res-wrong';badge.innerHTML='⏰ Time\'s up! Answer: '+['A','B','C','D'][q.ans];}
+  else if(ok){badge.className='res-badge res-correct';badge.innerHTML='✅ Correct!';}
+  else{badge.className='res-badge res-wrong';badge.innerHTML='❌ Incorrect — Answer: '+['A','B','C','D'][q.ans];}
+  exp.innerHTML='<strong>Explanation:</strong> '+q.exp;
+  if(q.formula){frm.textContent=q.formula;frm.style.display='block'}else{frm.style.display='none'}
+  document.getElementById('poll-result').classList.add('show');
+}
+
+window.closePoll=function(){
+  document.getElementById('poll-overlay').classList.remove('show');
+  document.getElementById('poll-submit').style.display='block';
+  clearInterval(timerInt);
+  renderMarkers();
+  vid.play();
+  if(QS.every(function(q){return q.done}))showScore();
+};
+
+function showScore(){
+  var c=QS.filter(function(q){return q.correct}).length,tot=QS.length;
+  var pct=Math.round(c/tot*100);
+  var em=pct>=80?'🎉':pct>=60?'👍':'📚';
+  var msg=pct>=80?'Excellent! Ready for Chapter 2.':pct>=60?'Good work. Review the ones you got wrong.':'Keep going — try again!';
+  var sc=document.getElementById('session-score');
+  sc.innerHTML='<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap"><div style="font-size:2rem">'+em+'</div><div style="flex:1;min-width:0"><div style="font-size:.68rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--purple);margin-bottom:2px">Session Complete!</div><div style="font-size:1.05rem;font-weight:800;color:var(--navy)">'+c+' / '+tot+' correct ('+pct+'%)</div><div style="font-size:.8rem;color:var(--text-muted);margin-top:2px">'+msg+'</div></div><button onclick="retrySession()" style="padding:9px 16px;background:var(--purple);color:white;border:none;border-radius:8px;font-family:inherit;font-size:.83rem;font-weight:700;cursor:pointer;flex-shrink:0">🔄 Try Again</button></div>';
+  sc.classList.add('show');sc.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+window.retrySession=function(){resetSession();renderMarkers();document.getElementById('session-score').classList.remove('show')};
+
+function showUpgrade(){
+  var ov=document.createElement('div');
+  ov.style.cssText='position:fixed;inset:0;background:rgba(10,22,40,.65);backdrop-filter:blur(4px);z-index:4000;display:flex;align-items:center;justify-content:center;padding:20px';
+  ov.innerHTML='<div style="background:white;border-radius:16px;padding:28px 24px;max-width:390px;width:100%;text-align:center;box-shadow:0 24px 60px rgba(10,22,40,.25)"><div style="font-size:2.2rem;margin-bottom:10px">🚀</div><div style="font-size:1rem;font-weight:800;color:var(--navy);margin-bottom:7px">Sessions are Achiever & Scholar only</div><div style="font-size:.84rem;color:var(--text-mid);line-height:1.6;margin-bottom:18px">Automatic polls, 30-second timers, instant results & explanations — all part of Session mode.</div><div style="display:flex;flex-direction:column;gap:9px"><button onclick="window.location.href=\'index.html#pricing\'" style="padding:11px;background:var(--purple);color:white;border:none;border-radius:9px;font-family:inherit;font-size:.88rem;font-weight:700;cursor:pointer">Upgrade to Achiever — ₹99/mo →</button><button onclick="this.closest(\'div\').parentElement.parentElement.remove()" style="padding:9px;background:none;border:1px solid var(--border);border-radius:9px;font-family:inherit;font-size:.84rem;font-weight:600;cursor:pointer;color:var(--text-mid)">Maybe later</button></div></div>';
+  document.body.appendChild(ov);
+}
+
+/* AI */
+window.showAI=function(){var p=document.getElementById('ai-panel');p.style.display='block';p.scrollIntoView({behavior:'smooth',block:'nearest'});document.getElementById('ai-inp').focus()};
+window.askC=function(q){sendAI(q)};
+window.sendSugg=function(b){sendAI(b.textContent)};
+
+var AIA={
+  'euclid':{text:'<strong>Euclid\'s Division Lemma:</strong> For any two positive integers a and b, there exist unique integers q and r such that a = bq + r, where 0 ≤ r < b. To find HCF, keep applying this until r = 0 — the last non-zero remainder is the HCF.',formula:'a = bq + r (0 ≤ r < b)',tip:'📝 In board exams, always write the lemma statement before using the algorithm — that\'s the 1-mark setup.'},
+  'hcf':{text:'<strong>HCF × LCM = Product of two numbers.</strong> This works for any two positive integers a and b.',formula:'HCF(a,b) × LCM(a,b) = a × b',tip:'📝 This formula is asked every year for 2–3 marks. Know it cold and be ready to verify with an example.'},
+  'sqrt':{text:'To prove √2 is irrational: assume √2 = p/q in lowest terms. Then p² = 2q², so p is even. Write p = 2m, then 4m² = 2q², so q² = 2m², meaning q is also even. But p and q can\'t both be even if p/q is in lowest terms — contradiction!',formula:'√2 = p/q ⟹ p² = 2q² ⟹ p even ⟹ q even ⟹ contradiction',tip:'📝 This proof comes for 3 marks almost every year. Learn the steps in order: assume, square, show p even, show q even, conclude contradiction.'},
+  'rational':{text:'A <strong>rational number</strong> is any number expressible as p/q where p and q are integers and q ≠ 0. An <strong>irrational number</strong> cannot be written this way — its decimal expansion is non-terminating and non-repeating.',formula:'Rational: p/q form | Irrational: like √2, √3, π',tip:'📝 Remember: √(perfect square) is always rational. √(non-perfect square) is always irrational.'},
+  'fundamental':{text:'The <strong>Fundamental Theorem of Arithmetic</strong>: Every composite number can be expressed as a product of primes in a unique way (order doesn\'t matter). Used to find HCF and LCM by prime factorisation.',formula:'e.g. 72 = 2³ × 3² (unique, regardless of order)',tip:'📝 HCF = product of smallest powers of common primes. LCM = product of greatest powers of all primes.'},
+  'default':{text:'Great question about Real Numbers! The full Claude AI is coming very soon and will give detailed answers for any doubt in CBSE board format.',tip:'💡 Try the concept chips below for instant answers to the most common topics!'}
+};
+
+function getAns(q){
+  var l=q.toLowerCase();
+  if(l.includes('euclid')||l.includes('division lemma')||l.includes('algorithm'))return AIA['euclid'];
+  if(l.includes('hcf')||l.includes('lcm')||l.includes('product'))return AIA['hcf'];
+  if(l.includes('sqrt')||l.includes('√')||l.includes('root')||l.includes('irrational')&&l.includes('proof'))return AIA['sqrt'];
+  if(l.includes('rational')||l.includes('irrational'))return AIA['rational'];
+  if(l.includes('fundamental')||l.includes('prime factor')||l.includes('arithmetic'))return AIA['fundamental'];
+  return AIA['default'];
+}
+
+function addMsg(text,formula,tip,type){
+  var msgs=document.getElementById('ai-msgs');
+  var d=document.createElement('div');d.className='ai-msg ai-msg--'+type;
+  var av=type==='user'?userAvatar:'SE';
+  var h='<div class="ai-av ai-av--'+type+'">'+av+'</div><div class="ai-bubble ai-bubble--'+type+'">'+text;
+  if(formula)h+='<div class="ai-formula">'+formula+'</div>';
+  if(tip)h+='<div class="ai-tip">'+tip+'</div>';
+  h+='</div>';d.innerHTML=h;msgs.appendChild(d);msgs.scrollTop=99999;
+}
+
+function sendAI(q){
+  if(!q.trim())return;
+  showAI();addMsg(q,null,null,'user');
+  var td=document.createElement('div');td.className='ai-msg ai-msg--ai';td.id='ai-typing';
+  td.innerHTML='<div class="ai-av ai-av--ai">SE</div><div class="ai-bubble ai-bubble--ai"><div class="ai-typing"><div class="ai-tdot"></div><div class="ai-tdot"></div><div class="ai-tdot"></div></div></div>';
+  document.getElementById('ai-msgs').appendChild(td);document.getElementById('ai-msgs').scrollTop=99999;
+  setTimeout(function(){var t=document.getElementById('ai-typing');if(t)t.remove();var a=getAns(q);addMsg(a.text,a.formula||null,a.tip||null,'ai')},900);
+}
+
+document.getElementById('ai-send').addEventListener('click',function(){var v=document.getElementById('ai-inp').value.trim();if(v){sendAI(v);document.getElementById('ai-inp').value=''}});
+document.getElementById('ai-inp').addEventListener('keydown',function(e){if(e.key==='Enter'){var v=this.value.trim();if(v){sendAI(v);this.value=''}}});
+
+/* SIDEBAR */
+var sEl=document.getElementById('sidebar'),oEl=document.getElementById('overlay');
+document.getElementById('hamburger').addEventListener('click',function(){sEl.classList.toggle('open');oEl.classList.toggle('open')});
+oEl.addEventListener('click',function(){sEl.classList.remove('open');oEl.classList.remove('open')});
 
 })();
 </script>
-
-<!-- Coming Soon Modal -->
-<div id="ai-coming-soon-modal" style="display:none;position:fixed;inset:0;background:rgba(10,22,40,.6);z-index:9000;align-items:center;justify-content:center;backdrop-filter:blur(4px)">
-  <div style="background:white;border-radius:16px;padding:32px 28px;max-width:380px;width:90%;text-align:center;box-shadow:0 24px 60px rgba(10,22,40,.2)">
-    <div style="font-size:2.5rem;margin-bottom:14px">🤖</div>
-    <div style="font-size:1.1rem;font-weight:800;color:#0A1628;margin-bottom:8px;letter-spacing:-.01em">Ask AI — Coming Soon</div>
-    <div style="font-size:.86rem;color:#475569;line-height:1.65;margin-bottom:20px">
-      The AI companion is being connected to the <strong>Claude API</strong>. Once live, you'll be able to pause the video mid-lecture and ask any doubt — getting a board-exam format answer instantly.
-    </div>
-    <div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:10px;padding:12px 16px;font-size:.82rem;color:#1E40AF;margin-bottom:20px;text-align:left">
-      💡 <strong>For now:</strong> Use the concept chips below the video for instant explanations of key topics from this chapter!
-    </div>
-    <button onclick="document.getElementById('ai-coming-soon-modal').style.display='none'" style="width:100%;padding:11px;background:#3B82F6;color:white;border:none;border-radius:9px;font-family:inherit;font-size:.9rem;font-weight:700;cursor:pointer;transition:background .14s" onmouseover="this.style.background='#2563EB'" onmouseout="this.style.background='#3B82F6'">Got it!</button>
-  </div>
-</div>
-
 </body>
 </html>
