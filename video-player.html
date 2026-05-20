@@ -469,7 +469,7 @@ sb.auth.onAuthStateChange(function(ev,sess){
     document.getElementById('sb-username').textContent=name;
     userAvatar=init;
     document.getElementById('loader').classList.add('gone');
-    setTimeout(function(){document.getElementById('loader').style.display='none'},420);
+    setTimeout(function(){document.getElementById('loader').style.display='none';initSessionTab();},420);
     document.body.style.opacity='1';
     sb.from('profiles').select('plan').eq('id',u.id).single().then(function(r){
       if(!r.data)return;
@@ -585,25 +585,61 @@ function updateCaption(t){
   else{subText.textContent='';subOverlay.style.opacity='0';}
 }
 
-/* WATCH — play + go fullscreen */
+/* WATCH — same tab, just play, no fullscreen */
 window.startWatch=function(){
   setMode('watch');
-  vid.play().then(function(){
-    var el=document.getElementById('player-wrap');
-    if(el.requestFullscreen) el.requestFullscreen();
-    else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-  }).catch(function(){});
+  vid.play().catch(function(){});
 };
 
-/* SESSION — activate session + play fullscreen (polls auto-fire) */
+/* SESSION — show confirmation dialog first */
 window.startSession=function(){
-  setMode('session');
-  vid.play().then(function(){
-    var el=document.getElementById('player-wrap');
-    if(el.requestFullscreen) el.requestFullscreen();
-    else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-  }).catch(function(){});
+  showSessionConfirm();
 };
+
+/* Confirmation dialog before session */
+function showSessionConfirm(){
+  var ov=document.createElement('div');
+  ov.id='session-confirm-overlay';
+  ov.style.cssText='position:fixed;inset:0;background:rgba(7,15,29,.92);backdrop-filter:blur(8px);z-index:8000;display:flex;align-items:center;justify-content:center;padding:20px;font-family:inherit';
+  ov.innerHTML=
+    '<div style="background:white;border-radius:18px;max-width:440px;width:100%;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.5)">'
+    +'<div style="background:#0A1628;padding:20px 24px;display:flex;align-items:center;gap:12px">'
+    +'<div style="font-size:1.8rem">📋</div>'
+    +'<div><div style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:3px">Before You Begin</div>'
+    +'<div style="font-size:1rem;font-weight:800;color:white">Start Session — Real Numbers</div></div></div>'
+    +'<div style="padding:22px 24px">'
+    +'<div style="background:#FEF2F2;border:1px solid #FECACA;border-radius:10px;padding:13px 15px;margin-bottom:16px">'
+    +'<div style="font-size:.82rem;font-weight:700;color:#991B1B;margin-bottom:4px">⚠️ Read before starting</div>'
+    +'<div style="font-size:.81rem;color:#7F1D1D;line-height:1.6">Once you start the session, <strong>you cannot exit until it is complete</strong> — just like a real exam or live class. The video will open in a new tab. You can skip individual questions, but you cannot leave early without losing all progress.</div></div>'
+    +'<div style="font-size:.84rem;color:#475569;line-height:1.65;margin-bottom:20px">This session has <strong>8 interactive questions</strong> that will appear automatically as you watch. Your score will be saved to your personal record after completion.</div>'
+    +'<div style="display:flex;flex-direction:column;gap:9px">'
+    +'<button onclick="launchSessionTab()" style="padding:13px;background:#8B5CF6;color:white;border:none;border-radius:10px;font-family:inherit;font-size:.92rem;font-weight:700;cursor:pointer;transition:background .14s" onmouseover="this.style.background=\'#7C3AED\'" onmouseout="this.style.background=\'#8B5CF6\'">🚀 I\'m Ready — Start Session</button>'
+    +'<button onclick="document.getElementById(\'session-confirm-overlay\').remove()" style="padding:11px;background:none;border:1.5px solid #E4E8EE;border-radius:10px;font-family:inherit;font-size:.86rem;font-weight:600;cursor:pointer;color:#475569">Cancel — I\'ll do this later</button>'
+    +'</div></div></div>';
+  document.body.appendChild(ov);
+}
+
+/* Open session in new tab */
+window.launchSessionTab=function(){
+  document.getElementById('session-confirm-overlay').remove();
+  var url=window.location.href.split('?')[0]+'?session=1';
+  window.open(url,'_blank');
+};
+
+/* If opened with ?session=1, auto-start session mode */
+(function(){
+  if(window.location.search.includes('session=1')){
+    /* mark session tab so we can show the Leave button and block navigation */
+    window._isSessionTab=true;
+    /* Block accidental navigation/close */
+    window.addEventListener('beforeunload',function(e){
+      if(window._sessionLocked){
+        e.preventDefault();
+        e.returnValue='Session in progress — are you sure you want to leave? Your progress will be lost.';
+      }
+    });
+  }
+})();
 
 /* MODE — no paywall */
 var sessionActive=false;
@@ -616,14 +652,57 @@ window.setMode=function(mode){
     bar.classList.add('show');
     badge.textContent='Session Mode';badge.style.background='var(--purple-bg)';badge.style.color='var(--purple)';badge.style.borderColor='rgba(139,92,246,.3)';
     resetSession();renderMarkers();
-    vid.play();
+    window._sessionLocked=true;
+    /* Show Leave button */
+    var existingLeave=document.getElementById('leave-session-btn');
+    if(!existingLeave){
+      var lb=document.createElement('button');
+      lb.id='leave-session-btn';
+      lb.textContent='Leave Session';
+      lb.style.cssText='position:fixed;top:14px;right:14px;z-index:9000;padding:8px 16px;background:#EF4444;color:white;border:none;border-radius:8px;font-family:inherit;font-size:.8rem;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(239,68,68,.35)';
+      lb.onclick=function(){confirmLeaveSession()};
+      document.body.appendChild(lb);
+    }
   }else{
     wb.classList.add('active');sb2.classList.remove('active');
     bar.classList.remove('show');
     badge.textContent='Watch Mode';badge.style.background='var(--off-white)';badge.style.color='var(--text-muted)';badge.style.borderColor='var(--border)';
-    vid.play();
+    window._sessionLocked=false;
+    var lb=document.getElementById('leave-session-btn');if(lb)lb.remove();
   }
 };
+
+/* Confirm leaving session */
+window.confirmLeaveSession=function(){
+  var ov=document.createElement('div');
+  ov.style.cssText='position:fixed;inset:0;background:rgba(7,15,29,.8);z-index:9100;display:flex;align-items:center;justify-content:center;padding:20px;font-family:inherit';
+  ov.innerHTML='<div style="background:white;border-radius:14px;padding:28px 24px;max-width:360px;width:100%;text-align:center">'
+    +'<div style="font-size:2rem;margin-bottom:10px">⚠️</div>'
+    +'<div style="font-size:1rem;font-weight:800;color:#0A1628;margin-bottom:8px">Leave Session?</div>'
+    +'<div style="font-size:.84rem;color:#475569;line-height:1.6;margin-bottom:20px">Your progress will be lost and this session will not be saved to your record. Are you sure?</div>'
+    +'<div style="display:flex;gap:10px">'
+    +'<button onclick="this.closest(\'div\').parentElement.parentElement.remove()" style="flex:1;padding:11px;background:none;border:1.5px solid #E4E8EE;border-radius:9px;font-family:inherit;font-size:.86rem;font-weight:600;cursor:pointer;color:#475569">Keep Going</button>'
+    +'<button onclick="forceLeaveSession()" style="flex:1;padding:11px;background:#EF4444;color:white;border:none;border-radius:9px;font-family:inherit;font-size:.86rem;font-weight:700;cursor:pointer">Leave</button>'
+    +'</div></div>';
+  document.body.appendChild(ov);
+};
+
+window.forceLeaveSession=function(){
+  window._sessionLocked=false;
+  if(window.opener) window.close();
+  else window.location.href='maths.html';
+};
+
+/* Auto-start session if this is a session tab */
+function initSessionTab(){
+  if(!window._isSessionTab) return;
+  setMode('session');
+  vid.play().then(function(){
+    var el=document.getElementById('player-wrap');
+    if(el.requestFullscreen) el.requestFullscreen();
+    else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+  }).catch(function(){});
+}
 
 /* QUESTIONS — answers exactly as stated in transcript:
    Q1=B(1), Q2=B(1), Q3=B(1), Q4=C(2), Q5=B(1), Q6=B(1), Q7=D(3), Q8=B(1)
@@ -709,7 +788,11 @@ function renderMarkers(){
     if(!q.done){
       b.className='q-marker q-marker--pending';
       b.textContent=q.label+' ▶';
-      b.onclick=function(){openPoll(i)};
+      b.onclick=function(){showReadyPrompt(i)};
+    }else if(q.skipped){
+      b.className='q-marker';
+      b.style.cssText='background:#F8FAFC;border:1.5px solid #CBD5E1;color:#94A3B8;cursor:default;display:flex;align-items:center;gap:6px;padding:6px 13px;border-radius:7px;font-size:.79rem;font-weight:600';
+      b.textContent=q.label+' –';
     }else{
       b.className='q-marker '+(q.correct?'q-marker--done-correct':'q-marker--done-wrong');
       b.textContent=q.label+' '+(q.correct?'✓':'✗');
@@ -724,10 +807,43 @@ function checkPolls(){
     if(!q.triggered&&!q.done&&vid.currentTime>=q.ts&&vid.currentTime<q.ts+3){
       q.triggered=true;
       vid.pause();
-      setTimeout(function(){openPoll(i)},300);
+      setTimeout(function(){showReadyPrompt(i)},400);
     }
   });
 }
+
+/* "Are you ready?" prompt before timer starts */
+function showReadyPrompt(idx){
+  var q=QS[idx];
+  var ov=document.createElement('div');
+  ov.id='ready-prompt';
+  ov.style.cssText='position:absolute;inset:0;background:rgba(7,15,29,.9);backdrop-filter:blur(4px);z-index:490;display:flex;align-items:center;justify-content:center;padding:20px;font-family:inherit';
+  ov.innerHTML='<div style="background:white;border-radius:16px;max-width:420px;width:100%;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.4);animation:slideup .3s cubic-bezier(.34,1.56,.64,1)">'
+    +'<div style="background:#8B5CF6;padding:14px 20px">'
+    +'<div style="font-size:.67rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.65)">Question '+(idx+1)+' of '+QS.length+'</div>'
+    +'<div style="font-size:.9rem;font-weight:700;color:white;margin-top:2px">Pause — Question Incoming!</div></div>'
+    +'<div style="padding:20px">'
+    +'<div style="font-size:.95rem;font-weight:700;color:#1E293B;line-height:1.5;margin-bottom:16px">'+q.q+'</div>'
+    +'<div style="font-size:.8rem;color:#64748B;margin-bottom:18px">You have 30 seconds once the timer starts. Do you want to attempt this question?</div>'
+    +'<div style="display:flex;gap:10px">'
+    +'<button onclick="skipQuestion('+idx+')" style="flex:1;padding:11px;background:none;border:1.5px solid #E4E8EE;border-radius:9px;font-family:inherit;font-size:.86rem;font-weight:600;cursor:pointer;color:#64748B">Skip Question</button>'
+    +'<button onclick="startPollTimer('+idx+')" style="flex:1;padding:11px;background:#8B5CF6;color:white;border:none;border-radius:9px;font-family:inherit;font-size:.86rem;font-weight:700;cursor:pointer">Yes, Start Timer! ⏱</button>'
+    +'</div></div></div>';
+  document.getElementById('player-wrap').appendChild(ov);
+}
+
+window.skipQuestion=function(idx){
+  var rp=document.getElementById('ready-prompt');if(rp)rp.remove();
+  QS[idx].done=true;QS[idx].correct=null;QS[idx].skipped=true;
+  renderMarkers();
+  vid.play();
+  if(QS.every(function(q){return q.done}))showScore();
+};
+
+window.startPollTimer=function(idx){
+  var rp=document.getElementById('ready-prompt');if(rp)rp.remove();
+  openPoll(idx);
+};
 
 window.openPoll=function(idx){
   curQIdx=idx;selOpt=-1;pollDone=false;
@@ -803,16 +919,56 @@ window.closePoll=function(){
 };
 
 function showScore(){
-  var c=QS.filter(function(q){return q.correct}).length,tot=QS.length;
-  var pct=Math.round(c/tot*100);
+  window._sessionLocked=false;
+  var lb=document.getElementById('leave-session-btn');if(lb)lb.remove();
+  var attempted=QS.filter(function(q){return q.done&&!q.skipped});
+  var correct=attempted.filter(function(q){return q.correct}).length;
+  var skipped=QS.filter(function(q){return q.skipped}).length;
+  var pct=attempted.length>0?Math.round(correct/attempted.length*100):0;
   var em=pct>=80?'🎉':pct>=60?'👍':'📚';
-  var msg=pct>=80?'Excellent! Ready for Chapter 2.':pct>=60?'Good work. Review the ones you got wrong.':'Keep going — try again!';
+  /* Save to localStorage */
+  var key='se_scores_ch1_rn';
+  var history=[];
+  try{history=JSON.parse(localStorage.getItem(key)||'[]')}catch(e){}
+  history.unshift({date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short'}),correct:correct,attempted:attempted.length,skipped:skipped,pct:pct});
+  if(history.length>8)history=history.slice(0,8);
+  try{localStorage.setItem(key,JSON.stringify(history))}catch(e){}
+  var rows=history.map(function(h,i){
+    return '<tr style="border-bottom:1px solid #F0F2F6">'
+      +'<td style="padding:8px 12px;font-size:.77rem;color:#94A3B8">'+h.date+'</td>'
+      +'<td style="padding:8px 12px;font-size:.82rem;font-weight:700;color:#0A1628">'+h.correct+'/'+h.attempted+(i===0?' 🏅':'')+'</td>'
+      +'<td style="padding:8px 12px;font-size:.8rem;font-weight:700;color:'+(h.pct>=80?'#10B981':h.pct>=60?'#F59E0B':'#EF4444')+'">'+h.pct+'%</td>'
+      +'<td style="padding:8px 12px;font-size:.77rem;color:#94A3B8">'+h.skipped+' skipped</td>'
+      +'</tr>';
+  }).join('');
   var sc=document.getElementById('session-score');
-  sc.innerHTML='<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap"><div style="font-size:2rem">'+em+'</div><div style="flex:1;min-width:0"><div style="font-size:.68rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--purple);margin-bottom:2px">Session Complete!</div><div style="font-size:1.05rem;font-weight:800;color:var(--navy)">'+c+' / '+tot+' correct ('+pct+'%)</div><div style="font-size:.8rem;color:var(--text-muted);margin-top:2px">'+msg+'</div></div><button onclick="retrySession()" style="padding:9px 16px;background:var(--purple);color:white;border:none;border-radius:8px;font-family:inherit;font-size:.83rem;font-weight:700;cursor:pointer;flex-shrink:0">🔄 Try Again</button></div>';
+  sc.innerHTML=
+    '<div style="display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap;margin-bottom:18px">'
+    +'<div style="font-size:2.2rem">'+em+'</div>'
+    +'<div style="flex:1;min-width:0">'
+    +'<div style="font-size:.67rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#8B5CF6;margin-bottom:3px">Session Complete!</div>'
+    +'<div style="font-size:1.15rem;font-weight:800;color:#0A1628">'+correct+' / '+attempted.length+' correct <span style="font-size:.88rem;color:#94A3B8;font-weight:600">('+pct+'%)</span></div>'
+    +'<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">'
+    +'<span style="font-size:.76rem;font-weight:600;padding:3px 10px;border-radius:99px;background:#ECFDF5;color:#10B981;border:1px solid #6EE7B7">✓ '+correct+' correct</span>'
+    +(skipped>0?'<span style="font-size:.76rem;font-weight:600;padding:3px 10px;border-radius:99px;background:#F8FAFC;color:#94A3B8;border:1px solid #E2E8F0">– '+skipped+' skipped</span>':'')
+    +'</div></div>'
+    +'<button onclick="retrySession()" style="padding:9px 15px;background:#8B5CF6;color:white;border:none;border-radius:8px;font-family:inherit;font-size:.81rem;font-weight:700;cursor:pointer;flex-shrink:0">🔄 Try Again</button></div>'
+    +'<div style="border-top:1px solid #E4E8EE;padding-top:14px">'
+    +'<div style="font-size:.7rem;font-weight:700;color:#94A3B8;letter-spacing:.09em;text-transform:uppercase;margin-bottom:9px">📊 Your Score History — Ch.1 Real Numbers</div>'
+    +'<div style="overflow:hidden;border-radius:8px;border:1px solid #E4E8EE"><table style="width:100%;border-collapse:collapse">'
+    +'<thead><tr style="background:#F8FAFC"><th style="padding:7px 12px;text-align:left;font-size:.7rem;color:#94A3B8;font-weight:600">Date</th><th style="padding:7px 12px;text-align:left;font-size:.7rem;color:#94A3B8;font-weight:600">Score</th><th style="padding:7px 12px;text-align:left;font-size:.7rem;color:#94A3B8;font-weight:600">%</th><th style="padding:7px 12px;text-align:left;font-size:.7rem;color:#94A3B8;font-weight:600">Notes</th></tr></thead>'
+    +'<tbody>'+rows+'</tbody></table></div></div>';
   sc.classList.add('show');sc.scrollIntoView({behavior:'smooth',block:'nearest'});
+  try{if(document.exitFullscreen)document.exitFullscreen()}catch(e){}
 }
 
-window.retrySession=function(){resetSession();renderMarkers();document.getElementById('session-score').classList.remove('show')};
+window.retrySession=function(){
+  QS.forEach(function(q){q.triggered=false;q.done=false;q.correct=null;q.skipped=false});
+  document.getElementById('session-score').classList.remove('show');
+  renderMarkers();
+  vid.currentTime=0;
+  vid.play().catch(function(){});
+};
 
 /* AI */
 window.showAI=function(){var p=document.getElementById('ai-panel');p.style.display='block';p.scrollIntoView({behavior:'smooth',block:'nearest'});document.getElementById('ai-inp').focus()};
