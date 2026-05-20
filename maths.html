@@ -309,13 +309,13 @@ body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--off-whit
         <!-- Chapters panel -->
         <div class="chapters-panel">
           <div class="panel-head">Chapters</div>
-          <a class="chapter-item" onclick="selectChapter(this,'real-numbers')">
-            <span class="ch-num">01</span>
-            <span class="ch-name">Real Numbers</span>
-          </a>
           <a class="chapter-item active" href="video-player.html">
+            <span class="ch-num">01</span>
+            <span class="ch-name">Real Numbers ▶</span>
+          </a>
+          <a class="chapter-item" onclick="selectChapter(this,'polynomials')">
             <span class="ch-num">02</span>
-            <span class="ch-name">Polynomials ▶</span>
+            <span class="ch-name">Polynomials</span>
           </a>
           <a class="chapter-item" onclick="selectChapter(this,'linear-equations')">
             <span class="ch-num">03</span>
@@ -401,24 +401,24 @@ body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--off-whit
 
           <!-- Videos tab -->
           <div class="tab-panel active" id="tab-videos">
-            <!-- Chapter 2 — READY -->
+            <!-- Chapter 1 — READY -->
             <a href="video-player.html" style="display:flex;align-items:center;gap:14px;padding:18px 20px;background:white;border:1.5px solid var(--accent-mid);border-radius:12px;text-decoration:none;margin-bottom:12px;transition:all .18s" onmouseover="this.style.boxShadow='0 4px 18px rgba(139,92,246,.12)';this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='none';this.style.transform='none'">
               <div style="width:52px;height:52px;border-radius:12px;background:var(--accent-bg);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0">📐</div>
               <div style="flex:1;min-width:0">
-                <div style="font-size:.68rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);margin-bottom:2px">Chapter 2 · Video</div>
-                <div style="font-size:.97rem;font-weight:700;color:var(--navy)">Polynomials</div>
-                <div style="font-size:.75rem;color:var(--text-muted);margin-top:2px">Zeroes · Coefficients · Division Algorithm · ~20 min</div>
+                <div style="font-size:.68rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);margin-bottom:2px">Chapter 1 · NotebookLM Masterclass</div>
+                <div style="font-size:.97rem;font-weight:700;color:var(--navy)">Real Numbers</div>
+                <div style="font-size:.75rem;color:var(--text-muted);margin-top:2px">HCF · LCM · Euclid's Division · Irrationals · ~8 min</div>
               </div>
               <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0">
                 <span style="background:var(--emerald-bg);color:var(--emerald);font-size:.7rem;font-weight:700;padding:4px 12px;border-radius:99px;border:1px solid #6EE7B7">▶ Watch Now</span>
-                <span style="background:var(--accent-bg);border:1px solid var(--accent-mid);color:var(--accent);font-size:.7rem;font-weight:600;padding:3px 10px;border-radius:99px">CC · Ask AI · Speed</span>
+                <span style="background:var(--accent-bg);border:1px solid var(--accent-mid);color:var(--accent);font-size:.7rem;font-weight:600;padding:3px 10px;border-radius:99px">CC · Ask AI · Session</span>
               </div>
             </a>
             <!-- Other chapters — coming soon -->
             <div style="background:var(--off-white);border:1px dashed var(--border);border-radius:12px;padding:22px;text-align:center">
               <div style="font-size:1.6rem;margin-bottom:10px">🎬</div>
               <div style="font-size:.9rem;font-weight:700;color:var(--navy);margin-bottom:5px">More chapters being recorded</div>
-              <div style="font-size:.8rem;color:var(--text-muted)">Real Numbers, Quadratic Equations, AP, Triangles and more — uploading chapter by chapter.</div>
+              <div style="font-size:.8rem;color:var(--text-muted)">Polynomials, Quadratic Equations, AP, Triangles and more — uploading chapter by chapter.</div>
             </div>
           </div>
 
