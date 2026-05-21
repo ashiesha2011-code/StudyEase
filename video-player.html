@@ -95,6 +95,13 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--off-white);colo
 /* ── VIDEO PLAYER ── */
 .player-wrap{background:#0D1117;border-radius:var(--radius-lg);overflow:hidden;margin-bottom:14px;position:relative}
 .player-video-area{width:100%;aspect-ratio:16/9;background:#0D1117;position:relative}
+#main-video{width:100%;height:100%;display:block;background:#000;
+  /* Prevent iOS from going fullscreen native player */
+  -webkit-media-controls:none;
+}
+/* Force inline on iOS */
+#main-video::-webkit-media-controls{display:none!important}
+video::-webkit-media-controls-enclosure{display:none!important}
 #main-video{width:100%;height:100%;display:block;background:#000}
 
 /* Custom controls */
@@ -366,8 +373,9 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--off-white);colo
           </div>
         </div>
         <div class="player-video-area">
-          <video id="main-video" preload="metadata" crossorigin="anonymous">
+          <video id="main-video" preload="metadata" crossorigin="anonymous" playsinline webkit-playsinline x5-playsinline>
             <source src="https://pub-a103011de70941ba8ab9e8eaeed0d9cb.r2.dev/real%20numbers%20masterclass.mp4" type="video/mp4">
+            <track id="sub-track" kind="subtitles" srclang="en" label="English" default>
           </video>
           <div class="sub-overlay" id="sub-overlay" style="opacity:0"><span class="sub-text" id="sub-text"></span></div>
         </div>
@@ -545,20 +553,29 @@ window.toggleCC=function(){
   if(!ccOn){subText.textContent='';subOverlay.style.opacity='0';}
 };
 
-/* Spacebar = play/pause, not scroll */
+/* Spacebar + arrow keys */
 document.addEventListener('keydown',function(e){
-  if(e.code==='Space'&&e.target.tagName!=='INPUT'&&e.target.tagName!=='TEXTAREA'&&e.target.tagName!=='SELECT'){
-    e.preventDefault();
-    window.togglePlay();
-  }
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT') return;
+  if(e.code==='Space'){e.preventDefault();window.togglePlay();}
+  if(e.code==='ArrowRight'){e.preventDefault();window.skip(10);}
+  if(e.code==='ArrowLeft'){e.preventDefault();window.skip(-10);}
 });
 
-/* Load captions via fetch to bypass R2 CORS on <track> */
+/* Load captions via fetch — blob URL works on iOS Safari too */
 var captions=[];
 fetch('https://pub-a103011de70941ba8ab9e8eaeed0d9cb.r2.dev/real%20numbers%20masterclass.vtt')
   .then(function(r){return r.text()})
   .then(function(txt){
-    /* Parse VTT — strip 1-hour DaVinci offset */
+    /* Set as blob on <track> so iOS native player shows captions */
+    try{
+      var blob=new Blob([txt],{type:'text/vtt'});
+      var blobUrl=URL.createObjectURL(blob);
+      var track=document.getElementById('sub-track');
+      if(track){ track.src=blobUrl; }
+      var vt=document.getElementById('main-video').textTracks;
+      if(vt&&vt[0]) vt[0].mode='hidden'; /* hide native, use custom overlay on desktop */
+    }catch(e){}
+    /* Parse for custom overlay */
     var blocks=txt.split('\n\n');
     blocks.forEach(function(block){
       var lines=block.trim().split('\n');
