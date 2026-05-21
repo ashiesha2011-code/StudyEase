@@ -236,8 +236,9 @@ html,body{
 
 <!-- Full screen video -->
 <div id="vid-wrap">
-  <video id="main-video" preload="metadata" crossorigin="anonymous" playsinline>
+  <video id="main-video" preload="metadata" crossorigin="anonymous" playsinline webkit-playsinline x5-playsinline>
     <source src="https://pub-a103011de70941ba8ab9e8eaeed0d9cb.r2.dev/real%20numbers%20masterclass.mp4" type="video/mp4">
+    <track id="sub-track" kind="subtitles" srclang="en" label="English" default>
   </video>
 </div>
 
@@ -391,6 +392,16 @@ var ccOn=true,captions=[];
 fetch('https://pub-a103011de70941ba8ab9e8eaeed0d9cb.r2.dev/real%20numbers%20masterclass.vtt')
   .then(function(r){return r.text()})
   .then(function(txt){
+    /* Blob URL so iOS native player shows captions */
+    try{
+      var blob=new Blob([txt],{type:'text/vtt'});
+      var blobUrl=URL.createObjectURL(blob);
+      var track=document.getElementById('sub-track');
+      if(track) track.src=blobUrl;
+      var vt=vid.textTracks;
+      if(vt&&vt[0]) vt[0].mode='hidden';
+    }catch(e){}
+    /* Parse for custom overlay */
     var blocks=txt.split('\n\n');
     blocks.forEach(function(block){
       var lines=block.trim().split('\n');
@@ -450,11 +461,11 @@ window.toggleCC=function(){
   if(!ccOn){document.getElementById('sub-overlay').style.opacity='0';}
 };
 
-/* Spacebar */
+/* Spacebar + arrow keys */
 document.addEventListener('keydown',function(e){
-  if(e.code==='Space'&&e.target.tagName!=='INPUT'&&e.target.tagName!=='SELECT'){
-    e.preventDefault();window.togglePlay();
-  }
+  if(e.code==='Space'&&e.target.tagName!=='INPUT'&&e.target.tagName!=='SELECT'){e.preventDefault();window.togglePlay();}
+  if(e.code==='ArrowRight'){e.preventDefault();window.skip(10);}
+  if(e.code==='ArrowLeft'){e.preventDefault();window.skip(-10);}
 });
 
 /* Auto-hide controls */
