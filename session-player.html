@@ -683,6 +683,7 @@ function skipQ(idx){
 
 function startPoll(idx){
   document.getElementById('ready-prompt').classList.remove('show');
+  vid.pause(); /* ensure video stays paused during poll */
   curIdx=idx;selOpt=-1;pollDone=false;
   var q=QS[idx];
   document.getElementById('poll-qnum').textContent='Question '+(idx+1)+' of '+QS.length;
