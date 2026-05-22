@@ -230,8 +230,25 @@ html,body{
   font-size:.9rem;font-weight:600;cursor:pointer;transition:all .14s;
 }
 .score-close:hover{background:rgba(255,255,255,.14);color:white}
-/* Leaderboard */
-.lb-title{font-size:.7rem;font-weight:700;color:rgba(255,255,255,.35);letter-spacing:.09em;text-transform:uppercase;margin:22px 0 10px}
+/* Charts */
+.charts-row{display:flex;gap:14px;margin:18px 0;flex-wrap:wrap}
+.chart-box{flex:1;min-width:140px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px;text-align:center}
+.chart-box-title{font-size:.68rem;font-weight:700;color:rgba(255,255,255,.35);letter-spacing:.09em;text-transform:uppercase;margin-bottom:12px}
+.pie-wrap{position:relative;width:110px;height:110px;margin:0 auto 10px}
+.pie-wrap svg{transform:rotate(-90deg)}
+.pie-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.pie-pct{font-size:1.3rem;font-weight:800;color:white}
+.pie-lbl{font-size:.62rem;color:rgba(255,255,255,.4);font-weight:600}
+.pie-legend{display:flex;flex-direction:column;gap:5px;margin-top:6px}
+.pie-leg-item{display:flex;align-items:center;gap:6px;font-size:.72rem;color:rgba(255,255,255,.6)}
+.pie-leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.bar-wrap{width:100%;overflow:hidden}
+.bar-chart{display:flex;flex-direction:column;gap:6px}
+.bar-row{display:flex;align-items:center;gap:8px}
+.bar-label{font-size:.68rem;color:rgba(255,255,255,.4);width:52px;text-align:right;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{flex:1;height:18px;background:rgba(255,255,255,.07);border-radius:99px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:99px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+.bar-val{position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:.65rem;font-weight:700;color:white}
 .lb-table{width:100%;border-collapse:collapse;border-radius:10px;overflow:hidden}
 .lb-table th{padding:9px 14px;text-align:left;font-size:.7rem;font-weight:600;color:rgba(255,255,255,.35);background:rgba(255,255,255,.05)}
 .lb-table td{padding:9px 14px;font-size:.82rem;border-bottom:1px solid rgba(255,255,255,.06)}
@@ -381,12 +398,48 @@ html,body{
 <!-- Score screen -->
 <div id="score-screen">
   <div class="score-wrap">
-    <div class="score-header">
+    <!-- Header -->
+    <div style="text-align:center;margin-bottom:6px">
+      <div style="font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:8px">StudyEase</div>
+      <div style="font-size:1.6rem;font-weight:800;color:white;letter-spacing:-.02em;margin-bottom:4px">📊 Scorecard</div>
+      <div style="font-size:.82rem;color:rgba(255,255,255,.4)" id="sc-chapter-label">Ch. 1 — Real Numbers</div>
+    </div>
+    <div class="score-header" style="margin-bottom:16px">
       <div class="score-emoji" id="sc-emoji">🎉</div>
       <div class="score-title" id="sc-title">Session Complete!</div>
-      <div class="score-sub">Ch. 1 — Real Numbers · StudyEase</div>
       <div class="score-badges" id="sc-badges"></div>
     </div>
+
+    <!-- Charts row -->
+    <div class="charts-row">
+      <!-- Pie chart — current session -->
+      <div class="chart-box">
+        <div class="chart-box-title">This Session</div>
+        <div class="pie-wrap">
+          <svg width="110" height="110" viewBox="0 0 110 110">
+            <circle cx="55" cy="55" r="40" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="18"/>
+            <circle id="pie-correct" cx="55" cy="55" r="40" fill="none" stroke="#4ADE80" stroke-width="18" stroke-dasharray="0 251.2" stroke-linecap="round"/>
+            <circle id="pie-wrong" cx="55" cy="55" r="40" fill="none" stroke="#F87171" stroke-width="18" stroke-dasharray="0 251.2" stroke-linecap="round"/>
+            <circle id="pie-skip" cx="55" cy="55" r="40" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="18" stroke-dasharray="0 251.2" stroke-linecap="round"/>
+          </svg>
+          <div class="pie-center">
+            <div class="pie-pct" id="pie-pct">0%</div>
+            <div class="pie-lbl">score</div>
+          </div>
+        </div>
+        <div class="pie-legend">
+          <div class="pie-leg-item"><div class="pie-leg-dot" style="background:#4ADE80"></div><span id="leg-correct">0 correct</span></div>
+          <div class="pie-leg-item"><div class="pie-leg-dot" style="background:#F87171"></div><span id="leg-wrong">0 wrong</span></div>
+          <div class="pie-leg-item"><div class="pie-leg-dot" style="background:rgba(255,255,255,.2)"></div><span id="leg-skip">0 skipped/left</span></div>
+        </div>
+      </div>
+      <!-- Bar chart — all attempts -->
+      <div class="chart-box" style="flex:1.4">
+        <div class="chart-box-title">All Attempts</div>
+        <div class="bar-chart" id="bar-chart"></div>
+      </div>
+    </div>
+
     <button class="score-retry" onclick="retrySession()">🔄 Try Again — Restart Session</button>
     <button class="score-close" onclick="window.close()">✕ Close & Return to StudyEase</button>
     <div class="review-section">
@@ -395,7 +448,7 @@ html,body{
     </div>
     <div class="lb-title">Your Score History</div>
     <table class="lb-table" id="lb-table">
-      <thead><tr><th>Date</th><th>Score</th><th>%</th><th>Skipped</th></tr></thead>
+      <thead><tr><th>Date</th><th>Score</th><th>%</th><th>Notes</th></tr></thead>
       <tbody id="lb-body"></tbody>
     </table>
   </div>
@@ -758,84 +811,101 @@ window.closePoll=function(){
 
 function showScore(earlyLeave){
   sessionActive=false;sessionDone=true;
+  var total=QS.length;
   var attempted=QS.filter(function(q){return q.done&&!q.skipped});
   var correct=attempted.filter(function(q){return q.correct}).length;
+  var wrong=attempted.filter(function(q){return!q.correct}).length;
   var skipped=QS.filter(function(q){return q.skipped}).length;
   var unanswered=QS.filter(function(q){return!q.done}).length;
   var pct=attempted.length>0?Math.round(correct/attempted.length*100):0;
   var em=earlyLeave?'📋':(pct>=80?'🎉':pct>=60?'👍':'📚');
+
+  /* Title — always show X/8 out of total */
   var titleText=earlyLeave
-    ? 'Session Left Early'
-    : correct+' / '+attempted.length+' Correct ('+pct+'%)';
+    ?'Session Left Early — '+correct+' / '+total+' reached'
+    :correct+' / '+total+' Correct';
   document.getElementById('sc-emoji').textContent=em;
   document.getElementById('sc-title').textContent=titleText;
 
   /* Badges */
   var badges='<span class="score-badge sb-correct">✓ '+correct+' correct</span>';
-  if(attempted.length-correct>0) badges+='<span class="score-badge" style="background:rgba(239,68,68,.2);color:#F87171;border:1px solid rgba(239,68,68,.3)">✗ '+(attempted.length-correct)+' wrong</span>';
+  if(wrong>0) badges+='<span class="score-badge" style="background:rgba(239,68,68,.2);color:#F87171;border:1px solid rgba(239,68,68,.3)">✗ '+wrong+' wrong</span>';
   if(skipped>0) badges+='<span class="score-badge sb-skip">– '+skipped+' skipped</span>';
   if(unanswered>0) badges+='<span class="score-badge sb-skip">⏩ '+unanswered+' not reached</span>';
-  if(!earlyLeave) badges+='<span class="score-badge sb-pct">'+pct+'% score</span>';
+  if(!earlyLeave&&attempted.length>0) badges+='<span class="score-badge sb-pct">'+pct+'%</span>';
   document.getElementById('sc-badges').innerHTML=badges;
 
-  /* Q breakdown */
-  var breakdown='<div style="margin:14px 0;display:flex;flex-direction:column;gap:6px">';
-  QS.forEach(function(q,i){
-    var icon=q.skipped?'⏩':!q.done?'–':q.correct?'✅':'❌';
-    var col=q.skipped||!q.done?'rgba(255,255,255,.3)':q.correct?'#4ADE80':'#F87171';
-    breakdown+='<div style="display:flex;align-items:center;gap:10px;padding:6px 10px;border-radius:7px;background:rgba(255,255,255,.04)">'
-      +'<span style="font-size:.85rem;min-width:20px">'+icon+'</span>'
-      +'<span style="font-size:.78rem;color:'+col+';font-weight:600;min-width:60px">Q'+(i+1)+(q.label?' ('+q.label.split('·')[1].trim()+')':'')+'</span>'
-      +'<span style="font-size:.76rem;color:rgba(255,255,255,.5);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+q.q+'</span>'
-      +'</div>';
-  });
-  breakdown+='</div>';
+  /* ── PIE CHART ── */
+  var circ=251.2; /* 2πr, r=40 */
+  var cPct=total>0?correct/total:0;
+  var wPct=total>0?wrong/total:0;
+  var sPct=total>0?(skipped+unanswered)/total:0;
+  var cDash=cPct*circ,wDash=wPct*circ,sDash=sPct*circ;
+  /* Correct arc */
+  var pc=document.getElementById('pie-correct');
+  pc.style.strokeDasharray=cDash+' '+circ;
+  pc.style.strokeDashoffset='0';
+  /* Wrong arc — offset by correct */
+  var pw=document.getElementById('pie-wrong');
+  pw.style.strokeDasharray=wDash+' '+circ;
+  pw.style.strokeDashoffset=(-cDash)+'';
+  /* Skip/unanswered arc */
+  var ps=document.getElementById('pie-skip');
+  ps.style.strokeDasharray=sDash+' '+circ;
+  ps.style.strokeDashoffset=(-(cDash+wDash))+'';
+  document.getElementById('pie-pct').textContent=(earlyLeave&&attempted.length===0)?'—':pct+'%';
+  document.getElementById('leg-correct').textContent=correct+' correct';
+  document.getElementById('leg-wrong').textContent=wrong+' wrong';
+  document.getElementById('leg-skip').textContent=(skipped+unanswered)+' skipped/left';
 
-  /* Save to localStorage — save even on early leave */
+  /* ── SAVE TO LOCALSTORAGE ── */
   var key='se_scores_ch1_rn';
   var history=[];
   try{history=JSON.parse(localStorage.getItem(key)||'[]')}catch(e){}
   history.unshift({
     date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short'}),
-    correct:correct,attempted:attempted.length,skipped:skipped,
-    unanswered:unanswered,pct:pct,
+    correct:correct,total:total,attempted:attempted.length,
+    wrong:wrong,skipped:skipped,unanswered:unanswered,pct:pct,
     early:earlyLeave||false
   });
   if(history.length>8)history=history.slice(0,8);
   try{localStorage.setItem(key,JSON.stringify(history))}catch(e){}
 
-  /* Render leaderboard */
+  /* ── BAR CHART — all attempts ── */
+  var barHtml='';
+  history.forEach(function(h,i){
+    var barPct=h.early?Math.round(h.correct/h.total*100):h.pct;
+    var barColor=h.early?'rgba(255,255,255,.25)':barPct>=80?'#4ADE80':barPct>=60?'#FCD34D':'#F87171';
+    var label=i===0?'Now':h.date;
+    barHtml+='<div class="bar-row">'
+      +'<div class="bar-label" title="'+h.date+'">'+label+'</div>'
+      +'<div class="bar-track">'
+      +'<div class="bar-fill" style="width:'+barPct+'%;background:'+barColor+'"></div>'
+      +'<span class="bar-val">'+h.correct+'/'+h.total+'</span>'
+      +'</div></div>';
+  });
+  document.getElementById('bar-chart').innerHTML=barHtml||'<div style="font-size:.75rem;color:rgba(255,255,255,.3);text-align:center;padding:20px 0">Complete more sessions to see your progress</div>';
+
+  /* ── LEADERBOARD TABLE ── */
   document.getElementById('lb-body').innerHTML=history.map(function(h,i){
     var dateLabel=h.date+(h.early?' (left early)':'');
     return '<tr>'
       +'<td style="color:rgba(255,255,255,.5);font-size:.76rem">'+dateLabel+'</td>'
-      +'<td style="color:white;font-weight:700">'+h.correct+'/'+h.attempted+(i===0?' 🏅':'')+'</td>'
+      +'<td style="color:white;font-weight:700">'+h.correct+'/'+h.total+(i===0?' 🏅':'')+'</td>'
       +'<td style="font-weight:700;color:'+(h.early?'rgba(255,255,255,.4)':h.pct>=80?'#4ADE80':h.pct>=60?'#FCD34D':'#F87171')+'">'+
         (h.early?'—':h.pct+'%')+'</td>'
-      +'<td style="color:rgba(255,255,255,.4)">'+(h.unanswered>0?h.unanswered+' left':h.skipped+' skip')+'</td>'
+      +'<td style="color:rgba(255,255,255,.4)">'+(h.unanswered>0?h.unanswered+' left':h.skipped>0?h.skipped+' skip':'—')+'</td>'
       +'</tr>';
   }).join('');
 
-  /* Insert Q breakdown into score screen */
-  var scSub=document.querySelector('.score-sub');
-  if(scSub){
-    var existing=document.getElementById('q-breakdown');
-    if(existing) existing.remove();
-    var bd=document.createElement('div');bd.id='q-breakdown';
-    bd.innerHTML=breakdown;
-    scSub.parentNode.insertBefore(bd,scSub.nextSibling);
-  }
-
-  /* Build review answers list */
+  /* ── REVIEW ANSWERS ── */
   var reviewHtml='';
   QS.forEach(function(q,i){
-    var attempted=q.done&&!q.skipped;
+    var wasAttempted=q.done&&!q.skipped;
     var notReached=!q.done&&!q.skipped;
-    var skipped=q.skipped;
-    var icon=notReached?'–':skipped?'⏩':q.correct?'✅':'❌';
-    var itemClass=notReached||skipped?'not-reached':q.correct?'correct':'wrong';
-    var canExpand=attempted; /* only attempted questions get expandable solution */
-
+    var icon=notReached?'–':q.skipped?'⏩':q.correct?'✅':'❌';
+    var itemClass=notReached||q.skipped?'not-reached':q.correct?'correct':'wrong';
+    var canExpand=wasAttempted;
     reviewHtml+='<div class="review-item '+itemClass+'">';
     reviewHtml+='<div class="review-header" '+(canExpand?'onclick="toggleReview(this)"':'')+'>';
     reviewHtml+='<span class="review-icon">'+icon+'</span>';
@@ -843,7 +913,6 @@ function showScore(earlyLeave){
     reviewHtml+='<span class="review-q">'+q.q+'</span>';
     if(canExpand) reviewHtml+='<span class="review-chevron">▼</span>';
     reviewHtml+='</div>';
-
     if(canExpand){
       reviewHtml+='<div class="review-body">';
       reviewHtml+='<div class="review-opts">';
