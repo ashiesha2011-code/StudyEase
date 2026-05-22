@@ -107,11 +107,21 @@ video::-webkit-media-controls-enclosure{display:none!important}
 /* Custom controls */
 .player-controls{background:rgba(13,17,23,.97);padding:10px 16px 12px}
 .progress-row{margin-bottom:9px;position:relative;cursor:pointer}
-.progress-bg{width:100%;height:4px;background:rgba(255,255,255,.15);border-radius:99px;transition:height .12s}
+.progress-bg{width:100%;height:4px;background:rgba(255,255,255,.15);border-radius:99px;transition:height .12s;position:relative;overflow:visible}
 .progress-row:hover .progress-bg{height:6px}
-.progress-fill{height:100%;background:var(--blue);border-radius:99px;pointer-events:none;transition:width .1s linear}
-.progress-thumb{width:13px;height:13px;border-radius:50%;background:white;position:absolute;top:50%;transform:translate(-50%,-50%);pointer-events:none;opacity:0;transition:opacity .12s;box-shadow:0 1px 4px rgba(0,0,0,.5)}
+.progress-buffer{height:100%;background:rgba(255,255,255,.25);border-radius:99px;position:absolute;top:0;left:0;pointer-events:none;transition:width .4s linear}
+.progress-fill{height:100%;background:var(--blue);border-radius:99px;pointer-events:none;transition:width .1s linear;position:relative;z-index:1}
+.progress-thumb{width:13px;height:13px;border-radius:50%;background:white;position:absolute;top:50%;transform:translate(-50%,-50%);pointer-events:none;opacity:0;transition:opacity .12s;box-shadow:0 1px 4px rgba(0,0,0,.5);z-index:2}
 .progress-row:hover .progress-thumb{opacity:1}
+/* Hover preview tooltip */
+.progress-preview{
+  position:absolute;bottom:20px;transform:translateX(-50%);
+  background:rgba(15,15,15,.92);border:1px solid rgba(255,255,255,.12);
+  border-radius:6px;padding:4px 10px;pointer-events:none;
+  opacity:0;transition:opacity .15s;white-space:nowrap;z-index:30;
+  font-size:.74rem;font-weight:600;color:white;font-family:'DM Mono',monospace;
+}
+.progress-preview.show{opacity:1}
 .controls-row{display:flex;align-items:center;gap:8px}
 .c-btn{width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,.07);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.75);transition:all .14s;flex-shrink:0;font-family:inherit}
 .c-btn:hover{background:rgba(255,255,255,.14);color:white}
@@ -382,6 +392,7 @@ video::-webkit-media-controls-enclosure{display:none!important}
         <div class="player-controls">
           <div class="progress-row" id="progress-row">
             <div class="progress-bg">
+              <div class="progress-buffer" id="progress-buffer" style="width:0%"></div>
               <div class="progress-fill" id="progress-fill" style="width:0%"></div>
             </div>
             <div class="progress-thumb" id="progress-thumb" style="left:0%"></div>
@@ -533,12 +544,31 @@ document.getElementById('progress-row').addEventListener('click',function(e){
   vid.currentTime=((e.clientX-r.left)/r.width)*vid.duration;
 });
 
+/* Hover preview */
+var progPreview=document.getElementById('progress-preview');
+document.getElementById('progress-row').addEventListener('mousemove',function(e){
+  if(!vid.duration)return;
+  var r=this.getBoundingClientRect();
+  var pct=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width));
+  progPreview.textContent=fmt(pct*vid.duration);
+  progPreview.style.left=(pct*100)+'%';
+  progPreview.classList.add('show');
+});
+document.getElementById('progress-row').addEventListener('mouseleave',function(){
+  progPreview.classList.remove('show');
+});
+
 function updateProgress(){
   if(!vid.duration)return;
   var p=(vid.currentTime/vid.duration)*100;
   document.getElementById('progress-fill').style.width=p+'%';
   document.getElementById('progress-thumb').style.left=p+'%';
   document.getElementById('time-txt').textContent=fmt(vid.currentTime)+' / '+fmt(vid.duration);
+  /* Buffer bar */
+  if(vid.buffered.length>0){
+    var buf=(vid.buffered.end(vid.buffered.length-1)/vid.duration)*100;
+    document.getElementById('progress-buffer').style.width=buf+'%';
+  }
 }
 function fmt(s){
   if(!s||isNaN(s))return'0:00';
