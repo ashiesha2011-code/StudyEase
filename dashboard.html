@@ -920,11 +920,11 @@ body {
         +'<div style="min-width:0"><div style="font-size:.8rem;font-weight:700;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+s.label+'</div>'
         +'<div style="font-size:.71rem;color:'+col+';font-weight:600">'+badge+'</div></div></div>';
     });
-    document.getElementById('progress-subjects').innerHTML=subHtml;
+    document.getElementById('progress-subjects').innerHTML=subHtml||'<div style="font-size:.8rem;color:var(--text-muted)">No data yet</div>';
     var overall=totalQs>0?Math.round(totalCorrect/totalQs):null;
     document.getElementById('progress-summary').textContent=totalSessions===0
-      ?'Start a session to track your progress'
-      :totalSessions+' session'+(totalSessions!==1?'s':'done')+' completed'+(overall!==null?' · '+overall+'% overall':'');
+      ?'Start a session to see your progress here'
+      :totalSessions+' session'+(totalSessions!==1?'s':'')+' completed'+(overall!==null?' · '+overall+'% overall':'');
   }
 
   /* ── Mobile sidebar ── */
