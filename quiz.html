@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Quiz · StudyEase</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230A1628'/><text y='22' x='6' font-size='18' font-family='system-ui' font-weight='700' fill='%233B82F6'>S</text></svg>"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0A1628;--blue:#3B82F6;--blue-dark:#2563EB;--blue-light:#EFF6FF;--blue-mid:#BFDBFE;
+  --white:#fff;--off-white:#F4F6F9;
+  --text:#1E293B;--text-mid:#475569;--text-muted:#94A3B8;
+  --border:#E4E8EE;--border-soft:#F0F2F6;
+  --emerald:#10B981;--emerald-bg:#ECFDF5;
+  --amber:#F59E0B;--amber-bg:#FFFBEB;
+  --purple:#8B5CF6;--purple-bg:#F5F3FF;--purple-dark:#7C3AED;
+  --red:#EF4444;--red-bg:#FEF2F2;
+  --sidebar-w:224px;--topbar-h:62px;--radius:10px;--radius-lg:14px;
+  --shadow-sm:0 1px 4px rgba(10,22,40,.05);--shadow:0 4px 18px rgba(10,22,40,.07);
+}
+html{-webkit-font-smoothing:antialiased}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--off-white);color:var(--text);min-height:100vh}
+.layout{display:flex;min-height:100vh}
+
+/* ── Sidebar ── */
+.sidebar{width:var(--sidebar-w);background:var(--navy);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:200;transition:transform .28s}
+.sb-logo{display:flex;align-items:center;gap:9px;padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,.07)}
+.sb-logo-mark{width:30px;height:30px;border-radius:8px;background:var(--blue);display:flex;align-items:center;justify-content:center}
+.sb-logo-text{font-weight:700;font-size:1rem;color:white}
+.sb-nav{flex:1;padding:10px 8px;overflow-y:auto;scrollbar-width:none}
+.sb-nav::-webkit-scrollbar{display:none}
+.sb-lbl{font-size:.63rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.24);padding:12px 10px 4px}
+.sb-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;font-size:.85rem;font-weight:500;color:rgba(255,255,255,.5);text-decoration:none;transition:all .14s;margin-bottom:1px}
+.sb-item:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.85)}
+.sb-item.active{background:rgba(59,130,246,.15);color:white}
+.sb-icon{width:17px;height:17px;flex-shrink:0;opacity:.55}
+.sb-badge{margin-left:auto;background:var(--blue);color:white;font-size:.58rem;font-weight:700;padding:2px 6px;border-radius:99px}
+.sb-bottom{flex-shrink:0;padding:10px 8px;border-top:1px solid rgba(255,255,255,.07)}
+.sb-user{display:flex;align-items:center;gap:9px;padding:4px 2px}
+.sb-avatar{width:32px;height:32px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;color:white;flex-shrink:0}
+.sb-user-info{flex:1;min-width:0}
+.sb-user-name{font-size:.82rem;font-weight:600;color:white;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-user-plan{font-size:.7rem;color:rgba(255,255,255,.35)}
+.sb-logout{width:26px;height:26px;border-radius:6px;background:rgba(255,255,255,.06);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.35);transition:all .14s;flex-shrink:0}
+.sb-logout:hover{background:rgba(239,68,68,.15);color:var(--red)}
+
+/* ── Main ── */
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column}
+.topbar{height:var(--topbar-h);background:white;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:100}
+.topbar-l{display:flex;align-items:center;gap:10px}
+.hamburger{display:none;width:34px;height:34px;border-radius:8px;border:1px solid var(--border);background:white;align-items:center;justify-content:center;cursor:pointer;color:var(--navy);flex-direction:column;gap:4px;padding:8px}
+.hamburger span{display:block;width:16px;height:1.5px;background:currentColor;border-radius:2px}
+.breadcrumb{display:flex;align-items:center;gap:7px;font-size:.87rem}
+.breadcrumb a{color:var(--text-muted);text-decoration:none;font-weight:500}
+.breadcrumb a:hover{color:var(--navy)}
+.breadcrumb-sep{color:var(--border)}
+.breadcrumb-current{font-weight:700;color:var(--navy)}
+.t-avatar{width:34px;height:34px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;color:white}
+.content{padding:28px;flex:1;max-width:860px;margin:0 auto;width:100%}
+
+/* ── SETUP SCREEN ── */
+.setup-title{font-size:1.4rem;font-weight:800;color:var(--navy);letter-spacing:-.02em;margin-bottom:4px}
+.setup-sub{font-size:.86rem;color:var(--text-muted);margin-bottom:24px}
+.setup-card{background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 22px;margin-bottom:14px}
+.setup-card-title{font-size:.7rem;font-weight:700;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
+.pill-row{display:flex;flex-wrap:wrap;gap:8px}
+.pill{padding:8px 16px;border-radius:9px;font-family:inherit;font-size:.84rem;font-weight:600;cursor:pointer;transition:all .15s;border:2px solid var(--border);background:white;color:var(--text-mid)}
+.pill:hover:not(:disabled){border-color:var(--purple);color:var(--purple)}
+.pill.sel{border-color:var(--purple);background:var(--purple-bg);color:var(--purple)}
+.pill.sel-blue{border-color:var(--blue);background:var(--blue-light);color:var(--blue-dark)}
+.pill.sel-green{border-color:var(--emerald);background:var(--emerald-bg);color:var(--emerald)}
+.pill.sel-amber{border-color:var(--amber);background:var(--amber-bg);color:#92400E}
+.pill.disabled{opacity:.4;cursor:not-allowed;pointer-events:none}
+.start-quiz-btn{width:100%;padding:15px;background:var(--purple);color:white;border:none;border-radius:11px;font-family:inherit;font-size:1rem;font-weight:700;cursor:pointer;transition:all .15s;margin-top:6px;display:flex;align-items:center;justify-content:center;gap:8px}
+.start-quiz-btn:hover{background:var(--purple-dark);transform:translateY(-1px)}
+.setup-info{background:var(--blue-light);border:1px solid var(--blue-mid);border-radius:var(--radius);padding:12px 16px;font-size:.82rem;color:var(--blue-dark);margin-bottom:14px}
+
+/* ── QUIZ SCREEN ── */
+.quiz-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.quiz-prog-text{font-size:.84rem;font-weight:600;color:var(--text-muted)}
+.timer-pill{display:flex;align-items:center;gap:7px;font-size:.88rem;font-weight:700;font-family:'DM Mono',monospace;background:var(--amber-bg);border:1px solid #FDE68A;color:#92400E;padding:6px 14px;border-radius:99px;transition:all .2s}
+.timer-pill.danger{background:var(--red-bg);border-color:#FECACA;color:var(--red)}
+.quiz-prog-bar{height:5px;background:var(--border);border-radius:99px;overflow:hidden;margin-bottom:20px}
+.quiz-prog-fill{height:100%;background:var(--purple);border-radius:99px;transition:width .35s}
+.q-card{background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;box-shadow:var(--shadow-sm)}
+.q-meta-row{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.q-num-lbl{font-size:.7rem;font-weight:700;color:var(--purple);letter-spacing:.1em;text-transform:uppercase}
+.diff-badge{font-size:.65rem;font-weight:700;padding:2px 9px;border-radius:99px}
+.diff-easy{background:var(--emerald-bg);color:var(--emerald)}
+.diff-medium{background:var(--amber-bg);color:#92400E}
+.diff-hard{background:var(--red-bg);color:var(--red)}
+.q-text{font-size:1.02rem;font-weight:700;color:var(--navy);line-height:1.6;margin-bottom:6px}
+.q-source{font-size:.72rem;color:var(--text-muted);font-style:italic;margin-bottom:18px}
+.opts{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.opt{display:flex;align-items:center;gap:12px;padding:13px 16px;border-radius:10px;border:2px solid var(--border);background:var(--off-white);cursor:pointer;transition:all .14s;font-family:inherit;text-align:left;width:100%}
+.opt:hover:not(:disabled){border-color:var(--purple);background:var(--purple-bg)}
+.opt.sel{border-color:var(--purple);background:var(--purple-bg)}
+.opt.correct{border-color:var(--emerald);background:var(--emerald-bg);cursor:default}
+.opt.wrong{border-color:var(--red);background:var(--red-bg);cursor:default}
+.opt.reveal{border-color:var(--emerald);background:var(--emerald-bg);cursor:default}
+.opt:disabled{cursor:default}
+.opt-l{width:28px;height:28px;border-radius:8px;background:white;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.77rem;font-weight:800;color:var(--text-muted);flex-shrink:0;transition:all .14s}
+.opt.sel .opt-l{background:var(--purple);border-color:var(--purple);color:white}
+.opt.correct .opt-l,.opt.reveal .opt-l{background:var(--emerald);border-color:var(--emerald);color:white}
+.opt.wrong .opt-l{background:var(--red);border-color:var(--red);color:white}
+.opt-txt{font-size:.88rem;font-weight:500;color:var(--text);line-height:1.4;flex:1}
+.opt-ico{margin-left:auto;font-size:.95rem;flex-shrink:0}
+.explanation{display:none;background:var(--amber-bg);border:1px solid #FDE68A;border-radius:10px;padding:13px 16px;font-size:.84rem;color:#92400E;line-height:1.65;margin-bottom:11px}
+.explanation.show{display:block}
+.explanation strong{font-weight:700;color:#78350F}
+.formula-box{display:none;background:var(--purple-bg);border:1px solid rgba(139,92,246,.2);border-radius:8px;padding:9px 14px;font-family:'DM Mono',monospace;font-size:.84rem;color:var(--navy);text-align:center;margin-bottom:11px}
+.formula-box.show{display:block}
+.action-btn{width:100%;padding:13px;border:none;border-radius:10px;font-family:inherit;font-size:.92rem;font-weight:700;cursor:pointer;transition:all .14s}
+.submit-btn{background:var(--purple);color:white}
+.submit-btn:hover:not(:disabled){background:var(--purple-dark);transform:translateY(-1px)}
+.submit-btn:disabled{background:var(--text-muted);cursor:default;transform:none}
+.next-btn{background:var(--navy);color:white;display:none}
+.next-btn:hover{background:#132038}
+
+/* ── RESULTS SCREEN ── */
+.results-top{text-align:center;margin-bottom:24px}
+.results-emoji{font-size:3rem;margin-bottom:10px}
+.results-title{font-size:1.5rem;font-weight:800;color:var(--navy);margin-bottom:5px}
+.results-sub{font-size:.88rem;color:var(--text-muted)}
+.results-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:20px}
+.rs{background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;text-align:center}
+.rs-val{font-size:1.5rem;font-weight:800;color:var(--navy);line-height:1}
+.rs-lbl{font-size:.7rem;color:var(--text-muted);margin-top:3px}
+.results-actions{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.ra-btn{flex:1;padding:12px;border-radius:10px;font-family:inherit;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .14s;border:none;min-width:120px}
+.ra-retry{background:var(--purple);color:white}
+.ra-retry:hover{background:var(--purple-dark)}
+.ra-new{background:white;border:1.5px solid var(--border);color:var(--text-mid)}
+.ra-new:hover{border-color:var(--navy);color:var(--navy)}
+.review-section-title{font-size:.72rem;font-weight:700;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+.rev-item{background:white;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;overflow:hidden}
+.rev-item.c{border-color:rgba(16,185,129,.3)}
+.rev-item.w{border-color:rgba(239,68,68,.25)}
+.rev-head{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;user-select:none}
+.rev-icon{font-size:.95rem;width:20px;flex-shrink:0;text-align:center}
+.rev-qnum{font-size:.7rem;font-weight:700;color:var(--text-muted);flex-shrink:0}
+.rev-q{font-size:.83rem;font-weight:600;color:var(--text);flex:1;line-height:1.4}
+.rev-chev{font-size:.7rem;color:var(--text-muted);transition:transform .2s;flex-shrink:0}
+.rev-chev.open{transform:rotate(180deg)}
+.rev-body{display:none;padding:0 14px 12px;border-top:1px solid var(--border-soft)}
+.rev-body.show{display:block}
+.rev-opts{display:flex;flex-direction:column;gap:5px;margin:10px 0}
+.rv{display:flex;align-items:center;gap:8px;padding:7px 11px;border-radius:7px;font-size:.8rem;font-weight:500}
+.rv-c{background:var(--emerald-bg);color:var(--emerald);border:1px solid rgba(16,185,129,.25)}
+.rv-w{background:var(--red-bg);color:var(--red);border:1px solid rgba(239,68,68,.2)}
+.rv-p{background:var(--off-white);color:var(--text-muted);border:1px solid var(--border-soft)}
+.rv-ltr{font-weight:800;flex-shrink:0;min-width:18px}
+.rev-exp{background:var(--amber-bg);border:1px solid #FDE68A;border-radius:7px;padding:10px 13px;font-size:.8rem;color:#92400E;line-height:1.6;margin-top:8px}
+.rev-exp strong{font-weight:700;color:#78350F}
+.rev-formula{background:var(--purple-bg);border:1px solid rgba(139,92,246,.2);border-radius:6px;padding:8px 12px;font-family:'DM Mono',monospace;font-size:.78rem;color:var(--navy);margin-top:6px;text-align:center}
+
+/* Loader */
+.loader{position:fixed;inset:0;background:var(--navy);display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity .4s}
+.loader.gone{opacity:0;pointer-events:none}
+.loader-inner{display:flex;flex-direction:column;align-items:center;gap:14px}
+.loader-mark{width:46px;height:46px;border-radius:12px;background:var(--blue);display:flex;align-items:center;justify-content:center;animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(.93)}}
+.loader-txt{font-size:.82rem;color:rgba(255,255,255,.35)}
+.overlay{display:none;position:fixed;inset:0;background:rgba(10,22,40,.5);z-index:150}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}
+  .overlay.open{display:block}.main{margin-left:0}.hamburger{display:flex}
+  .content{padding:16px}
+}
+  </style>
+</head>
+<body style="opacity:0;transition:opacity .35s">
+
+<div class="loader" id="loader">
+  <div class="loader-inner">
+    <div class="loader-mark"><svg width="24" height="24" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="6" height="8" rx="1.5" fill="white"/><rect x="10" y="2" width="6" height="5" rx="1.5" fill="rgba(255,255,255,0.5)"/><rect x="2" y="12" width="14" height="2.5" rx="1.25" fill="rgba(255,255,255,0.3)"/><rect x="10" y="9" width="6" height="2.5" rx="1.25" fill="rgba(255,255,255,0.4)"/></svg></div>
+    <span class="loader-txt">Loading quiz…</span>
+  </div>
+</div>
+<div class="overlay" id="overlay"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-mark"><svg width="16" height="16" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="6" height="8" rx="1.5" fill="white"/><rect x="10" y="2" width="6" height="5" rx="1.5" fill="rgba(255,255,255,0.5)"/><rect x="2" y="12" width="14" height="2.5" rx="1.25" fill="rgba(255,255,255,0.3)"/><rect x="10" y="9" width="6" height="2.5" rx="1.25" fill="rgba(255,255,255,0.4)"/></svg></div>
+      <span class="sb-logo-text">StudyEase</span>
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-lbl">Main</div>
+      <a href="dashboard.html" class="sb-item"><svg class="sb-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M3 4a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 8a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1v-4zm8-8a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V4zm0 8a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"/></svg>Dashboard</a>
+      <a href="progress.html" class="sb-item"><svg class="sb-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zm6-4a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zm6-3a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/></svg>My Progress</a>
+      <div class="sb-lbl" style="margin-top:8px">Subjects</div>
+      <a href="maths.html" class="sb-item active"><svg class="sb-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm2 10a1 1 0 10-2 0v3a1 1 0 102 0v-3zm2-3a1 1 0 011 1v5a1 1 0 11-2 0v-5a1 1 0 011-1zm4-1a1 1 0 10-2 0v6a1 1 0 102 0V8z" clip-rule="evenodd"/></svg>Mathematics</a>
+    </nav>
+    <div class="sb-bottom">
+      <div class="sb-user">
+        <div class="sb-avatar" id="sb-avatar">?</div>
+        <div class="sb-user-info">
+          <div class="sb-user-name" id="sb-username">Loading…</div>
+          <div class="sb-user-plan" id="sb-userplan">Free Plan</div>
+        </div>
+        <button class="sb-logout" id="logout-btn"><svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 001 1h7a1 1 0 100-2H4V5h6a1 1 0 100-2H3zm11.707 4.293a1 1 0 010 1.414L12.414 11H17a1 1 0 110 2h-4.586l2.293 2.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/></svg></button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="topbar-l">
+        <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+        <div class="breadcrumb">
+          <a href="maths.html">📐 Mathematics</a>
+          <span class="breadcrumb-sep">›</span>
+          <span class="breadcrumb-current" id="bc-label">Quiz</span>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div id="quiz-badge" style="display:none;font-size:.73rem;font-weight:700;padding:4px 12px;border-radius:99px;background:var(--purple-bg);color:var(--purple);border:1px solid rgba(139,92,246,.3)"></div>
+        <div class="t-avatar" id="topbar-avatar">?</div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ═══ SETUP ═══ -->
+      <div id="setup">
+        <div class="setup-title">📝 Quiz Mode</div>
+        <div class="setup-sub">Pick a chapter, difficulty, number of questions and time limit — then go!</div>
+
+        <div class="setup-info">
+          💡 Quiz questions are taken from <strong>NCERT examples and exercises</strong> — different from the Live Session questions. Scores are saved to your Supabase profile.
+        </div>
+
+        <div class="setup-card">
+          <div class="setup-card-title">Select Chapter</div>
+          <div class="pill-row">
+            <button class="pill sel" data-ch="ch1" onclick="pick('ch',this,'ch1')">Ch. 1 · Real Numbers <span style="font-size:.65rem;opacity:.7">(20 Qs)</span></button>
+            <button class="pill sel" data-ch="ch2" onclick="pick('ch',this,'ch2')">Ch. 2 · Polynomials <span style="font-size:.65rem;opacity:.7">(18 Qs)</span></button>
+            <button class="pill disabled">Ch. 3 · Linear Equations <span style="font-size:.65rem;opacity:.6">soon</span></button>
+          </div>
+        </div>
+
+        <div class="setup-card">
+          <div class="setup-card-title">Difficulty</div>
+          <div class="pill-row">
+            <button class="pill sel-blue sel" data-diff="all" onclick="pick('diff',this,'all')">🎯 All Levels</button>
+            <button class="pill sel-blue" data-diff="easy" onclick="pick('diff',this,'easy')">🟢 Easy</button>
+            <button class="pill sel-blue" data-diff="medium" onclick="pick('diff',this,'medium')">🟡 Medium</button>
+            <button class="pill sel-blue" data-diff="hard" onclick="pick('diff',this,'hard')">🔴 Hard</button>
+          </div>
+        </div>
+
+        <div class="setup-card">
+          <div class="setup-card-title">Number of Questions</div>
+          <div class="pill-row">
+            <button class="pill sel-green" data-n="5" onclick="pick('n',this,5)">5</button>
+            <button class="pill sel-green sel" data-n="10" onclick="pick('n',this,10)">10</button>
+            <button class="pill sel-green" data-n="15" onclick="pick('n',this,15)">15</button>
+            <button class="pill sel-green" data-n="99" onclick="pick('n',this,99)">All</button>
+          </div>
+        </div>
+
+        <div class="setup-card">
+          <div class="setup-card-title">Time Limit</div>
+          <div class="pill-row">
+            <button class="pill sel-amber sel" data-t="0" onclick="pick('t',this,0)">⏳ No limit</button>
+            <button class="pill sel-amber" data-t="30" onclick="pick('t',this,30)">⏱ 30s / question</button>
+            <button class="pill sel-amber" data-t="60" onclick="pick('t',this,60)">⏱ 1 min / question</button>
+            <button class="pill sel-amber" data-t="900" onclick="pick('t',this,900)">⏱ 15 min total</button>
+          </div>
+        </div>
+
+        <button class="start-quiz-btn" onclick="startQuiz()">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
+          Start Quiz
+        </button>
+      </div>
+
+      <!-- ═══ QUIZ ═══ -->
+      <div id="quiz" style="display:none">
+        <div class="quiz-header">
+          <div class="quiz-prog-text" id="q-prog-txt">Question 1 of 10</div>
+          <div class="timer-pill" id="timer-pill" style="display:none">⏱ <span id="timer-val">—</span></div>
+        </div>
+        <div class="quiz-prog-bar"><div class="quiz-prog-fill" id="q-prog-fill" style="width:0%"></div></div>
+        <div class="q-card">
+          <div class="q-meta-row">
+            <span class="q-num-lbl" id="q-num-lbl">Q1 of 10</span>
+            <span class="diff-badge" id="q-diff-badge">Easy</span>
+          </div>
+          <div class="q-text" id="q-text">Loading…</div>
+          <div class="q-source" id="q-source"></div>
+          <div class="opts" id="q-opts"></div>
+          <div class="explanation" id="q-exp"></div>
+          <div class="formula-box" id="q-formula"></div>
+          <button class="action-btn submit-btn" id="submit-btn" onclick="submitAns()" disabled>Select an answer first</button>
+          <button class="action-btn next-btn" id="next-btn" onclick="nextQ()">Next →</button>
+        </div>
+      </div>
+
+      <!-- ═══ RESULTS ═══ -->
+      <div id="results" style="display:none">
+        <div class="results-top">
+          <div class="results-emoji" id="r-emoji">🎉</div>
+          <div class="results-title" id="r-title">Quiz Complete!</div>
+          <div class="results-sub" id="r-sub"></div>
+        </div>
+        <div class="results-stats">
+          <div class="rs"><div class="rs-val" id="rs-score">—</div><div class="rs-lbl">Score</div></div>
+          <div class="rs"><div class="rs-val" id="rs-pct" style="color:var(--emerald)">—</div><div class="rs-lbl">Percentage</div></div>
+          <div class="rs"><div class="rs-val" id="rs-correct" style="color:var(--emerald)">—</div><div class="rs-lbl">Correct</div></div>
+          <div class="rs"><div class="rs-val" id="rs-wrong" style="color:var(--red)">—</div><div class="rs-lbl">Wrong</div></div>
+          <div class="rs"><div class="rs-val" id="rs-time">—</div><div class="rs-lbl">Time</div></div>
+        </div>
+        <div class="results-actions">
+          <button class="ra-btn ra-retry" onclick="retryQuiz()">🔄 Try Again</button>
+          <button class="ra-btn ra-new" onclick="newQuiz()">⚙️ New Quiz</button>
+        </div>
+        <div class="review-section-title">Review Answers</div>
+        <div id="review-list"></div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+var SB=window.supabase.createClient('https://xiwrvbtryeesfgeydxnf.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd3J2YnRyeWVlc2ZnZXlkeG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMTQ0NDAsImV4cCI6MjA5NDU5MDQ0MH0.3Sp9dlc8cNsrzdHAGy74pCqscjL1MFV9ZWMW90QbhqE');
+var userId=null;
+SB.auth.onAuthStateChange(function(ev,sess){
+  if(ev==='SIGNED_OUT'||(ev==='INITIAL_SESSION'&&!sess)){window.location.href='index.html';return}
+  if(sess&&sess.user){
+    userId=sess.user.id;
+    var name=(sess.user.user_metadata&&(sess.user.user_metadata.name||sess.user.user_metadata.full_name))||sess.user.email.split('@')[0];
+    var init=name.charAt(0).toUpperCase();
+    ['sb-avatar','topbar-avatar'].forEach(function(id){document.getElementById(id).textContent=init});
+    document.getElementById('sb-username').textContent=name;
+    document.getElementById('loader').classList.add('gone');
+    setTimeout(function(){document.getElementById('loader').style.display='none'},420);
+    document.body.style.opacity='1';
+    SB.from('profiles').select('plan').eq('id',sess.user.id).single().then(function(r){
+      if(r.data) document.getElementById('sb-userplan').textContent=r.data.plan==='achiever'?'Achiever Plan':r.data.plan==='scholar'?'Scholar Plan':'Free Plan';
+    });
+    var params=new URLSearchParams(window.location.search);
+    if(params.get('ch')) setCh(params.get('ch'));
+  }
+});
+document.getElementById('logout-btn').addEventListener('click',async function(){await SB.auth.signOut();window.location.href='index.html'});
+
+/* ══════════════════════════════════
+   QUESTION BANK
+══════════════════════════════════ */
+var QB = {
+
+/* ─── CHAPTER 1: REAL NUMBERS ─── */
+ch1:[
+  /* EASY */
+  {id:'1e01',diff:'easy',src:'Ex 1.1 Q1(i)',
+   q:'Express 140 as a product of its prime factors.',
+   opts:['2 × 5 × 14','2² × 5 × 7','2³ × 5 × 7','2² × 5² × 7'],
+   ans:1,exp:'140 = 4 × 35 = 2² × 5 × 7. Factor tree: 140 → 2×70 → 2×2×35 → 2×2×5×7.',formula:'140 = 2² × 5 × 7'},
+  {id:'1e02',diff:'easy',src:'Ex 1.1 Q1(ii)',
+   q:'Express 156 as a product of its prime factors.',
+   opts:['2 × 3 × 26','2² × 3 × 13','2³ × 3 × 13','2 × 78'],
+   ans:1,exp:'156 = 2 × 78 = 2 × 2 × 39 = 2² × 3 × 13.',formula:'156 = 2² × 3 × 13'},
+  {id:'1e03',diff:'easy',src:'Ex 1.1 Q2(i)',
+   q:'Find the HCF of 26 and 91 using prime factorisation.',
+   opts:['7','13','26','91'],
+   ans:1,exp:'26 = 2 × 13. 91 = 7 × 13. Common factor = 13. HCF = 13.',formula:'HCF(26,91) = 13'},
+  {id:'1e04',diff:'easy',src:'Ex 1.1 Q2(i)',
+   q:'Find the LCM of 26 and 91.',
+   opts:['91','182','364','2366'],
+   ans:1,exp:'LCM = 2 × 7 × 13 = 182. Verify: HCF × LCM = 13 × 182 = 2366 = 26 × 91 ✓',formula:'LCM(26,91) = 2 × 7 × 13 = 182'},
+  {id:'1e05',diff:'easy',src:'Ex 1.1 Q3(i)',
+   q:'Find the HCF of 12, 15 and 21.',
+   opts:['1','2','3','6'],
+   ans:2,exp:'12 = 2² × 3, 15 = 3 × 5, 21 = 3 × 7. The only common prime factor is 3. HCF = 3.',formula:'HCF(12,15,21) = 3'},
+  {id:'1e06',diff:'easy',src:'Ex 1.1 Q3(iii)',
+   q:'Find the HCF of 17, 23 and 29.',
+   opts:['1','17','23','29'],
+   ans:0,exp:'17, 23 and 29 are all prime numbers. They share no common factor except 1. HCF = 1.',formula:'All prime → HCF = 1'},
+  {id:'1e07',diff:'easy',src:'Example 2',
+   q:'Find the LCM of 6 and 20 using prime factorisation.',
+   opts:['20','30','60','120'],
+   ans:2,exp:'6 = 2¹ × 3¹ and 20 = 2² × 5¹. LCM = 2² × 3 × 5 = 60.',formula:'LCM(6,20) = 2² × 3 × 5 = 60'},
+  {id:'1e08',diff:'easy',src:'Example 2',
+   q:'What is the HCF of 6 and 20?',
+   opts:['2','3','6','10'],
+   ans:0,exp:'6 = 2 × 3, 20 = 2² × 5. Common prime factor is 2¹. HCF = 2.',formula:'HCF(6,20) = 2¹ = 2'},
+
+  /* MEDIUM */
+  {id:'1m01',diff:'medium',src:'Example 3 / Ex 1.1 Q2(iv)',
+   q:'The HCF of 96 and 404 is 4. Find their LCM.',
+   opts:['4848','9696','19392','38784'],
+   ans:1,exp:'HCF × LCM = 96 × 404 = 38784. LCM = 38784 ÷ 4 = 9696.',formula:'LCM = (96 × 404) ÷ 4 = 9696'},
+  {id:'1m02',diff:'medium',src:'Ex 1.1 Q4',
+   q:'Given that HCF(306, 657) = 9, find LCM(306, 657).',
+   opts:['2226','22338','22266','2338'],
+   ans:1,exp:'LCM = (306 × 657) ÷ 9 = 201042 ÷ 9 = 22338.',formula:'LCM = (306 × 657) ÷ 9 = 22338'},
+  {id:'1m03',diff:'medium',src:'Example 4 / Ex 1.1 Q3(ii)',
+   q:'Find the LCM of 6, 72 and 120.',
+   opts:['180','360','720','1440'],
+   ans:1,exp:'6 = 2×3, 72 = 2³×3², 120 = 2³×3×5. LCM = 2³×3²×5 = 8×9×5 = 360.',formula:'LCM(6,72,120) = 2³×3²×5 = 360'},
+  {id:'1m04',diff:'medium',src:'Ex 1.1 Q5',
+   q:'Can 6ⁿ end with the digit 0 for any natural number n?',
+   opts:['Yes, when n is even','Yes, when n > 5','No, never','Yes, when n is divisible by 5'],
+   ans:2,exp:'6ⁿ = 2ⁿ × 3ⁿ. For a number to end in 0, its prime factorisation must contain 5. Since 6ⁿ never has 5 as a factor, 6ⁿ cannot end in 0 for any natural number n.',formula:'6ⁿ = 2ⁿ × 3ⁿ — no factor of 5 → cannot end in 0'},
+  {id:'1m05',diff:'medium',src:'Ex 1.1 Q7',
+   q:'Sonia takes 18 min and Ravi takes 12 min to complete one round of a field. They start together. After how many minutes will they meet again at the starting point?',
+   opts:['6 min','18 min','36 min','216 min'],
+   ans:2,exp:'They meet after LCM(18,12) minutes. 18 = 2×3², 12 = 2²×3. LCM = 2²×3² = 36 min.',formula:'LCM(18,12) = 2² × 3² = 36 min'},
+  {id:'1m06',diff:'medium',src:'Example 1',
+   q:'For which natural number n does 4ⁿ end with digit zero?',
+   opts:['n = 5','n = 10','Only n = 0','No such n exists'],
+   ans:3,exp:'4ⁿ = 2²ⁿ. The prime factorisation of 4ⁿ only contains the prime 2. For a number to end in 0, it needs the prime 5. Since 4ⁿ never contains 5, no natural number n makes 4ⁿ end in 0.',formula:'4ⁿ = 2²ⁿ — no factor of 5'},
+  {id:'1m07',diff:'medium',src:'Ex 1.1 Q6(ii)',
+   q:'Is 7 × 11 × 13 + 13 a composite number? Why?',
+   opts:['No, it is prime','Yes — 13(77 + 1) = 13 × 78','Yes — it ends in 1','No — it cannot be factored'],
+   ans:1,exp:'7×11×13 + 13 = 13(7×11 + 1) = 13 × 78. Since it has factors other than 1 and itself, it is composite.',formula:'13 × (7×11+1) = 13 × 78'},
+  {id:'1m08',diff:'medium',src:'Ex 1.1 Q2(iii)',
+   q:'Find the LCM of 8, 9 and 25.',
+   opts:['600','1800','3600','900'],
+   ans:1,exp:'8 = 2³, 9 = 3², 25 = 5². No common factors. LCM = 2³ × 3² × 5² = 8×9×25 = 1800.',formula:'LCM(8,9,25) = 2³×3²×5² = 1800'},
+
+  /* HARD */
+  {id:'1h01',diff:'hard',src:'Ex 1.2 Q1 / Theorem 1.3',
+   q:'In proving √2 is irrational, after showing 2|a, we write a = 2c and substitute into 2b² = a². What do we get?',
+   opts:['b² = 4c²','b² = 2c²','2b = 4c','b = 2c'],
+   ans:1,exp:'Substituting a = 2c: 2b² = (2c)² = 4c², so b² = 2c². This shows 2|b², so by Theorem 1.2, 2|b — contradiction since a/b was in lowest terms.',formula:'a=2c → 2b²=4c² → b²=2c² → 2|b → contradiction'},
+  {id:'1h02',diff:'hard',src:'Ex 1.2 Q2',
+   q:'To prove 3 + 2√5 is irrational, assume it equals p/q. What gives the contradiction?',
+   opts:['p/q is not simplified','√5 = (p-3q)/(2q) is rational, but √5 is irrational','3 is irrational','p and q must be equal'],
+   ans:1,exp:'If 3 + 2√5 = p/q, then 2√5 = p/q - 3, so √5 = (p-3q)/(2q). Since p,q are integers, (p-3q)/(2q) is rational. But √5 is irrational — contradiction.',formula:'3+2√5=p/q → √5=(p-3q)/(2q) → rational → contradiction'},
+  {id:'1h03',diff:'hard',src:'Ex 1.2 Q2',
+   q:'Prove 6 - √2 is irrational. If we assume it equals p/q, what does rearranging give?',
+   opts:['√2 = p/q + 6','√2 = 6 - p/q = (6q-p)/q','6 = √2 + p/q','p/q = 6'],
+   ans:1,exp:'6 - √2 = p/q → √2 = 6 - p/q = (6q-p)/q. Since 6q-p and q are integers, (6q-p)/q is rational. But √2 is irrational — contradiction. So 6-√2 is irrational.',formula:'6-√2=p/q → √2=(6q-p)/q → rational → contradiction'},
+  {id:'1h04',diff:'hard',src:'Ex 1.1 Q6(i)',
+   q:'Is 7 × 6 × 5 × 4 × 3 × 2 × 1 + 5 a composite number?',
+   opts:['No, it is prime','Yes — 5(7×6×4×3×2×1 + 1) = 5 × 505','Yes — because it is even','No — it cannot be simplified'],
+   ans:1,exp:'7! + 5 = 5(7×6×4×3×2×1 + 1) = 5 × 505 = 5 × 5 × 101. Since it has factors 5, 101 etc. other than 1 and itself, it is composite.',formula:'7!+5 = 5(7!/5 + 1) — has factor 5'},
+],
+
+/* ─── CHAPTER 2: POLYNOMIALS ─── */
+ch2:[
+  /* EASY */
+  {id:'2e01',diff:'easy',src:'Ex 2.1',
+   q:'The graph of y = p(x) is given. The number of zeroes of p(x) is determined by the number of times the graph:',
+   opts:['touches the y-axis','intersects the x-axis','is above the x-axis','is below the x-axis'],
+   ans:1,exp:'The zeroes of a polynomial p(x) are the x-coordinates of the points where the graph of y = p(x) intersects the x-axis.',formula:'Zeroes of p(x) = x-values where graph meets x-axis'},
+  {id:'2e02',diff:'easy',src:'Ex 2.1',
+   q:'A quadratic polynomial graph intersects the x-axis at exactly one point. How many zeroes does it have?',
+   opts:['0','1 (a repeated zero)','2','Infinite'],
+   ans:1,exp:'When the parabola touches the x-axis at exactly one point (tangent to x-axis), the polynomial has one repeated zero. For example: x² has zero at x=0 (repeated).',formula:'Touches x-axis once → one repeated zero'},
+  {id:'2e03',diff:'easy',src:'Ex 2.2 Q1',
+   q:'Find the zeroes of the quadratic polynomial x² - 2x - 8.',
+   opts:['x = 2 and x = -4','x = -2 and x = 4','x = 4 and x = -2','x = -4 and x = 2'],
+   ans:1,exp:'x² - 2x - 8 = (x-4)(x+2). Setting each factor to zero: x = 4 or x = -2. Verify: sum = 4+(-2) = 2 = -(-2)/1 ✓, product = 4×(-2) = -8 = (-8)/1 ✓',formula:'x²-2x-8 = (x-4)(x+2) → zeroes: 4 and -2'},
+  {id:'2e04',diff:'easy',src:'Ex 2.2 Q1',
+   q:'Find the zeroes of the polynomial 4s² - 4s + 1.',
+   opts:['s = 1 and s = -1','s = 1/2 (repeated)','s = -1/2 (repeated)','s = 2 and s = -2'],
+   ans:1,exp:'4s²-4s+1 = (2s-1)². So (2s-1) = 0 gives s = 1/2. This is a repeated zero. Sum = 1/2+1/2 = 1 = 4/4 ✓, product = 1/2×1/2 = 1/4 = 1/4 ✓',formula:'4s²-4s+1 = (2s-1)² → s = 1/2 (repeated)'},
+  {id:'2e05',diff:'easy',src:'Ex 2.2 Q1',
+   q:'What are the zeroes of 6x² - 3 - 7x?',
+   opts:['x = 3 and x = -1/2','x = -3 and x = 1/2','x = 3/2 and x = -1/3','x = -3/2 and x = 1/3'],
+   ans:2,exp:'6x²-7x-3 = (3x+1)(2x-3). So x = -1/3 or x = 3/2. Sum = 3/2-1/3 = 7/6 = 7/6 ✓, product = 3/2×(-1/3) = -1/2 = -3/6 = -1/2 ✓',formula:'6x²-7x-3 = (3x+1)(2x-3) → zeroes: 3/2 and -1/3'},
+  {id:'2e06',diff:'easy',src:'Ex 2.2 Q2',
+   q:'For the polynomial x² + x - 2 with zeroes 1 and -2, what is α + β?',
+   opts:['2','-1','1','-2'],
+   ans:1,exp:'Sum of zeroes α+β = -b/a = -(1)/1 = -1. Verify: 1+(-2) = -1 ✓',formula:'α+β = -b/a = -1/1 = -1'},
+  {id:'2e07',diff:'easy',src:'Ex 2.2 Q2',
+   q:'For the polynomial x² + x - 2, what is the product of zeroes αβ?',
+   opts:['2','-2','1','-1'],
+   ans:1,exp:'Product αβ = c/a = -2/1 = -2. Verify: 1×(-2) = -2 ✓',formula:'αβ = c/a = -2/1 = -2'},
+  {id:'2e08',diff:'easy',src:'Ex 2.2 Q1',
+   q:'Find the zeroes of t² - 15.',
+   opts:['t = 5 and t = -5','t = √15 and t = -√15','t = √5 and t = -√5','t = 15 and t = -15'],
+   ans:1,exp:'t² - 15 = 0 → t² = 15 → t = ±√15. Sum = √15 + (-√15) = 0 ✓, product = √15 × (-√15) = -15 ✓',formula:'t²=15 → t = ±√15'},
+
+  /* MEDIUM */
+  {id:'2m01',diff:'medium',src:'Ex 2.2 Q1',
+   q:'Find the zeroes of the polynomial p(x) = x² + 7x + 10.',
+   opts:['x = 2 and x = 5','x = -2 and x = -5','x = 2 and x = -5','x = -2 and x = 5'],
+   ans:1,exp:'x²+7x+10 = (x+2)(x+5). Zeroes: x=-2 and x=-5. Sum = -2+(-5) = -7 = -(7)/1 ✓, product = (-2)(-5) = 10 = 10/1 ✓',formula:'(x+2)(x+5) → zeroes: -2 and -5'},
+  {id:'2m02',diff:'medium',src:'Ex 2.2 Q2',
+   q:'A quadratic polynomial has sum of zeroes = 1/4 and product = -1. What is the polynomial?',
+   opts:['4x² - x - 4','4x² + x - 4','x² - x/4 - 1','4x² - x + 4'],
+   ans:0,exp:'p(x) = x² - (sum)x + product = x² - (1/4)x + (-1) = x² - x/4 - 1. Multiply by 4: 4x² - x - 4.',formula:'p(x) = x²-(α+β)x+αβ = x²-x/4-1 → 4x²-x-4'},
+  {id:'2m03',diff:'medium',src:'Ex 2.2 Q2',
+   q:'Find a quadratic polynomial whose sum of zeroes is 0 and product of zeroes is √5.',
+   opts:['x² - √5','x² + √5','x² - √5x','x² + √5x'],
+   ans:0,exp:'p(x) = x² - (0)x + √5 = x² + √5. Wait — product = √5, sum = 0. So p(x) = x² - 0·x + √5 = x² + √5. But zeroes of x²+√5 are imaginary — this is still the correct polynomial form.',formula:'p(x) = x²-(0)x+√5 = x²+√5'},
+  {id:'2m04',diff:'medium',src:'Ex 2.2 Q2',
+   q:'A quadratic polynomial has sum of zeroes = √2 and product = 1/3. Which is the simplest form?',
+   opts:['3x² - 3√2x + 1','x² - √2x + 1/3','3x² + 3√2x + 1','x² + √2x - 1/3'],
+   ans:0,exp:'p(x) = k[x² - √2x + 1/3]. Taking k=3: 3x² - 3√2x + 1.',formula:'p(x) = k(x²-√2x+1/3) → k=3 gives 3x²-3√2x+1'},
+  {id:'2m05',diff:'medium',src:'Ex 2.3 Q2',
+   q:'Check whether x²+3x+1 is a factor of 3x⁴+5x³-7x²+2x+2.',
+   opts:['Yes, it is a factor with remainder 0','No, the remainder is x+2','No, the remainder is 2','Yes, it is a factor with remainder 1'],
+   ans:0,exp:'Dividing 3x⁴+5x³-7x²+2x+2 by x²+3x+1 gives quotient 3x²-4x+2 and remainder 0. Since remainder = 0, x²+3x+1 is a factor.',formula:'Dividend = Divisor × Quotient + 0 → yes, it is a factor'},
+  {id:'2m06',diff:'medium',src:'Ex 2.3 Q1',
+   q:'When x³-3x²+5x-3 is divided by x²-2, the quotient is (x-3). What is the remainder?',
+   opts:['7x-9','7x+9','-7x-9','7x'],
+   ans:0,exp:'Using division algorithm: p(x) = g(x)·q(x) + r(x). r(x) = p(x) - g(x)·q(x) = (x³-3x²+5x-3) - (x²-2)(x-3) = 7x-9.',formula:'r(x) = p(x) - g(x)·q(x) = 7x - 9'},
+  {id:'2m07',diff:'medium',src:'Ex 2.2 Q1',
+   q:'What are the zeroes of the polynomial 3x² - x - 4?',
+   opts:['x = 4/3 and x = 1','x = -4/3 and x = 1','x = 4/3 and x = -1','x = -4/3 and x = -1'],
+   ans:2,exp:'3x²-x-4 = (3x-4)(x+1). Zeroes: x = 4/3 and x = -1. Verify: sum = 4/3-1 = 1/3 = 1/3 ✓, product = (4/3)(-1) = -4/3 ✓',formula:'(3x-4)(x+1) → zeroes: 4/3 and -1'},
+  {id:'2m08',diff:'medium',src:'Ex 2.2 Q2',
+   q:'A quadratic polynomial has sum of zeroes = -1/4 and product = 1/4. Find the polynomial.',
+   opts:['4x² + x + 1','4x² - x + 1','x² + x/4 + 1/4','4x² + x - 1'],
+   ans:0,exp:'p(x) = x² - (-1/4)x + 1/4 = x² + x/4 + 1/4. Multiply by 4: 4x² + x + 1.',formula:'4(x²+x/4+1/4) = 4x²+x+1'},
+
+  /* HARD */
+  {id:'2h01',diff:'hard',src:'Ex 2.3 Q3',
+   q:'On dividing x³-3x²+x+2 by a polynomial g(x), the quotient is x-2 and remainder is -2x+4. What is g(x)?',
+   opts:['x² - x + 1','x² + x - 1','x² - x - 1','x² + x + 1'],
+   ans:0,exp:'p(x) = g(x)·q(x) + r(x). So g(x) = (p(x) - r(x)) / q(x) = (x³-3x²+x+2-(-2x+4))/(x-2) = (x³-3x²+3x-2)/(x-2) = x²-x+1.',formula:'g(x) = (p(x)-r(x))/q(x) = x²-x+1'},
+  {id:'2h02',diff:'hard',src:'Ex 2.3 Q4',
+   q:'Give examples satisfying division algorithm: degree p(x) = degree q(x). Which is a valid example?',
+   opts:['p(x)=2x², g(x)=2, q(x)=x², r(x)=0','p(x)=x², g(x)=x², q(x)=1, r(x)=0','p(x)=x³, g(x)=x, q(x)=x², r(x)=0','p(x)=x², g(x)=x³, q(x)=0, r(x)=x²'],
+   ans:2,exp:'For degree p(x) = degree q(x), we need deg(g(x)) = 1. Example: p(x)=x³, g(x)=x, quotient q(x)=x², remainder r(x)=0. Check: x·x²+0=x³=p(x) ✓',formula:'p=g·q+r, deg q = deg p requires deg g = 1'},
+  {id:'2h03',diff:'hard',src:'Ex 2.4 Q2(i)',
+   q:'Verify 3, -1, and -1/3 are zeroes of the cubic polynomial p(x) = 3x³ - 5x² - 11x - 3. What is p(3)?',
+   opts:['0','3','-3','6'],
+   ans:0,exp:'p(3) = 3(27) - 5(9) - 11(3) - 3 = 81 - 45 - 33 - 3 = 0. So 3 is a zero. Similarly p(-1) = -3-5+11-3 = 0 ✓ and p(-1/3) = 3(-1/27)-5(1/9)+11(1/3)-3 = -1/9-5/9+11/3-3 = 0 ✓',formula:'p(3)=81-45-33-3=0 ✓'},
+  {id:'2h04',diff:'hard',src:'Ex 2.4 Q3',
+   q:'If two zeroes of x⁴-6x³-26x²+138x-35 are 2±√3, find all four zeroes.',
+   opts:['2+√3, 2-√3, 7, -5','2+√3, 2-√3, 5, -7','2+√3, 2-√3, 7, 5','2+√3, 2-√3, -7, -5'],
+   ans:0,exp:'Since 2±√3 are zeroes, (x-(2+√3))(x-(2-√3)) = x²-4x+1 is a factor. Dividing gives x²-2x-35 = (x-7)(x+5). So all zeroes: 2+√3, 2-√3, 7, -5.',formula:'x⁴-6x³-26x²+138x-35 = (x²-4x+1)(x-7)(x+5)'},
+]
+};
+
+/* ══════════════════════════════════
+   SETUP STATE
+══════════════════════════════════ */
+var cfg={ch:'ch1',diff:'all',n:10,t:0};
+var selClass={ch:'sel',diff:'sel-blue',n:'sel-green',t:'sel-amber'};
+
+window.pick=function(type,btn,val){
+  var row=btn.closest('.pill-row');
+  if(!row)return;
+  var selCls=selClass[type];
+  row.querySelectorAll('.pill').forEach(function(b){b.classList.remove(selCls)});
+  btn.classList.add(selCls);
+  cfg[type]=val;
+};
+
+function setCh(ch){
+  var btn=document.querySelector('[data-ch="'+ch+'"]');
+  if(btn&&!btn.classList.contains('disabled')) pick('ch',btn,ch);
+}
+
+/* ══════════════════════════════════
+   QUIZ STATE
+══════════════════════════════════ */
+var qs=[],qIdx=0,selOpt=-1,answered=false,answers=[],startMs,timerInt,qTimerInt;
+
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+
+window.startQuiz=function(){
+  var pool=(QB[cfg.ch]||[]).filter(function(q){return cfg.diff==='all'||q.diff===cfg.diff});
+  if(!pool.length){alert('No questions for this selection. Try a different difficulty.');return}
+  qs=shuffle(pool.slice()).slice(0,Math.min(cfg.n===99?999:cfg.n,pool.length));
+  qIdx=0;answers=[];startMs=Date.now();selOpt=-1;answered=false;
+  show('quiz');
+  document.getElementById('bc-label').textContent='Quiz — Ch.'+(cfg.ch==='ch1'?'1 Real Numbers':'2 Polynomials');
+  document.getElementById('quiz-badge').style.display='block';
+  initTimer();
+  renderQ();
+};
+
+function initTimer(){
+  clearInterval(timerInt);clearInterval(qTimerInt);
+  if(!cfg.t){document.getElementById('timer-pill').style.display='none';return}
+  document.getElementById('timer-pill').style.display='flex';
+  if(cfg.t<=60){/* per question — handled in renderQ */}
+  else{
+    var left=cfg.t;
+    updateTimer(left);
+    timerInt=setInterval(function(){left--;updateTimer(left);if(left<=0){clearInterval(timerInt);finishQuiz();}},1000);
+  }
+}
+
+function startQTimer(){
+  if(!cfg.t||cfg.t>60)return;
+  clearInterval(qTimerInt);
+  var left=cfg.t;updateTimer(left);
+  qTimerInt=setInterval(function(){left--;updateTimer(left);if(left<=0){clearInterval(qTimerInt);if(!answered)submitAns();}},1000);
+}
+
+function updateTimer(s){
+  var m=Math.floor(s/60),sec=s%60;
+  document.getElementById('timer-val').textContent=(m>0?m+':':''+(sec<10?'0':''))+sec+(m===0?'s':'');
+  document.getElementById('timer-pill').classList.toggle('danger',s<=15);
+}
+
+function renderQ(){
+  var q=qs[qIdx],n=qs.length;
+  selOpt=-1;answered=false;
+  document.getElementById('q-prog-txt').textContent='Question '+(qIdx+1)+' of '+n;
+  document.getElementById('quiz-badge').textContent='Q'+(qIdx+1)+'/'+n;
+  document.getElementById('q-prog-fill').style.width=((qIdx/n)*100)+'%';
+  document.getElementById('q-num-lbl').textContent='Q'+(qIdx+1)+' of '+n;
+  var db={'easy':'Easy','medium':'Medium','hard':'Hard'};
+  var dc={'easy':'diff-easy','medium':'diff-medium','hard':'diff-hard'};
+  var badge=document.getElementById('q-diff-badge');
+  badge.textContent=db[q.diff];badge.className='diff-badge '+dc[q.diff];
+  document.getElementById('q-text').textContent=q.q;
+  document.getElementById('q-source').textContent='NCERT Class 10 Maths · '+q.src;
+  document.getElementById('q-exp').className='explanation';
+  document.getElementById('q-formula').className='formula-box';
+  var optsEl=document.getElementById('q-opts');optsEl.innerHTML='';
+  q.opts.forEach(function(opt,i){
+    var b=document.createElement('button');b.className='opt';
+    b.innerHTML='<span class="opt-l">'+['A','B','C','D'][i]+'</span><span class="opt-txt">'+opt+'</span><span class="opt-ico"></span>';
+    b.onclick=function(){if(!answered)selectOpt(i,b)};
+    optsEl.appendChild(b);
+  });
+  var sb=document.getElementById('submit-btn');
+  sb.style.display='block';sb.disabled=true;sb.textContent='Select an answer first';
+  document.getElementById('next-btn').style.display='none';
+  startQTimer();
+}
+
+function selectOpt(idx,btn){
+  selOpt=idx;
+  document.querySelectorAll('.opt').forEach(function(b,i){b.classList.toggle('sel',i===idx)});
+  var sb=document.getElementById('submit-btn');sb.disabled=false;sb.textContent='Submit Answer →';
+}
+
+window.submitAns=function(){
+  if(answered||selOpt===-1)return;
+  clearInterval(qTimerInt);answered=true;
+  var q=qs[qIdx];var ok=(selOpt===q.ans);
+  answers.push({q:q,sel:selOpt,ok:ok});
+  document.querySelectorAll('.opt').forEach(function(b,i){
+    b.disabled=true;
+    if(i===q.ans)b.classList.add('reveal');
+    else if(i===selOpt&&!ok)b.classList.add('wrong');
+    var ic=b.querySelector('.opt-ico');
+    if(i===q.ans)ic.textContent='✓';
+    else if(i===selOpt&&!ok)ic.textContent='✗';
+  });
+  var expEl=document.getElementById('q-exp');
+  expEl.innerHTML='<strong>'+(ok?'✅ Correct! ':'❌ Incorrect. ')+'</strong>'+q.exp;
+  expEl.classList.add('show');
+  if(q.formula){document.getElementById('q-formula').textContent=q.formula;document.getElementById('q-formula').classList.add('show')}
+  document.getElementById('submit-btn').style.display='none';
+  var nb=document.getElementById('next-btn');nb.style.display='block';
+  nb.textContent=qIdx<qs.length-1?'Next Question →':'See Results →';
+};
+
+window.nextQ=function(){qIdx++;if(qIdx>=qs.length)finishQuiz();else renderQ()};
+
+function finishQuiz(){
+  clearInterval(timerInt);clearInterval(qTimerInt);
+  var correct=answers.filter(function(a){return a.ok}).length;
+  var total=answers.length;
+  var pct=total>0?Math.round(correct/total*100):0;
+  var timeSec=Math.round((Date.now()-startMs)/1000);
+  var em=pct>=80?'🎉':pct>=60?'👍':'📚';
+  var m=Math.floor(timeSec/60),s=timeSec%60;
+  document.getElementById('r-emoji').textContent=em;
+  document.getElementById('r-title').textContent=correct+' / '+total+' Correct';
+  document.getElementById('r-sub').textContent=pct>=80?'Excellent! Boards will be a breeze.':pct>=60?'Good effort — review the ones you got wrong.':'Keep practising — every attempt makes you better!';
+  document.getElementById('rs-score').textContent=correct+'/'+total;
+  document.getElementById('rs-pct').textContent=pct+'%';
+  document.getElementById('rs-pct').style.color=pct>=80?'#10B981':pct>=60?'#F59E0B':'#EF4444';
+  document.getElementById('rs-correct').textContent=correct;
+  document.getElementById('rs-wrong').textContent=total-correct;
+  document.getElementById('rs-wrong').style.color=total-correct>0?'#EF4444':'#94A3B8';
+  document.getElementById('rs-time').textContent=(m>0?m+'m ':'')+s+'s';
+  /* Save to Supabase */
+  if(userId){
+    SB.from('quiz_scores').insert({
+      user_id:userId,
+      chapter:cfg.ch==='ch1'?'ch1_real_numbers':'ch2_polynomials',
+      difficulty:cfg.diff,correct:correct,total:total,pct:pct,time_taken:timeSec
+    }).then(function(){}).catch(function(){});
+  }
+  /* Build review */
+  var html='';
+  answers.forEach(function(a,i){
+    html+='<div class="rev-item '+(a.ok?'c':'w')+'">';
+    html+='<div class="rev-head" onclick="toggleRev(this)">';
+    html+='<span class="rev-icon">'+(a.ok?'✅':'❌')+'</span>';
+    html+='<span class="rev-qnum">Q'+(i+1)+'</span>';
+    html+='<span class="rev-q">'+a.q.q+'</span>';
+    html+='<span class="rev-chev">▼</span></div>';
+    html+='<div class="rev-body">';
+    html+='<div style="font-size:.7rem;color:var(--text-muted);font-style:italic;padding:8px 0 4px">Source: NCERT '+a.q.src+'</div>';
+    html+='<div class="rev-opts">';
+    a.q.opts.forEach(function(opt,oi){
+      var isAns=(oi===a.q.ans),wasSel=(oi===a.sel);
+      var cls=isAns?'rv-c':(wasSel&&!isAns?'rv-w':'rv-p');
+      html+='<div class="rv '+cls+'"><span class="rv-ltr">'+['A','B','C','D'][oi]+'</span>'+(isAns?'✓ ':wasSel&&!isAns?'✗ ':'')+opt+'</div>';
+    });
+    html+='</div>';
+    html+='<div class="rev-exp"><strong>Explanation: </strong>'+a.q.exp+'</div>';
+    if(a.q.formula)html+='<div class="rev-formula">'+a.q.formula+'</div>';
+    html+='</div></div>';
+  });
+  document.getElementById('review-list').innerHTML=html;
+  document.getElementById('q-prog-fill').style.width='100%';
+  show('results');
+}
+
+window.toggleRev=function(head){
+  var body=head.nextElementSibling;var chev=head.querySelector('.rev-chev');
+  var open=body.classList.contains('show');
+  body.classList.toggle('show',!open);if(chev)chev.classList.toggle('open',!open);
+};
+
+window.retryQuiz=function(){
+  qIdx=0;answers=[];startMs=Date.now();selOpt=-1;answered=false;
+  qs=shuffle(qs.slice());
+  show('quiz');initTimer();renderQ();
+};
+
+window.newQuiz=function(){
+  clearInterval(timerInt);clearInterval(qTimerInt);
+  document.getElementById('quiz-badge').style.display='none';
+  show('setup');
+};
+
+function show(s){
+  ['setup','quiz','results'].forEach(function(id){
+    document.getElementById(id).style.display=(id===s?'block':'none');
+  });
+}
+
+/* Sidebar */
+var sEl=document.getElementById('sidebar'),oEl=document.getElementById('overlay');
+document.getElementById('hamburger').addEventListener('click',function(){sEl.classList.toggle('open');oEl.classList.toggle('open')});
+oEl.addEventListener('click',function(){sEl.classList.remove('open');oEl.classList.remove('open')});
+
+})();
+</script>
+</body>
+</html>

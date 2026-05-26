@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>My Progress · StudyEase</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230A1628'/><text y='22' x='6' font-size='18' font-family='system-ui' font-weight='700' fill='%233B82F6'>S</text></svg>"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0A1628;--blue:#3B82F6;--blue-light:#EFF6FF;--blue-mid:#BFDBFE;
+  --white:#fff;--off-white:#F4F6F9;
+  --text:#1E293B;--text-mid:#475569;--text-muted:#94A3B8;
+  --border:#E4E8EE;--border-soft:#F0F2F6;
+  --emerald:#10B981;--emerald-bg:#ECFDF5;
+  --amber:#F59E0B;--amber-bg:#FFFBEB;
+  --purple:#8B5CF6;--purple-bg:#F5F3FF;--purple-dark:#7C3AED;
+  --red:#EF4444;--red-bg:#FEF2F2;
+  --sidebar-w:224px;--topbar-h:62px;--radius:10px;--radius-lg:14px;
+  --shadow-sm:0 1px 4px rgba(10,22,40,.05);--shadow:0 4px 18px rgba(10,22,40,.07);
+}
+html{-webkit-font-smoothing:antialiased}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--off-white);color:var(--text);min-height:100vh}
+.layout{display:flex;min-height:100vh}
+
+/* Sidebar */
+.sidebar{width:var(--sidebar-w);background:var(--navy);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:200;transition:transform .28s}
+.sb-logo{display:flex;align-items:center;gap:9px;padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0}
+.sb-logo-mark{width:30px;height:30px;border-radius:8px;background:var(--blue);display:flex;align-items:center;justify-content:center}
+.sb-logo-text{font-weight:700;font-size:1rem;color:white}
+.sb-nav{flex:1;padding:10px 8px;overflow-y:auto;scrollbar-width:none}
+.sb-nav::-webkit-scrollbar{display:none}
+.sb-lbl{font-size:.63rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.24);padding:12px 10px 4px}
+.sb-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;font-size:.85rem;font-weight:500;color:rgba(255,255,255,.5);text-decoration:none;transition:all .14s;margin-bottom:1px}
+.sb-item:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.85)}
+.sb-item.active{background:rgba(59,130,246,.15);color:white}
+.sb-icon{width:17px;height:17px;flex-shrink:0;opacity:.55}
+.sb-bottom{flex-shrink:0;padding:10px 8px;border-top:1px solid rgba(255,255,255,.07)}
+.sb-user{display:flex;align-items:center;gap:9px;padding:4px 2px}
+.sb-avatar{width:32px;height:32px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;color:white;flex-shrink:0}
+.sb-user-info{flex:1;min-width:0}
+.sb-user-name{font-size:.82rem;font-weight:600;color:white;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-user-plan{font-size:.7rem;color:rgba(255,255,255,.35)}
+.sb-logout{width:26px;height:26px;border-radius:6px;background:rgba(255,255,255,.06);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.35);transition:all .14s;flex-shrink:0}
+.sb-logout:hover{background:rgba(239,68,68,.15);color:var(--red)}
+
+/* Main */
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column}
+.topbar{height:var(--topbar-h);background:white;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:100}
+.topbar-l{display:flex;align-items:center;gap:10px}
+.hamburger{display:none;width:34px;height:34px;border-radius:8px;border:1px solid var(--border);background:white;align-items:center;justify-content:center;cursor:pointer;color:var(--navy);flex-direction:column;gap:4px;padding:8px}
+.hamburger span{display:block;width:16px;height:1.5px;background:currentColor;border-radius:2px}
+.breadcrumb{display:flex;align-items:center;gap:7px;font-size:.87rem}
+.breadcrumb a{color:var(--text-muted);text-decoration:none;font-weight:500}
+.breadcrumb a:hover{color:var(--navy)}
+.breadcrumb-sep{color:var(--border)}
+.breadcrumb-current{font-weight:700;color:var(--navy)}
+.t-avatar{width:34px;height:34px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;color:white}
+.content{padding:28px;flex:1;max-width:980px;margin:0 auto;width:100%}
+
+/* Page header */
+.page-header{margin-bottom:24px}
+.page-title{font-size:1.4rem;font-weight:800;color:var(--navy);letter-spacing:-.02em;margin-bottom:4px}
+.page-sub{font-size:.86rem;color:var(--text-muted)}
+
+/* Overall stats */
+.overall-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:24px}
+.overall-stat{background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 18px}
+.os-val{font-size:1.8rem;font-weight:800;color:var(--navy);letter-spacing:-.02em;line-height:1}
+.os-lbl{font-size:.75rem;color:var(--text-muted);font-weight:500;margin-top:4px}
+.os-sub{font-size:.72rem;font-weight:600;margin-top:6px}
+
+/* Subject progress cards */
+.subject-progress-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:28px}
+.subj-card{background:white;border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;transition:all .18s;cursor:pointer;text-decoration:none;display:block}
+.subj-card:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
+.subj-card-head{padding:16px 18px 12px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border-soft)}
+.subj-emoji{font-size:1.5rem}
+.subj-name{font-size:.97rem;font-weight:700;color:var(--navy)}
+.subj-meta{font-size:.74rem;color:var(--text-muted)}
+.subj-card-body{padding:14px 18px}
+.subj-stat-row{display:flex;gap:12px;margin-bottom:12px}
+.subj-stat{flex:1;text-align:center;padding:9px 6px;background:var(--off-white);border-radius:8px;border:1px solid var(--border-soft)}
+.subj-stat-val{font-size:1.1rem;font-weight:800;color:var(--navy)}
+.subj-stat-lbl{font-size:.65rem;color:var(--text-muted);font-weight:500;margin-top:2px}
+.subj-bar-wrap{margin-bottom:8px}
+.subj-bar-label{display:flex;justify-content:space-between;font-size:.72rem;color:var(--text-muted);margin-bottom:4px}
+.subj-bar-track{height:7px;background:var(--border);border-radius:99px;overflow:hidden}
+.subj-bar-fill{height:100%;border-radius:99px;transition:width .6s ease}
+.subj-coming{font-size:.78rem;color:var(--text-muted);padding:12px 0;text-align:center}
+
+/* Chapter breakdown */
+.chapter-section{margin-bottom:28px}
+.section-title{font-size:.72rem;font-weight:700;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
+.chapter-row{display:flex;align-items:center;gap:12px;padding:12px 16px;background:white;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;transition:all .14s}
+.chapter-row:hover{border-color:var(--purple);box-shadow:var(--shadow-sm)}
+.ch-icon{font-size:1rem;width:24px;text-align:center;flex-shrink:0}
+.ch-info{flex:1;min-width:0}
+.ch-name{font-size:.85rem;font-weight:600;color:var(--navy)}
+.ch-stats{font-size:.73rem;color:var(--text-muted);margin-top:2px}
+.ch-pct{font-size:.85rem;font-weight:700;flex-shrink:0}
+.ch-bar{width:80px;height:5px;background:var(--border);border-radius:99px;overflow:hidden;flex-shrink:0}
+.ch-bar-fill{height:100%;border-radius:99px}
+.ch-badge{font-size:.67rem;font-weight:700;padding:2px 8px;border-radius:99px;flex-shrink:0}
+
+/* Recent sessions table */
+.sessions-table{width:100%;border-collapse:collapse;background:white;border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border)}
+.sessions-table th{padding:10px 14px;text-align:left;font-size:.72rem;font-weight:600;color:var(--text-muted);background:var(--off-white);border-bottom:1px solid var(--border)}
+.sessions-table td{padding:11px 14px;font-size:.82rem;border-bottom:1px solid var(--border-soft)}
+.sessions-table tr:last-child td{border-bottom:none}
+
+/* Loader */
+.loader{position:fixed;inset:0;background:var(--navy);display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity .4s}
+.loader.gone{opacity:0;pointer-events:none}
+.loader-inner{display:flex;flex-direction:column;align-items:center;gap:14px}
+.loader-mark{width:46px;height:46px;border-radius:12px;background:var(--blue);display:flex;align-items:center;justify-content:center;animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(.93)}}
+.loader-txt{font-size:.82rem;color:rgba(255,255,255,.35)}
+.overlay{display:none;position:fixed;inset:0;background:rgba(10,22,40,.5);z-index:150}
+
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}
+  .overlay.open{display:block}.main{margin-left:0}.hamburger{display:flex}
+  .content{padding:16px}
+}
+  </style>
+</head>
+<body style="opacity:0;transition:opacity .35s">
+
+<div class="loader" id="loader">
+  <div class="loader-inner">
+    <div class="loader-mark">
+      <svg width="24" height="24" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="6" height="8" rx="1.5" fill="white"/><rect x="10" y="2" width="6" height="5" rx="1.5" fill="rgba(255,255,255,0.5)"/><rect x="2" y="12" width="14" height="2.5" rx="1.25" fill="rgba(255,255,255,0.3)"/><rect x="10" y="9" width="6" height="2.5" rx="1.25" fill="rgba(255,255,255,0.4)"/></svg>
+    </div>
+    <span class="loader-txt">Loading your progress…</span>
+  </div>
+</div>
+<div class="overlay" id="overlay"></div>
+
+<div class="layout">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-mark"><svg width="16" height="16" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="6" height="8" rx="1.5" fill="white"/><rect x="10" y="2" width="6" height="5" rx="1.5" fill="rgba(255,255,255,0.5)"/><rect x="2" y="12" width="14" height="2.5" rx="1.25" fill="rgba(255,255,255,0.3)"/><rect x="10" y="9" width="6" height="2.5" rx="1.25" fill="rgba(255,255,255,0.4)"/></svg></div>
+      <span class="sb-logo-text">StudyEase</span>
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-lbl">Main</div>
+      <a href="dashboard.html" class="sb-item"><svg class="sb-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M3 4a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 8a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1v-4zm8-8a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V4zm0 8a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"/></svg>Dashboard</a>
+      <a href="progress.html" class="sb-item active"><svg class="sb-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zm6-4a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zm6-3a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/></svg>My Progress</a>
+      <div class="sb-lbl" style="margin-top:8px">Subjects</div>
+      <a href="physics.html" class="sb-item"><svg class="sb-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/></svg>Physics</a>
+      <a href="chemistry.html" class="sb-item"><svg class="sb-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7 2a1 1 0 00-.707 1.707L7 4.414v3.758a1 1 0 01-.293.707l-4 4C.817 14.769 2.156 18 4.828 18h10.343c2.673 0 4.012-3.231 2.122-5.121l-4-4A1 1 0 0113 8.172V4.414l.707-.707A1 1 0 0013 2H7z" clip-rule="evenodd"/></svg>Chemistry</a>
+      <a href="biology.html" class="sb-item"><svg class="sb-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/></svg>Biology</a>
+      <a href="maths.html" class="sb-item"><svg class="sb-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm2 10a1 1 0 10-2 0v3a1 1 0 102 0v-3zm2-3a1 1 0 011 1v5a1 1 0 11-2 0v-5a1 1 0 011-1zm4-1a1 1 0 10-2 0v6a1 1 0 102 0V8z" clip-rule="evenodd"/></svg>Mathematics</a>
+    </nav>
+    <div class="sb-bottom">
+      <div class="sb-user">
+        <div class="sb-avatar" id="sb-avatar">?</div>
+        <div class="sb-user-info">
+          <div class="sb-user-name" id="sb-username">Loading…</div>
+          <div class="sb-user-plan" id="sb-userplan">Free Plan</div>
+        </div>
+        <button class="sb-logout" id="logout-btn">
+          <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 001 1h7a1 1 0 100-2H4V5h6a1 1 0 100-2H3zm11.707 4.293a1 1 0 010 1.414L12.414 11H17a1 1 0 110 2h-4.586l2.293 2.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <div class="topbar">
+      <div class="topbar-l">
+        <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+        <div class="breadcrumb">
+          <a href="dashboard.html">Dashboard</a>
+          <span class="breadcrumb-sep">›</span>
+          <span class="breadcrumb-current">📊 My Progress</span>
+        </div>
+      </div>
+      <div class="t-avatar" id="topbar-avatar">?</div>
+    </div>
+
+    <div class="content">
+      <div class="page-header">
+        <div class="page-title">📊 My Progress</div>
+        <div class="page-sub">Your performance across all subjects, sessions, and quizzes</div>
+      </div>
+
+      <!-- Overall stats -->
+      <div class="overall-stats" id="overall-stats">
+        <div class="overall-stat">
+          <div class="os-val" id="stat-sessions">—</div>
+          <div class="os-lbl">Total Sessions</div>
+          <div class="os-sub" id="stat-sessions-sub" style="color:var(--blue)"></div>
+        </div>
+        <div class="overall-stat">
+          <div class="os-val" id="stat-avg">—</div>
+          <div class="os-lbl">Average Score</div>
+          <div class="os-sub" id="stat-avg-sub" style="color:var(--emerald)"></div>
+        </div>
+        <div class="overall-stat">
+          <div class="os-val" id="stat-best">—</div>
+          <div class="os-lbl">Best Session</div>
+          <div class="os-sub" id="stat-best-sub" style="color:var(--amber)"></div>
+        </div>
+        <div class="overall-stat">
+          <div class="os-val" id="stat-quizzes">—</div>
+          <div class="os-lbl">Quizzes Taken</div>
+          <div class="os-sub" style="color:var(--purple)">Coming soon</div>
+        </div>
+      </div>
+
+      <!-- Subject cards -->
+      <div class="section-title">By Subject</div>
+      <div class="subject-progress-grid" id="subject-grid">
+        <div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--text-muted);font-size:.88rem">Loading subjects…</div>
+      </div>
+
+      <!-- Chapter breakdown -->
+      <div class="chapter-section">
+        <div class="section-title">Chapter Breakdown — Mathematics</div>
+        <div id="chapter-list">
+          <div style="text-align:center;padding:24px;color:var(--text-muted);font-size:.86rem">Loading chapters…</div>
+        </div>
+      </div>
+
+      <!-- Recent sessions -->
+      <div class="section-title">Recent Sessions</div>
+      <div style="overflow:auto;margin-bottom:32px">
+        <table class="sessions-table" id="recent-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Chapter</th>
+              <th>Score</th>
+              <th>%</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="recent-body">
+            <tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:24px">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+
+var SB=window.supabase.createClient(
+  'https://xiwrvbtryeesfgeydxnf.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd3J2YnRyeWVlc2ZnZXlkeG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMTQ0NDAsImV4cCI6MjA5NDU5MDQ0MH0.3Sp9dlc8cNsrzdHAGy74pCqscjL1MFV9ZWMW90QbhqE'
+);
+
+var CHAPTERS=[
+  {key:'ch1_real_numbers',    subject:'maths', label:'Real Numbers',   num:'01', link:'video-player.html'},
+  {key:'ch2_polynomials',     subject:'maths', label:'Polynomials',    num:'02', link:'video-player-ch2.html'},
+];
+
+var SUBJECTS=[
+  {key:'maths',    label:'Mathematics', emoji:'📐', color:'#8B5CF6', chapters:['ch1_real_numbers','ch2_polynomials'], link:'maths.html'},
+  {key:'physics',  label:'Physics',     emoji:'⚡', color:'#3B82F6', chapters:[], link:'physics.html'},
+  {key:'chemistry',label:'Chemistry',   emoji:'⚗️', color:'#10B981', chapters:[], link:'chemistry.html'},
+  {key:'biology',  label:'Biology',     emoji:'🌿', color:'#F59E0B', chapters:[], link:'biology.html'},
+];
+
+SB.auth.onAuthStateChange(function(ev,sess){
+  if(ev==='SIGNED_OUT'||(ev==='INITIAL_SESSION'&&!sess)){window.location.href='index.html';return}
+  if(sess&&sess.user){
+    var u=sess.user;
+    var name=(u.user_metadata&&(u.user_metadata.name||u.user_metadata.full_name))||u.email.split('@')[0];
+    var init=name.charAt(0).toUpperCase();
+    document.getElementById('sb-avatar').textContent=init;
+    document.getElementById('topbar-avatar').textContent=init;
+    document.getElementById('sb-username').textContent=name;
+    document.getElementById('loader').classList.add('gone');
+    setTimeout(function(){document.getElementById('loader').style.display='none'},420);
+    document.body.style.opacity='1';
+    SB.from('profiles').select('plan').eq('id',u.id).single().then(function(r){
+      if(r.data) document.getElementById('sb-userplan').textContent=r.data.plan==='achiever'?'Achiever Plan':r.data.plan==='scholar'?'Scholar Plan':'Free Plan';
+    });
+    loadAllProgress(u.id);
+  }
+});
+document.getElementById('logout-btn').addEventListener('click',async function(){await SB.auth.signOut();window.location.href='index.html'});
+
+function loadAllProgress(userId){
+  SB.from('scores')
+    .select('*')
+    .eq('user_id',userId)
+    .order('created_at',{ascending:false})
+    .then(function(res){
+      var rows=res.data||[];
+      renderOverallStats(rows);
+      renderSubjectGrid(rows);
+      renderChapterList(rows);
+      renderRecentSessions(rows);
+    }).catch(function(){
+      document.getElementById('recent-body').innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:24px">Could not load data. Check your connection.</td></tr>';
+    });
+}
+
+function renderOverallStats(rows){
+  var completed=rows.filter(function(r){return !r.early});
+  var totalSessions=completed.length;
+  var avgPct=totalSessions>0?Math.round(completed.reduce(function(a,r){return a+Math.round(r.correct/r.total*100)},0)/totalSessions):null;
+  var bestPct=totalSessions>0?Math.max.apply(null,completed.map(function(r){return Math.round(r.correct/r.total*100)})):null;
+  document.getElementById('stat-sessions').textContent=totalSessions||'0';
+  document.getElementById('stat-sessions-sub').textContent=rows.length>totalSessions?(rows.length-totalSessions)+' left early':'All completed';
+  document.getElementById('stat-avg').textContent=avgPct!==null?avgPct+'%':'—';
+  document.getElementById('stat-avg-sub').textContent=avgPct!==null?(avgPct>=80?'Excellent!':avgPct>=60?'Good progress':'Keep practising'):'No sessions yet';
+  document.getElementById('stat-best').textContent=bestPct!==null?bestPct+'%':'—';
+  document.getElementById('stat-best-sub').textContent=bestPct!==null?'Personal best':'No sessions yet';
+}
+
+function renderSubjectGrid(rows){
+  var html='';
+  SUBJECTS.forEach(function(s){
+    var sRows=rows.filter(function(r){return s.chapters.includes(r.chapter)&&!r.early});
+    var sessions=sRows.length;
+    var avgPct=sessions>0?Math.round(sRows.reduce(function(a,r){return a+Math.round(r.correct/r.total*100)},0)/sessions):null;
+    var barPct=avgPct||0;
+    var barCol=avgPct===null?'var(--border)':avgPct>=80?'#10B981':avgPct>=60?'#F59E0B':'#EF4444';
+    html+='<a href="'+s.link+'" class="subj-card">';
+    html+='<div class="subj-card-head"><div class="subj-emoji">'+s.emoji+'</div><div><div class="subj-name">'+s.label+'</div><div class="subj-meta">'+s.chapters.length+' chapters with content</div></div></div>';
+    html+='<div class="subj-card-body">';
+    if(sessions===0){
+      html+='<div class="subj-coming">No sessions completed yet<br><span style="color:var(--purple);font-weight:600">Start a session to see stats →</span></div>';
+    }else{
+      html+='<div class="subj-stat-row">'
+        +'<div class="subj-stat"><div class="subj-stat-val">'+sessions+'</div><div class="subj-stat-lbl">Sessions</div></div>'
+        +'<div class="subj-stat"><div class="subj-stat-val">'+avgPct+'%</div><div class="subj-stat-lbl">Avg Score</div></div>'
+        +'</div>';
+      html+='<div class="subj-bar-wrap"><div class="subj-bar-label"><span>Progress</span><span style="font-weight:700;color:'+barCol+'">'+avgPct+'%</span></div><div class="subj-bar-track"><div class="subj-bar-fill" style="width:'+barPct+'%;background:'+barCol+'"></div></div></div>';
+    }
+    html+='</div></a>';
+  });
+  document.getElementById('subject-grid').innerHTML=html;
+}
+
+function renderChapterList(rows){
+  var html='';
+  CHAPTERS.forEach(function(ch){
+    var chRows=rows.filter(function(r){return r.chapter===ch.key});
+    var completed=chRows.filter(function(r){return !r.early});
+    var sessions=completed.length;
+    var avgPct=sessions>0?Math.round(completed.reduce(function(a,r){return a+Math.round(r.correct/r.total*100)},0)/sessions):null;
+    var barCol=avgPct===null?'var(--border)':avgPct>=80?'#10B981':avgPct>=60?'#F59E0B':'#EF4444';
+    var badge=avgPct===null?{text:'Not started',bg:'var(--off-white)',col:'var(--text-muted)'}
+      :avgPct>=80?{text:'Mastered',bg:'var(--emerald-bg)',col:'#10B981'}
+      :avgPct>=60?{text:'In Progress',bg:'var(--amber-bg)',col:'#F59E0B'}
+      :{text:'Needs Work',bg:'var(--red-bg)',col:'#EF4444'};
+    html+='<a href="'+ch.link+'" class="chapter-row" style="text-decoration:none">'
+      +'<div class="ch-icon">📖</div>'
+      +'<div class="ch-info"><div class="ch-name">Ch. '+ch.num+' — '+ch.label+'</div>'
+      +'<div class="ch-stats">'+sessions+' session'+(sessions!==1?'s':'')+' completed'+(sessions>0?' · Best: '+Math.max.apply(null,completed.map(function(r){return Math.round(r.correct/r.total*100)}))+'%':'')+'</div></div>'
+      +'<div class="ch-bar"><div class="ch-bar-fill" style="width:'+(avgPct||0)+'%;background:'+barCol+'"></div></div>'
+      +'<div class="ch-pct" style="color:'+barCol+'">'+(avgPct!==null?avgPct+'%':'—')+'</div>'
+      +'<div class="ch-badge" style="background:'+badge.bg+';color:'+badge.col+'">'+badge.text+'</div>'
+      +'</a>';
+  });
+  document.getElementById('chapter-list').innerHTML=html||'<div style="text-align:center;padding:20px;color:var(--text-muted)">No chapter data yet</div>';
+}
+
+function renderRecentSessions(rows){
+  if(!rows.length){
+    document.getElementById('recent-body').innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:24px">No sessions yet — start your first session!</td></tr>';
+    return;
+  }
+  var CHAPTER_LABELS={'ch1_real_numbers':'Real Numbers','ch2_polynomials':'Polynomials'};
+  document.getElementById('recent-body').innerHTML=rows.slice(0,15).map(function(r){
+    var pct=Math.round(r.correct/r.total*100);
+    var pctCol=r.early?'var(--text-muted)':pct>=80?'#10B981':pct>=60?'#F59E0B':'#EF4444';
+    var status=r.early?'<span style="color:#F59E0B;font-weight:600">Left early</span>':'<span style="color:#10B981;font-weight:600">Completed</span>';
+    var date=new Date(r.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'2-digit'});
+    return '<tr>'
+      +'<td style="color:var(--text-muted)">'+date+'</td>'
+      +'<td style="font-weight:600">'+(CHAPTER_LABELS[r.chapter]||r.chapter)+'</td>'
+      +'<td style="font-weight:700">'+r.correct+'/'+r.total+'</td>'
+      +'<td style="font-weight:700;color:'+pctCol+'">'+(r.early?'—':pct+'%')+'</td>'
+      +'<td>'+status+'</td>'
+      +'</tr>';
+  }).join('');
+}
+
+/* Sidebar */
+var sEl=document.getElementById('sidebar'),oEl=document.getElementById('overlay');
+document.getElementById('hamburger').addEventListener('click',function(){sEl.classList.toggle('open');oEl.classList.toggle('open')});
+oEl.addEventListener('click',function(){sEl.classList.remove('open');oEl.classList.remove('open')});
+
+})();
+</script>
+</body>
+</html>
