@@ -210,7 +210,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--off-white);colo
         <div class="overall-stat">
           <div class="os-val" id="stat-quizzes">—</div>
           <div class="os-lbl">Quizzes Taken</div>
-          <div class="os-sub" style="color:var(--purple)">Coming soon</div>
+          <div class="os-sub" id="stat-quizzes-sub" style="color:var(--purple)">Take a quiz!</div>
         </div>
       </div>
 
@@ -230,18 +230,25 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--off-white);colo
 
       <!-- Recent sessions -->
       <div class="section-title">Recent Sessions</div>
-      <div style="overflow:auto;margin-bottom:32px">
+      <div style="overflow:auto;margin-bottom:28px">
         <table class="sessions-table" id="recent-table">
           <thead>
-            <tr>
-              <th>Date</th>
-              <th>Chapter</th>
-              <th>Score</th>
-              <th>%</th>
-              <th>Status</th>
-            </tr>
+            <tr><th>Date</th><th>Chapter</th><th>Score</th><th>%</th><th>Status</th></tr>
           </thead>
           <tbody id="recent-body">
+            <tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:24px">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Recent quizzes -->
+      <div class="section-title">Recent Quizzes</div>
+      <div style="overflow:auto;margin-bottom:32px">
+        <table class="sessions-table">
+          <thead>
+            <tr><th>Date</th><th>Chapter</th><th>Score</th><th>%</th><th>Details</th></tr>
+          </thead>
+          <tbody id="quiz-body">
             <tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:24px">Loading…</td></tr>
           </tbody>
         </table>
@@ -293,75 +300,99 @@ SB.auth.onAuthStateChange(function(ev,sess){
 document.getElementById('logout-btn').addEventListener('click',async function(){await SB.auth.signOut();window.location.href='index.html'});
 
 function loadAllProgress(userId){
+  var sessionRows=[], quizRows=[], pending=2;
+
+  function tryRender(){
+    pending--;
+    if(pending===0){
+      renderOverallStats(sessionRows, quizRows);
+      renderSubjectGrid(sessionRows, quizRows);
+      renderChapterList(sessionRows, quizRows);
+      renderRecentSessions(sessionRows);
+      renderRecentQuizzes(quizRows);
+    }
+  }
+
   SB.from('scores')
-    .select('*')
-    .eq('user_id',userId)
-    .order('created_at',{ascending:false})
-    .then(function(res){
-      var rows=res.data||[];
-      renderOverallStats(rows);
-      renderSubjectGrid(rows);
-      renderChapterList(rows);
-      renderRecentSessions(rows);
-    }).catch(function(){
-      document.getElementById('recent-body').innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:24px">Could not load data. Check your connection.</td></tr>';
-    });
+    .select('*').eq('user_id',userId).order('created_at',{ascending:false})
+    .then(function(res){sessionRows=res.data||[];tryRender();})
+    .catch(function(){tryRender();});
+
+  SB.from('quiz_scores')
+    .select('*').eq('user_id',userId).order('created_at',{ascending:false})
+    .then(function(res){quizRows=res.data||[];tryRender();})
+    .catch(function(){tryRender();});
 }
 
-function renderOverallStats(rows){
+function renderOverallStats(rows, quizRows){
   var completed=rows.filter(function(r){return !r.early});
   var totalSessions=completed.length;
   var avgPct=totalSessions>0?Math.round(completed.reduce(function(a,r){return a+Math.round(r.correct/r.total*100)},0)/totalSessions):null;
   var bestPct=totalSessions>0?Math.max.apply(null,completed.map(function(r){return Math.round(r.correct/r.total*100)})):null;
+  var totalQuizzes=quizRows.length;
+  var avgQuizPct=totalQuizzes>0?Math.round(quizRows.reduce(function(a,r){return a+r.pct},0)/totalQuizzes):null;
   document.getElementById('stat-sessions').textContent=totalSessions||'0';
   document.getElementById('stat-sessions-sub').textContent=rows.length>totalSessions?(rows.length-totalSessions)+' left early':'All completed';
   document.getElementById('stat-avg').textContent=avgPct!==null?avgPct+'%':'—';
   document.getElementById('stat-avg-sub').textContent=avgPct!==null?(avgPct>=80?'Excellent!':avgPct>=60?'Good progress':'Keep practising'):'No sessions yet';
   document.getElementById('stat-best').textContent=bestPct!==null?bestPct+'%':'—';
   document.getElementById('stat-best-sub').textContent=bestPct!==null?'Personal best':'No sessions yet';
+  document.getElementById('stat-quizzes').textContent=totalQuizzes||'0';
+  document.getElementById('stat-quizzes-sub').textContent=avgQuizPct!==null?'Avg '+avgQuizPct+'%':'Take a quiz!';
 }
 
-function renderSubjectGrid(rows){
+function renderSubjectGrid(rows, quizRows){
   var html='';
   SUBJECTS.forEach(function(s){
     var sRows=rows.filter(function(r){return s.chapters.includes(r.chapter)&&!r.early});
+    var qRows=quizRows.filter(function(r){return s.chapters.includes(r.chapter)});
     var sessions=sRows.length;
+    var quizzes=qRows.length;
     var avgPct=sessions>0?Math.round(sRows.reduce(function(a,r){return a+Math.round(r.correct/r.total*100)},0)/sessions):null;
+    var avgQPct=quizzes>0?Math.round(qRows.reduce(function(a,r){return a+r.pct},0)/quizzes):null;
     var barPct=avgPct||0;
     var barCol=avgPct===null?'var(--border)':avgPct>=80?'#10B981':avgPct>=60?'#F59E0B':'#EF4444';
     html+='<a href="'+s.link+'" class="subj-card">';
     html+='<div class="subj-card-head"><div class="subj-emoji">'+s.emoji+'</div><div><div class="subj-name">'+s.label+'</div><div class="subj-meta">'+s.chapters.length+' chapters with content</div></div></div>';
     html+='<div class="subj-card-body">';
-    if(sessions===0){
-      html+='<div class="subj-coming">No sessions completed yet<br><span style="color:var(--purple);font-weight:600">Start a session to see stats →</span></div>';
+    if(sessions===0&&quizzes===0){
+      html+='<div class="subj-coming">No activity yet<br><span style="color:var(--purple);font-weight:600">Start a session or quiz →</span></div>';
     }else{
       html+='<div class="subj-stat-row">'
         +'<div class="subj-stat"><div class="subj-stat-val">'+sessions+'</div><div class="subj-stat-lbl">Sessions</div></div>'
-        +'<div class="subj-stat"><div class="subj-stat-val">'+avgPct+'%</div><div class="subj-stat-lbl">Avg Score</div></div>'
+        +'<div class="subj-stat"><div class="subj-stat-val">'+(avgPct!==null?avgPct+'%':'—')+'</div><div class="subj-stat-lbl">Session avg</div></div>'
+        +'<div class="subj-stat"><div class="subj-stat-val">'+quizzes+'</div><div class="subj-stat-lbl">Quizzes</div></div>'
+        +'<div class="subj-stat"><div class="subj-stat-val">'+(avgQPct!==null?avgQPct+'%':'—')+'</div><div class="subj-stat-lbl">Quiz avg</div></div>'
         +'</div>';
-      html+='<div class="subj-bar-wrap"><div class="subj-bar-label"><span>Progress</span><span style="font-weight:700;color:'+barCol+'">'+avgPct+'%</span></div><div class="subj-bar-track"><div class="subj-bar-fill" style="width:'+barPct+'%;background:'+barCol+'"></div></div></div>';
+      if(avgPct!==null) html+='<div class="subj-bar-wrap"><div class="subj-bar-label"><span>Session progress</span><span style="font-weight:700;color:'+barCol+'">'+avgPct+'%</span></div><div class="subj-bar-track"><div class="subj-bar-fill" style="width:'+barPct+'%;background:'+barCol+'"></div></div></div>';
     }
     html+='</div></a>';
   });
   document.getElementById('subject-grid').innerHTML=html;
 }
 
-function renderChapterList(rows){
+function renderChapterList(rows, quizRows){
   var html='';
   CHAPTERS.forEach(function(ch){
     var chRows=rows.filter(function(r){return r.chapter===ch.key});
     var completed=chRows.filter(function(r){return !r.early});
     var sessions=completed.length;
+    var qRows=quizRows.filter(function(r){return r.chapter===ch.key});
+    var quizzes=qRows.length;
     var avgPct=sessions>0?Math.round(completed.reduce(function(a,r){return a+Math.round(r.correct/r.total*100)},0)/sessions):null;
+    var avgQPct=quizzes>0?Math.round(qRows.reduce(function(a,r){return a+r.pct},0)/quizzes):null;
     var barCol=avgPct===null?'var(--border)':avgPct>=80?'#10B981':avgPct>=60?'#F59E0B':'#EF4444';
     var badge=avgPct===null?{text:'Not started',bg:'var(--off-white)',col:'var(--text-muted)'}
       :avgPct>=80?{text:'Mastered',bg:'var(--emerald-bg)',col:'#10B981'}
       :avgPct>=60?{text:'In Progress',bg:'var(--amber-bg)',col:'#F59E0B'}
       :{text:'Needs Work',bg:'var(--red-bg)',col:'#EF4444'};
+    var statsText=sessions+' session'+(sessions!==1?'s':'')+' · '+quizzes+' quiz'+(quizzes!==1?'zes':'');
+    if(sessions>0) statsText+=' · Best: '+Math.max.apply(null,completed.map(function(r){return Math.round(r.correct/r.total*100)}))+'%';
+    if(quizzes>0) statsText+=' · Quiz avg: '+avgQPct+'%';
     html+='<a href="'+ch.link+'" class="chapter-row" style="text-decoration:none">'
       +'<div class="ch-icon">📖</div>'
       +'<div class="ch-info"><div class="ch-name">Ch. '+ch.num+' — '+ch.label+'</div>'
-      +'<div class="ch-stats">'+sessions+' session'+(sessions!==1?'s':'')+' completed'+(sessions>0?' · Best: '+Math.max.apply(null,completed.map(function(r){return Math.round(r.correct/r.total*100)}))+'%':'')+'</div></div>'
+      +'<div class="ch-stats">'+statsText+'</div></div>'
       +'<div class="ch-bar"><div class="ch-bar-fill" style="width:'+(avgPct||0)+'%;background:'+barCol+'"></div></div>'
       +'<div class="ch-pct" style="color:'+barCol+'">'+(avgPct!==null?avgPct+'%':'—')+'</div>'
       +'<div class="ch-badge" style="background:'+badge.bg+';color:'+badge.col+'">'+badge.text+'</div>'
@@ -375,18 +406,42 @@ function renderRecentSessions(rows){
     document.getElementById('recent-body').innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:24px">No sessions yet — start your first session!</td></tr>';
     return;
   }
-  var CHAPTER_LABELS={'ch1_real_numbers':'Real Numbers','ch2_polynomials':'Polynomials'};
-  document.getElementById('recent-body').innerHTML=rows.slice(0,15).map(function(r){
+  var LABELS={'ch1_real_numbers':'Real Numbers','ch2_polynomials':'Polynomials'};
+  document.getElementById('recent-body').innerHTML=rows.slice(0,10).map(function(r){
     var pct=Math.round(r.correct/r.total*100);
     var pctCol=r.early?'var(--text-muted)':pct>=80?'#10B981':pct>=60?'#F59E0B':'#EF4444';
     var status=r.early?'<span style="color:#F59E0B;font-weight:600">Left early</span>':'<span style="color:#10B981;font-weight:600">Completed</span>';
     var date=new Date(r.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'2-digit'});
     return '<tr>'
       +'<td style="color:var(--text-muted)">'+date+'</td>'
-      +'<td style="font-weight:600">'+(CHAPTER_LABELS[r.chapter]||r.chapter)+'</td>'
+      +'<td style="font-weight:600">'+(LABELS[r.chapter]||r.chapter)+'</td>'
       +'<td style="font-weight:700">'+r.correct+'/'+r.total+'</td>'
       +'<td style="font-weight:700;color:'+pctCol+'">'+(r.early?'—':pct+'%')+'</td>'
       +'<td>'+status+'</td>'
+      +'</tr>';
+  }).join('');
+}
+
+function renderRecentQuizzes(rows){
+  var el=document.getElementById('quiz-body');
+  if(!el)return;
+  if(!rows.length){
+    el.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:24px">No quizzes yet — try the Quiz tab in Mathematics!</td></tr>';
+    return;
+  }
+  var LABELS={'ch1_real_numbers':'Real Numbers','ch2_polynomials':'Polynomials'};
+  el.innerHTML=rows.slice(0,10).map(function(r){
+    var pctCol=r.pct>=80?'#10B981':r.pct>=60?'#F59E0B':'#EF4444';
+    var diff=r.difficulty==='all'?'All levels':r.difficulty.charAt(0).toUpperCase()+r.difficulty.slice(1);
+    var m=Math.floor(r.time_taken/60),s=r.time_taken%60;
+    var time=(m>0?m+'m ':'')+s+'s';
+    var date=new Date(r.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'2-digit'});
+    return '<tr>'
+      +'<td style="color:var(--text-muted)">'+date+'</td>'
+      +'<td style="font-weight:600">'+(LABELS[r.chapter]||r.chapter)+'</td>'
+      +'<td style="font-weight:700">'+r.correct+'/'+r.total+'</td>'
+      +'<td style="font-weight:700;color:'+pctCol+'">'+r.pct+'%</td>'
+      +'<td style="color:var(--text-muted)">'+diff+' · '+time+'</td>'
       +'</tr>';
   }).join('');
 }
