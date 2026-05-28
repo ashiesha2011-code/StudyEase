@@ -847,16 +847,19 @@ body {
     tip.classList.add('show');
   };
 
-  /* ── AI Chat (demo) ── */
+  /* ── AI Chat ── */
   var chatMsgs = document.getElementById('chat-msgs');
   var chatInp  = document.getElementById('chat-inp');
   var sendBtn  = document.getElementById('send-btn');
+  var chatHistory = [];
+  var chatBusy = false;
+  var AI_FN = 'https://xiwrvbtryeesfgeydxnf.supabase.co/functions/v1/ai-chat';
 
   function addMsg(text, type) {
     var d = document.createElement('div');
     d.className = 'cmsg cmsg--' + type;
     var av = type === 'user' ? (document.getElementById('sb-avatar').textContent || 'U') : 'SE';
-    d.innerHTML = '<div class="cmsg-av cmsg-av--' + type + '">' + av + '</div><div class="cmsg-bubble cmsg-bubble--' + type + '">' + text + '</div>';
+    d.innerHTML = '<div class="cmsg-av cmsg-av--' + type + '">' + av + '</div><div class="cmsg-bubble cmsg-bubble--' + type + '">' + text.replace(/\n/g,'<br>') + '</div>';
     chatMsgs.appendChild(d);
     chatMsgs.scrollTop = chatMsgs.scrollHeight;
   }
@@ -867,12 +870,35 @@ body {
     chatMsgs.appendChild(d); chatMsgs.scrollTop = chatMsgs.scrollHeight;
   }
   function sendMsg() {
-    var t = chatInp.value.trim(); if (!t) return;
-    addMsg(t, 'user'); chatInp.value = ''; addTyping();
-    setTimeout(function() {
+    var t = chatInp.value.trim();
+    if (!t || chatBusy) return;
+    chatBusy = true;
+    sendBtn.disabled = true;
+    addMsg(t, 'user');
+    chatInp.value = '';
+    addTyping();
+    fetch(AI_FN, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: t, history: chatHistory })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
       var el = document.getElementById('typing'); if (el) el.remove();
-      addMsg('The full AI is coming soon — once the Claude API is connected, I\'ll answer your doubts in proper board exam format with examiner marks tips! 🚀', 'ai');
-    }, 1200);
+      var reply = data.reply || 'Sorry, something went wrong. Please try again.';
+      addMsg(reply, 'ai');
+      chatHistory.push({ role: 'user', content: t });
+      chatHistory.push({ role: 'assistant', content: reply });
+      if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
+    })
+    .catch(function() {
+      var el = document.getElementById('typing'); if (el) el.remove();
+      addMsg('Network error — please check your connection and try again.', 'ai');
+    })
+    .finally(function() {
+      chatBusy = false;
+      sendBtn.disabled = false;
+    });
   }
   sendBtn.addEventListener('click', sendMsg);
   chatInp.addEventListener('keydown', function(e){ if (e.key === 'Enter') sendMsg(); });
