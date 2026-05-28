@@ -682,7 +682,10 @@ function finishQuiz(){
       user_id:userId,
       chapter:cfg.ch==='ch1'?'ch1_real_numbers':'ch2_polynomials',
       difficulty:cfg.diff,correct:correct,total:total,pct:pct,time_taken:timeSec
-    }).then(function(){}).catch(function(){});
+    }).then(function(res){
+      if(res.error) console.error('quiz_scores insert error:',res.error);
+      else console.log('Quiz score saved OK');
+    }).catch(function(err){console.error('quiz_scores catch:',err)});
   }
   /* Build review */
   var html='';
