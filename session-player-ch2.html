@@ -496,13 +496,27 @@ var SB=window.supabase.createClient(
   'https://xiwrvbtryeesfgeydxnf.supabase.co',
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd3J2YnRyeWVlc2ZnZXlkeG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMTQ0NDAsImV4cCI6MjA5NDU5MDQ0MH0.3Sp9dlc8cNsrzdHAGy74pCqscjL1MFV9ZWMW90QbhqE'
 );
+var cachedUserId=null,cachedToken=null;
 SB.auth.onAuthStateChange(function(ev,sess){
   if(ev==='SIGNED_OUT'||(!sess&&ev==='INITIAL_SESSION')){window.location.href='index.html';return}
   if(sess&&sess.user){
+    cachedUserId=sess.user.id;
+    cachedToken=sess.access_token;
     hide('loader');
     document.body.style.background='#000';
     startSession();
   }
+});
+window.addEventListener('beforeunload',function(){
+  if(sessionDone||!cachedUserId||!QS.some(function(q){return q.done})) return;
+  var correct=QS.filter(function(q){return q.done&&!q.skipped&&q.correct}).length;
+  var total=QS.length;
+  fetch('https://xiwrvbtryeesfgeydxnf.supabase.co/rest/v1/scores',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd3J2YnRyeWVlc2ZnZXlkeG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMTQ0NDAsImV4cCI6MjA5NDU5MDQ0MH0.3Sp9dlc8cNsrzdHAGy74pCqscjL1MFV9ZWMW90QbhqE','Authorization':'Bearer '+cachedToken,'Prefer':'return=minimal'},
+    body:JSON.stringify({user_id:cachedUserId,chapter:'ch2_polynomials',correct:correct,total:total,wrong:QS.filter(function(q){return q.done&&!q.skipped&&!q.correct}).length,skipped:QS.filter(function(q){return q.skipped}).length,unanswered:QS.filter(function(q){return!q.done}).length,pct:Math.round(correct/total*100),early:true}),
+    keepalive:true
+  });
 });
 
 /* ── VIDEO ── */
