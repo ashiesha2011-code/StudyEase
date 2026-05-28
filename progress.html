@@ -345,7 +345,7 @@ function loadAllProgress(userId){
 
 function renderOverallStats(rows, quizRows){
   var completed=rows.filter(function(r){return !r.early});
-  var totalSessions=completed.length;
+  var totalSessions=rows.length;
   var avgPct=totalSessions>=2?Math.round(completed.reduce(function(a,r){return a+Math.round(r.correct/r.total*100)},0)/totalSessions):null;
   var bestPct=totalSessions>=2?Math.max.apply(null,completed.map(function(r){return Math.round(r.correct/r.total*100)})):null;
   var totalQuizzes=quizRows.length;
