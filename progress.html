@@ -111,6 +111,11 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--off-white);colo
 .sessions-table td{padding:13px 14px;font-size:.88rem;border-bottom:1px solid var(--border-soft)}
 .sessions-table tr:last-child td{border-bottom:none}
 
+/* Score trend cards */
+.trend-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-bottom:28px}
+.trend-card{background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 22px}
+.trend-card-title{font-size:.7rem;font-weight:700;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px}
+
 /* Loader */
 .loader{position:fixed;inset:0;background:var(--navy);display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity .4s}
 .loader.gone{opacity:0;pointer-events:none}
@@ -228,6 +233,19 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--off-white);colo
         </div>
       </div>
 
+      <!-- Score trends -->
+      <div class="section-title">Score Trends</div>
+      <div class="trend-grid">
+        <div class="trend-card">
+          <div class="trend-card-title">Session Scores</div>
+          <div id="session-chart"><div style="text-align:center;padding:20px;color:var(--text-muted);font-size:.84rem">No sessions yet</div></div>
+        </div>
+        <div class="trend-card">
+          <div class="trend-card-title">Quiz Scores</div>
+          <div id="quiz-chart"><div style="text-align:center;padding:20px;color:var(--text-muted);font-size:.84rem">No quizzes yet</div></div>
+        </div>
+      </div>
+
       <!-- Recent sessions -->
       <div class="section-title">Recent Sessions</div>
       <div style="overflow:auto;margin-bottom:28px">
@@ -308,6 +326,7 @@ function loadAllProgress(userId){
       renderOverallStats(sessionRows, quizRows);
       renderSubjectGrid(sessionRows, quizRows);
       renderChapterList(sessionRows, quizRows);
+      renderCharts(sessionRows, quizRows);
       renderRecentSessions(sessionRows);
       renderRecentQuizzes(quizRows);
     }
@@ -399,6 +418,53 @@ function renderChapterList(rows, quizRows){
       +'</a>';
   });
   document.getElementById('chapter-list').innerHTML=html||'<div style="text-align:center;padding:20px;color:var(--text-muted)">No chapter data yet</div>';
+}
+
+function renderCharts(rows, quizRows){
+  var sessions=rows.filter(function(r){return !r.early}).slice().reverse().slice(-10);
+  var quizzes=quizRows.slice().reverse().slice(-10);
+  buildChart('session-chart', sessions.map(function(r){
+    return {pct:Math.round(r.correct/r.total*100), label:new Date(r.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short'})};
+  }), 'No completed sessions yet');
+  buildChart('quiz-chart', quizzes.map(function(r){
+    return {pct:r.pct, label:new Date(r.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short'})};
+  }), 'No quizzes yet');
+}
+
+function buildChart(id, data, emptyMsg){
+  var el=document.getElementById(id);
+  if(!el) return;
+  if(!data.length){el.innerHTML='<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:.84rem">'+emptyMsg+'</div>';return}
+  var W=360,H=110,pL=28,pT=14,pB=20,pR=8;
+  var n=data.length;
+  var bW=Math.min(32,Math.floor((W-pL-pR)/n)-6);
+  var gap=n>1?Math.floor((W-pL-pR-bW*n)/(n-1)):0;
+  var svg='<svg width="100%" viewBox="0 0 '+W+' '+(H+pT+pB)+'" xmlns="http://www.w3.org/2000/svg" style="overflow:visible">';
+  [0,50,100].forEach(function(v){
+    var y=pT+H-(v/100)*H;
+    svg+='<text x="'+(pL-4)+'" y="'+(y+4)+'" fill="#94A3B8" font-size="8" font-family="DM Sans,sans-serif" text-anchor="end">'+v+'%</text>';
+    svg+='<line x1="'+pL+'" y1="'+y+'" x2="'+(W-pR)+'" y2="'+y+'" stroke="#E4E8EE" stroke-width="1"/>';
+  });
+  var pts=[];
+  data.forEach(function(d,i){
+    var bH=Math.max(4,(d.pct/100)*H);
+    var x=pL+i*(bW+gap);
+    var y=pT+H-bH;
+    var col=d.pct>=80?'#10B981':d.pct>=60?'#F59E0B':'#EF4444';
+    var isLast=(i===n-1);
+    svg+='<rect x="'+x+'" y="'+y+'" width="'+bW+'" height="'+bH+'" rx="3" fill="'+col+'" opacity="'+(isLast?'1':'.6')+'"/>';
+    svg+='<text x="'+(x+bW/2)+'" y="'+(y-4)+'" fill="'+col+'" font-size="7.5" font-family="DM Mono,monospace" text-anchor="middle" font-weight="700">'+d.pct+'%</text>';
+    svg+='<text x="'+(x+bW/2)+'" y="'+(pT+H+14)+'" fill="#94A3B8" font-size="7" font-family="DM Sans,sans-serif" text-anchor="middle">'+d.label+'</text>';
+    pts.push({x:x+bW/2,y:pT+H-(d.pct/100)*H});
+  });
+  if(pts.length>=2){
+    var path='M'+pts[0].x+','+pts[0].y;
+    for(var i=1;i<pts.length;i++) path+=' L'+pts[i].x+','+pts[i].y;
+    svg+='<path d="'+path+'" fill="none" stroke="#0A1628" stroke-width="1.5" stroke-dasharray="3 2" opacity=".2"/>';
+    pts.forEach(function(pt){svg+='<circle cx="'+pt.x+'" cy="'+pt.y+'" r="2.5" fill="#0A1628" opacity=".35"/>';});
+  }
+  svg+='</svg>';
+  el.innerHTML=svg;
 }
 
 function renderRecentSessions(rows){
