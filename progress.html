@@ -421,11 +421,11 @@ function renderChapterList(rows, quizRows){
 }
 
 function renderCharts(rows, quizRows){
-  var sessions=rows.filter(function(r){return !r.early}).slice().reverse().slice(-10);
+  var sessions=rows.slice().reverse().slice(-10);
   var quizzes=quizRows.slice().reverse().slice(-10);
   buildChart('session-chart', sessions.map(function(r){
-    return {pct:Math.round(r.correct/r.total*100), label:new Date(r.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short'})};
-  }), 'No completed sessions yet');
+    return {pct:Math.round(r.correct/r.total*100), label:new Date(r.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short'}), early:r.early};
+  }), 'No sessions yet');
   buildChart('quiz-chart', quizzes.map(function(r){
     return {pct:r.pct, label:new Date(r.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short'})};
   }), 'No quizzes yet');
@@ -450,7 +450,7 @@ function buildChart(id, data, emptyMsg){
     var bH=Math.max(4,(d.pct/100)*H);
     var x=pL+i*(bW+gap);
     var y=pT+H-bH;
-    var col=d.pct>=80?'#10B981':d.pct>=60?'#F59E0B':'#EF4444';
+    var col=d.early?'#94A3B8':(d.pct>=80?'#10B981':d.pct>=60?'#F59E0B':'#EF4444');
     var isLast=(i===n-1);
     svg+='<rect x="'+x+'" y="'+y+'" width="'+bW+'" height="'+bH+'" rx="3" fill="'+col+'" opacity="'+(isLast?'1':'.6')+'"/>';
     svg+='<text x="'+(x+bW/2)+'" y="'+(y-4)+'" fill="'+col+'" font-size="7.5" font-family="DM Mono,monospace" text-anchor="middle" font-weight="700">'+d.pct+'%</text>';
