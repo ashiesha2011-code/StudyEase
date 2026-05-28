@@ -346,16 +346,16 @@ function loadAllProgress(userId){
 function renderOverallStats(rows, quizRows){
   var completed=rows.filter(function(r){return !r.early});
   var totalSessions=completed.length;
-  var avgPct=totalSessions>0?Math.round(completed.reduce(function(a,r){return a+Math.round(r.correct/r.total*100)},0)/totalSessions):null;
-  var bestPct=totalSessions>0?Math.max.apply(null,completed.map(function(r){return Math.round(r.correct/r.total*100)})):null;
+  var avgPct=totalSessions>=2?Math.round(completed.reduce(function(a,r){return a+Math.round(r.correct/r.total*100)},0)/totalSessions):null;
+  var bestPct=totalSessions>=2?Math.max.apply(null,completed.map(function(r){return Math.round(r.correct/r.total*100)})):null;
   var totalQuizzes=quizRows.length;
   var avgQuizPct=totalQuizzes>0?Math.round(quizRows.reduce(function(a,r){return a+r.pct},0)/totalQuizzes):null;
   document.getElementById('stat-sessions').textContent=totalSessions||'0';
   document.getElementById('stat-sessions-sub').textContent=rows.length>totalSessions?(rows.length-totalSessions)+' left early':'All completed';
   document.getElementById('stat-avg').textContent=avgPct!==null?avgPct+'%':'—';
-  document.getElementById('stat-avg-sub').textContent=avgPct!==null?(avgPct>=80?'Excellent!':avgPct>=60?'Good progress':'Keep practising'):'No sessions yet';
+  document.getElementById('stat-avg-sub').textContent=avgPct!==null?(avgPct>=80?'Excellent!':avgPct>=60?'Good progress':'Keep practising'):(totalSessions===1?'Need 2+ sessions for avg':'Complete a full session');
   document.getElementById('stat-best').textContent=bestPct!==null?bestPct+'%':'—';
-  document.getElementById('stat-best-sub').textContent=bestPct!==null?'Personal best':'No sessions yet';
+  document.getElementById('stat-best-sub').textContent=bestPct!==null?'Personal best':(totalSessions===1?'Need 2+ sessions to compare':'Complete a full session');
   document.getElementById('stat-quizzes').textContent=totalQuizzes||'0';
   document.getElementById('stat-quizzes-sub').textContent=avgQuizPct!==null?'Avg '+avgQuizPct+'%':'Take a quiz!';
 }
