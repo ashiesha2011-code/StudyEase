@@ -462,7 +462,7 @@ body{
       var reply=d.reply||'Sorry, something went wrong.';
       addAI(reply);
       if(!privacy){
-        if(currentUserId){sb.from('chat_history').insert({user_id:currentUserId,user_message:t,ai_reply:reply,subject:subject||'General'}).catch(function(){});}
+        if(currentUserId){sb.from('chat_history').insert({user_id:currentUserId,user_message:t,ai_reply:reply,subject:subject||'General'}).then(function(r){if(r.error)console.error('[History save error]',r.error);}).catch(function(err){console.error('[History save error]',err);});}
         chatHistory.push({role:'user',content:msg});
         chatHistory.push({role:'assistant',content:reply});
         if(chatHistory.length>20)chatHistory=chatHistory.slice(-20);
@@ -485,6 +485,8 @@ body{
       .order('created_at',{ascending:true})
       .limit(50)
       .then(function(res){
+        console.log('[History query]', res);
+        if(res.error){console.error('[History query error]',res.error);return;}
         if(!res.data||!res.data.length)return;
         emptyEl.style.display='none';hasMessages=true;
         var hdr=document.createElement('div');hdr.className='hist-hdr';
@@ -511,7 +513,7 @@ body{
         var sep=document.createElement('hr');sep.className='hist-sep';msgs.appendChild(sep);
         var newLbl=document.createElement('div');newLbl.className='hist-new';newLbl.textContent='New conversation';msgs.appendChild(newLbl);
         scrollBottom();
-      }).catch(function(){});
+      }).catch(function(err){console.error('[History load error]', err);});
   }
 })();
 </script>
