@@ -452,7 +452,7 @@ body{
     var msg=subject?'['+subject+'] '+t:t;
     addUser(t);inp.value='';inp.style.height='auto';
     addTyping();
-    fetch('/.netlify/functions/ai-chat',{
+    fetch('https://xiwrvbtryeesfgeydxnf.supabase.co/functions/v1/ai-chat',{
       method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({message:msg,history:privacy?[]:chatHistory})
     })
