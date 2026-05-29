@@ -456,6 +456,7 @@ body{
       document.body.style.opacity='1';
       currentUserId=session.user.id;
       loadHistory();
+      restoreFromDashboard();
     }
   });
 
@@ -715,6 +716,22 @@ body{
       acontent.appendChild(atxt);arow.appendChild(aav);arow.appendChild(acontent);msgs.appendChild(arow);
     });
     scrollBottom();closeSidebar();
+  }
+
+  function restoreFromDashboard(){
+    var raw=sessionStorage.getItem('se_dash_conv');
+    if(!raw)return;
+    sessionStorage.removeItem('se_dash_conv');
+    try{
+      var conv=JSON.parse(raw);
+      if(!conv.chatHistory||!conv.chatHistory.length)return;
+      chatHistory=conv.chatHistory;
+      emptyEl.style.display='none';hasMessages=true;
+      conv.displayMessages.forEach(function(m){
+        if(m.role==='user')addUser(m.text);
+        else addAI(m.text);
+      });
+    }catch(e){}
   }
 
   function loadHistory(){
