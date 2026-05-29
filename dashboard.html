@@ -921,11 +921,9 @@ body {
   }
   sendBtn.addEventListener('click', sendMsg);
   chatInp.addEventListener('keydown', function(e){ if (e.key === 'Enter') sendMsg(); });
-  document.getElementById('open-full-chat').addEventListener('click', function(e) {
+  document.getElementById('open-full-chat').addEventListener('click', function() {
     if (chatHistory.length > 0) {
-      e.preventDefault();
       sessionStorage.setItem('se_dash_conv', JSON.stringify({ chatHistory: chatHistory, displayMessages: displayMessages }));
-      window.location.href = 'ai.html';
     }
   });
 

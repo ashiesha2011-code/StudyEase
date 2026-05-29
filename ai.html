@@ -110,14 +110,6 @@ body{
 .conv-item:hover .conv-del{display:flex;}
 .conv-del:hover{color:#ef4444;background:rgba(239,68,68,.1);}
 
-#sb-footer{padding:10px 8px;border-top:1px solid var(--border);flex-shrink:0;}
-#clear-all-btn{
-  width:100%;padding:8px;border-radius:8px;
-  border:1px solid var(--border);background:transparent;
-  font-family:inherit;font-size:.78rem;color:var(--text-muted);
-  cursor:pointer;transition:all .13s;
-}
-#clear-all-btn:hover{border-color:#ef4444;color:#ef4444;}
 
 #sb-empty{
   text-align:center;padding:40px 16px;
@@ -347,9 +339,6 @@ body{
     <div id="conv-list">
       <div id="sb-empty">Start a conversation to see your history here</div>
     </div>
-    <div id="sb-footer">
-      <button id="clear-all-btn">Clear all history</button>
-    </div>
   </aside>
 
   <!-- Main -->
@@ -514,13 +503,6 @@ body{
   document.getElementById('view-new-btn').addEventListener('click',startNewChat);
 
   /* ── Clear all ── */
-  document.getElementById('clear-all-btn').addEventListener('click',function(){
-    if(!currentUserId||!confirm('Delete all chat history?'))return;
-    sb.from('chat_history').delete().eq('user_id',currentUserId).then(function(){
-      renderSidebar([]);
-      startNewChat();
-    });
-  });
 
   /* ── Chat state ── */
   var chatHistory=[],busy=false,hasMessages=false,viewMode=false;
