@@ -50,6 +50,17 @@ Each has a floating "Ask AI" widget. It prefixes the user message with `[Subject
 
 Theme system: `ai.html` and `dashboard.html` support light / dark / device themes via `data-theme` attribute on `<html>` and CSS custom properties in `:root`, stored in `localStorage` as `se-ai-theme`.
 
+## Session History (what was built)
+
+Run `git log --oneline` to see the full change history. Key work done in the initial migration session (2026-05-29):
+
+- Migrated AI endpoint from Netlify serverless → Supabase Edge Function
+- Deployed to GitHub Pages at `https://ashiesha2011-code.github.io/StudyEase/`
+- Built ChatGPT-style sidebar in `ai.html` with conversation history grouped by date
+- Added per-conversation delete buttons in the sidebar
+- Dashboard AI card chats now save to `chat_history` and carry over to `ai.html` via `sessionStorage`
+- Added attachment (+) button, voice input (Web Speech API), and fixed input vertical alignment in `ai.html`
+
 ## Key Deployment Notes
 
 - After pushing to `main`, GitHub Pages redeploys in ~1–2 minutes.
