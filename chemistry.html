@@ -492,6 +492,7 @@ body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--off-whit
   var SUPABASE_URL  = 'https://xiwrvbtryeesfgeydxnf.supabase.co';
   var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd3J2YnRyeWVlc2ZnZXlkeG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMTQ0NDAsImV4cCI6MjA5NDU5MDQ0MH0.3Sp9dlc8cNsrzdHAGy74pCqscjL1MFV9ZWMW90QbhqE';
   var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  window._sb = sb;
 
   sb.auth.onAuthStateChange(function(event, session) {
     if (event === 'SIGNED_OUT') { window.location.href = 'index.html'; return; }
@@ -503,6 +504,7 @@ body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--off-whit
       document.getElementById('loader').classList.add('gone');
       setTimeout(function(){ document.getElementById('loader').style.display='none'; }, 420);
       document.body.style.opacity = '1';
+      window._userId = session.user.id;
       sb.from('profiles').select('plan,class').eq('id',session.user.id).single().then(function(r){
         if (!r.data) return;
         var plan = r.data.plan === 'achiever' ? 'Achiever Plan' : r.data.plan === 'scholar' ? 'Scholar Plan' : 'Free Plan';
@@ -589,7 +591,7 @@ body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--off-whit
   function addAI(text){var r=document.createElement('div');r.className='se-row-ai';r.innerHTML='<div class="se-av" style="width:24px;height:24px;font-size:.58rem">SE</div><div class="se-bbl-ai">'+stripMd(text).replace(/\n/g,'<br>')+'</div>';msgs.appendChild(r);msgs.scrollTop=msgs.scrollHeight;}
   function addUser(text){var r=document.createElement('div');r.className='se-row-user';r.innerHTML='<div class="se-bbl-user">'+text.replace(/\n/g,'<br>')+'</div>';msgs.appendChild(r);msgs.scrollTop=msgs.scrollHeight;}
   function addTyping(){var r=document.createElement('div');r.className='se-row-ai';r.id='se-typing';r.innerHTML='<div class="se-av" style="width:24px;height:24px;font-size:.58rem">SE</div><div class="se-bbl-ai"><div class="se-typing"><div class="se-dot"></div><div class="se-dot"></div><div class="se-dot"></div></div></div>';msgs.appendChild(r);msgs.scrollTop=msgs.scrollHeight;}
-  function send(){var t=inp.value.trim();if(!t||busy)return;busy=true;btn.disabled=true;addUser(t);inp.value='';addTyping();var msg='['+PAGE_SUBJECT+'] '+t;fetch('/.netlify/functions/ai-chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:msg,history:history})}).then(function(r){return r.json();}).then(function(d){var el=document.getElementById('se-typing');if(el)el.remove();var reply=d.reply||'Sorry, something went wrong.';addAI(reply);try{var h=JSON.parse(localStorage.getItem('se-history')||'[]');h.push({user:t,ai:reply,subject:PAGE_SUBJECT,ts:Date.now()});if(h.length>100)h=h.slice(-100);localStorage.setItem('se-history',JSON.stringify(h));}catch(e){}history.push({role:'user',content:t});history.push({role:'assistant',content:reply});if(history.length>20)history=history.slice(-20);}).catch(function(){var el=document.getElementById('se-typing');if(el)el.remove();addAI('Network error — check your connection.');}).finally(function(){busy=false;btn.disabled=false;});}
+  function send(){var t=inp.value.trim();if(!t||busy)return;busy=true;btn.disabled=true;addUser(t);inp.value='';addTyping();var msg='['+PAGE_SUBJECT+'] '+t;fetch('/.netlify/functions/ai-chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:msg,history:history})}).then(function(r){return r.json();}).then(function(d){var el=document.getElementById('se-typing');if(el)el.remove();var reply=d.reply||'Sorry, something went wrong.';addAI(reply);if(window._sb&&window._userId){window._sb.from('chat_history').insert({user_id:window._userId,user_message:t,ai_reply:reply,subject:PAGE_SUBJECT}).catch(function(){});}history.push({role:'user',content:t});history.push({role:'assistant',content:reply});if(history.length>20)history=history.slice(-20);}).catch(function(){var el=document.getElementById('se-typing');if(el)el.remove();addAI('Network error — check your connection.');}).finally(function(){busy=false;btn.disabled=false;});}
   btn.addEventListener('click',send);
   inp.addEventListener('keydown',function(e){if(e.key==='Enter')send();});
 })();

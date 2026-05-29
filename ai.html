@@ -334,6 +334,7 @@ body{
       document.getElementById('loader').classList.add('gone');
       setTimeout(function(){document.getElementById('loader').style.display='none';},320);
       document.body.style.opacity='1';
+      currentUserId=session.user.id;
       loadHistory();
     }
   });
@@ -378,7 +379,7 @@ body{
   });
 
   /* ── Chat ── */
-  var chatHistory=[],busy=false,hasMessages=false;
+  var chatHistory=[],busy=false,hasMessages=false,currentUserId=null;
   var msgs=document.getElementById('msgs');
   var inp=document.getElementById('inp');
   var sendBtn=document.getElementById('send-btn');
@@ -461,7 +462,7 @@ body{
       var reply=d.reply||'Sorry, something went wrong.';
       addAI(reply);
       if(!privacy){
-        try{var h=JSON.parse(localStorage.getItem('se-history')||'[]');h.push({user:t,ai:reply,subject:subject||'General',ts:Date.now()});if(h.length>100)h=h.slice(-100);localStorage.setItem('se-history',JSON.stringify(h));}catch(e){}
+        if(currentUserId){sb.from('chat_history').insert({user_id:currentUserId,user_message:t,ai_reply:reply,subject:subject||'General'}).catch(function(){});}
         chatHistory.push({role:'user',content:msg});
         chatHistory.push({role:'assistant',content:reply});
         if(chatHistory.length>20)chatHistory=chatHistory.slice(-20);
@@ -477,33 +478,40 @@ body{
   function scrollBottom(){document.getElementById('chat-main').scrollTop=9999999;}
 
   function loadHistory(){
-    try{
-      var h=JSON.parse(localStorage.getItem('se-history')||'[]');
-      if(!h.length)return;
-      emptyEl.style.display='none';hasMessages=true;
-      var hdr=document.createElement('div');hdr.className='hist-hdr';
-      var lbl=document.createElement('span');lbl.className='hist-label';lbl.textContent='History';
-      var clr=document.createElement('button');clr.className='hist-clear';clr.textContent='Clear all';
-      clr.addEventListener('click',function(){localStorage.removeItem('se-history');window.location.reload();});
-      hdr.appendChild(lbl);hdr.appendChild(clr);msgs.appendChild(hdr);
-      h.forEach(function(entry){
-        var urow=document.createElement('div');urow.className='mrow mrow--user past';
-        var ucontent=document.createElement('div');ucontent.className='m-content';
-        var ububble=document.createElement('div');ububble.className='m-bubble';
-        var subjHtml=(entry.subject&&entry.subject!=='General')?'<span style="font-size:.68rem;opacity:.75;display:block;margin-bottom:4px;">'+esc(entry.subject)+'</span>':'';
-        ububble.innerHTML=subjHtml+esc(entry.user).replace(/\n/g,'<br>');
-        ucontent.appendChild(ububble);urow.appendChild(ucontent);msgs.appendChild(urow);
-        var arow=document.createElement('div');arow.className='mrow past';
-        var aav=document.createElement('div');aav.className='m-av';aav.textContent='SE';
-        var acontent=document.createElement('div');acontent.className='m-content';
-        var atxt=document.createElement('div');atxt.className='m-text';
-        atxt.innerHTML=esc(stripMd(entry.ai)).replace(/\n/g,'<br>');
-        acontent.appendChild(atxt);arow.appendChild(aav);arow.appendChild(acontent);msgs.appendChild(arow);
-      });
-      var sep=document.createElement('hr');sep.className='hist-sep';msgs.appendChild(sep);
-      var newLbl=document.createElement('div');newLbl.className='hist-new';newLbl.textContent='New conversation';msgs.appendChild(newLbl);
-      scrollBottom();
-    }catch(e){}
+    if(!currentUserId)return;
+    sb.from('chat_history')
+      .select('user_message,ai_reply,subject,created_at')
+      .eq('user_id',currentUserId)
+      .order('created_at',{ascending:true})
+      .limit(50)
+      .then(function(res){
+        if(!res.data||!res.data.length)return;
+        emptyEl.style.display='none';hasMessages=true;
+        var hdr=document.createElement('div');hdr.className='hist-hdr';
+        var lbl=document.createElement('span');lbl.className='hist-label';lbl.textContent='History';
+        var clr=document.createElement('button');clr.className='hist-clear';clr.textContent='Clear all';
+        clr.addEventListener('click',function(){
+          sb.from('chat_history').delete().eq('user_id',currentUserId).then(function(){window.location.reload();});
+        });
+        hdr.appendChild(lbl);hdr.appendChild(clr);msgs.appendChild(hdr);
+        res.data.forEach(function(entry){
+          var urow=document.createElement('div');urow.className='mrow mrow--user past';
+          var ucontent=document.createElement('div');ucontent.className='m-content';
+          var ububble=document.createElement('div');ububble.className='m-bubble';
+          var subjHtml=(entry.subject&&entry.subject!=='General')?'<span style="font-size:.68rem;opacity:.75;display:block;margin-bottom:4px;">'+esc(entry.subject)+'</span>':'';
+          ububble.innerHTML=subjHtml+esc(entry.user_message).replace(/\n/g,'<br>');
+          ucontent.appendChild(ububble);urow.appendChild(ucontent);msgs.appendChild(urow);
+          var arow=document.createElement('div');arow.className='mrow past';
+          var aav=document.createElement('div');aav.className='m-av';aav.textContent='SE';
+          var acontent=document.createElement('div');acontent.className='m-content';
+          var atxt=document.createElement('div');atxt.className='m-text';
+          atxt.innerHTML=esc(stripMd(entry.ai_reply)).replace(/\n/g,'<br>');
+          acontent.appendChild(atxt);arow.appendChild(aav);arow.appendChild(acontent);msgs.appendChild(arow);
+        });
+        var sep=document.createElement('hr');sep.className='hist-sep';msgs.appendChild(sep);
+        var newLbl=document.createElement('div');newLbl.className='hist-new';newLbl.textContent='New conversation';msgs.appendChild(newLbl);
+        scrollBottom();
+      }).catch(function(){});
   }
 })();
 </script>
