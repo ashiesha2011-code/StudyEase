@@ -266,23 +266,48 @@ body{
 /* ── Input ── */
 #input-area{flex-shrink:0;padding:12px 20px 16px;background:var(--bg);border-top:1px solid var(--border);}
 .inp-inner{
-  max-width:720px;margin:0 auto;display:flex;align-items:flex-end;gap:10px;
+  max-width:720px;margin:0 auto;display:flex;align-items:center;gap:8px;
   background:var(--input-bg);border:1.5px solid var(--input-border);
-  border-radius:14px;padding:10px 10px 10px 16px;transition:border-color .15s,box-shadow .15s;
+  border-radius:14px;padding:8px 8px 8px 10px;transition:border-color .15s,box-shadow .15s;
 }
 .inp-inner:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(59,130,246,.1);}
 #inp{
   flex:1;border:none;background:transparent;font-family:inherit;
   font-size:.95rem;color:var(--text);resize:none;outline:none;
   max-height:160px;overflow-y:auto;line-height:1.55;scrollbar-width:thin;
+  padding:4px 0;
 }
 #inp::placeholder{color:var(--text-muted);}
 #inp:disabled{opacity:.5;cursor:not-allowed;}
+.inp-icon-btn{
+  width:34px;height:34px;border-radius:8px;border:none;background:transparent;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  color:var(--text-muted);transition:all .13s;flex-shrink:0;
+}
+.inp-icon-btn:hover{background:var(--surface);color:var(--text);}
+.inp-icon-btn.listening{color:#ef4444;}
+@keyframes mic-pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.inp-icon-btn.listening svg{animation:mic-pulse 1s infinite;}
+.att-wrap{position:relative;flex-shrink:0;}
+.att-menu{
+  position:absolute;bottom:calc(100% + 10px);left:0;
+  background:var(--bg);border:1px solid var(--border);border-radius:10px;
+  padding:4px;min-width:160px;box-shadow:0 4px 20px rgba(0,0,0,.13);
+  display:none;z-index:50;
+}
+.att-menu.open{display:block;}
+.att-opt{
+  display:flex;align-items:center;gap:9px;width:100%;
+  padding:9px 12px;border-radius:7px;border:none;background:transparent;
+  font-family:inherit;font-size:.84rem;color:var(--text);cursor:pointer;
+  text-align:left;transition:background .12s;
+}
+.att-opt:hover{background:var(--surface);}
 #send-btn{
   width:36px;height:36px;border-radius:10px;background:var(--accent);
   border:none;cursor:pointer;color:#fff;
   display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;transition:all .15s;align-self:flex-end;
+  flex-shrink:0;transition:all .15s;
 }
 #send-btn:hover:not(:disabled){filter:brightness(1.1);}
 #send-btn:disabled{opacity:.35;cursor:not-allowed;}
@@ -416,8 +441,28 @@ body{
     </main>
 
     <div id="input-area">
+      <input type="file" id="file-pick" style="display:none">
+      <input type="file" id="img-pick" accept="image/*,video/*" style="display:none">
       <div class="inp-inner">
+        <div class="att-wrap">
+          <button class="inp-icon-btn" id="att-btn" title="Attach">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>
+          </button>
+          <div class="att-menu" id="att-menu">
+            <button class="att-opt" id="att-img">
+              <svg width="15" height="15" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"/></svg>
+              Photo / Video
+            </button>
+            <button class="att-opt" id="att-file">
+              <svg width="15" height="15" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clip-rule="evenodd"/></svg>
+              File
+            </button>
+          </div>
+        </div>
         <textarea id="inp" placeholder="Ask a doubt…" rows="1"></textarea>
+        <button class="inp-icon-btn" id="mic-btn" title="Voice input">
+          <svg width="15" height="15" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"/></svg>
+        </button>
         <button id="send-btn" disabled>
           <svg width="15" height="15" viewBox="0 0 20 20" fill="currentColor"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/></svg>
         </button>
@@ -461,6 +506,50 @@ body{
     else document.documentElement.setAttribute('data-theme',t);
     document.querySelectorAll('.tbtn').forEach(function(b){b.classList.toggle('active',b.dataset.t===t);});
   }
+
+  /* ── Attachment dropdown ── */
+  var attMenu=document.getElementById('att-menu');
+  document.getElementById('att-btn').addEventListener('click',function(e){
+    e.stopPropagation();attMenu.classList.toggle('open');
+  });
+  document.addEventListener('click',function(){attMenu.classList.remove('open');});
+  document.getElementById('att-img').addEventListener('click',function(){
+    document.getElementById('img-pick').click();attMenu.classList.remove('open');
+  });
+  document.getElementById('att-file').addEventListener('click',function(){
+    document.getElementById('file-pick').click();attMenu.classList.remove('open');
+  });
+  function handleFilePick(file){
+    if(!file)return;
+    var prefix=file.type.startsWith('image/')?'[Image: ':'[File: ';
+    var cur=document.getElementById('inp').value;
+    document.getElementById('inp').value=(cur?cur+' ':'')+prefix+file.name+'] ';
+    document.getElementById('inp').dispatchEvent(new Event('input'));
+    document.getElementById('inp').focus();
+  }
+  document.getElementById('img-pick').addEventListener('change',function(){handleFilePick(this.files[0]);this.value='';});
+  document.getElementById('file-pick').addEventListener('change',function(){handleFilePick(this.files[0]);this.value='';});
+
+  /* ── Voice input ── */
+  (function(){
+    var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    var micBtn=document.getElementById('mic-btn');
+    if(!SR){micBtn.style.display='none';return;}
+    var recog=new SR();recog.continuous=false;recog.interimResults=false;recog.lang='en-IN';
+    var listening=false;
+    recog.onresult=function(e){
+      var t=e.results[0][0].transcript;
+      var inp=document.getElementById('inp');
+      inp.value=(inp.value?inp.value+' ':'')+t;
+      inp.dispatchEvent(new Event('input'));
+    };
+    recog.onend=function(){listening=false;micBtn.classList.remove('listening');};
+    recog.onerror=function(){listening=false;micBtn.classList.remove('listening');};
+    micBtn.addEventListener('click',function(){
+      if(listening){recog.stop();}
+      else{recog.start();listening=true;micBtn.classList.add('listening');}
+    });
+  })();
 
   /* ── Privacy ── */
   var privacy=false;
