@@ -11,7 +11,6 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-font-smoothing:antialiased}
 
-/* ── Light (default) ── */
 :root{
   --bg:#ffffff;--bg-alt:#f7f7f8;--border:rgba(0,0,0,.09);
   --text:#111827;--text-mid:#6b7280;--text-muted:#9ca3af;
@@ -20,17 +19,15 @@ html{-webkit-font-smoothing:antialiased}
   --accent:#3b82f6;
   --priv-bg:#fffbeb;--priv-text:#92400e;--priv-border:#fde68a;
 }
-/* Device dark preference */
 @media(prefers-color-scheme:dark){
   :root{
-    --bg:#212121;--bg-alt:#2a2a2a;--border:rgba(255,255,255,.1);
+    --bg:#212121;--bg-alt:#171717;--border:rgba(255,255,255,.1);
     --text:#ececec;--text-mid:#a1a1aa;--text-muted:#71717a;
     --hdr:#212121;--surface:#2f2f2f;
     --input-bg:#2f2f2f;--input-border:rgba(255,255,255,.14);
     --priv-bg:#451a03;--priv-text:#fbbf24;--priv-border:#78350f;
   }
 }
-/* Force light */
 [data-theme="light"]{
   --bg:#ffffff;--bg-alt:#f7f7f8;--border:rgba(0,0,0,.09);
   --text:#111827;--text-mid:#6b7280;--text-muted:#9ca3af;
@@ -38,9 +35,8 @@ html{-webkit-font-smoothing:antialiased}
   --input-bg:#f9fafb;--input-border:rgba(0,0,0,.12);
   --priv-bg:#fffbeb;--priv-text:#92400e;--priv-border:#fde68a;
 }
-/* Force dark */
 [data-theme="dark"]{
-  --bg:#212121;--bg-alt:#2a2a2a;--border:rgba(255,255,255,.1);
+  --bg:#212121;--bg-alt:#171717;--border:rgba(255,255,255,.1);
   --text:#ececec;--text-mid:#a1a1aa;--text-muted:#71717a;
   --hdr:#212121;--surface:#2f2f2f;
   --input-bg:#2f2f2f;--input-border:rgba(255,255,255,.14);
@@ -50,18 +46,95 @@ html{-webkit-font-smoothing:antialiased}
 body{
   font-family:'DM Sans',system-ui,sans-serif;
   background:var(--bg);color:var(--text);
-  height:100dvh;display:flex;flex-direction:column;overflow:hidden;
+  height:100dvh;overflow:hidden;
   transition:background .18s,color .18s;
 }
+
+/* ── App layout ── */
+#app{display:flex;height:100dvh;overflow:hidden;}
+
+/* ── Sidebar ── */
+#sidebar{
+  width:260px;flex-shrink:0;
+  background:var(--bg-alt);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;
+  transition:transform .22s cubic-bezier(.4,0,.2,1);
+  z-index:300;
+}
+#sb-top{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 12px;border-bottom:1px solid var(--border);flex-shrink:0;
+}
+#sb-logo{font-size:.88rem;font-weight:700;color:var(--text);}
+#new-chat-btn{
+  display:flex;align-items:center;gap:5px;padding:6px 11px;
+  border-radius:8px;background:var(--accent);color:#fff;
+  border:none;cursor:pointer;font-family:inherit;
+  font-size:.78rem;font-weight:600;transition:filter .14s;white-space:nowrap;
+}
+#new-chat-btn:hover{filter:brightness(1.1);}
+
+#conv-list{
+  flex:1;overflow-y:auto;padding:6px;
+  scrollbar-width:thin;scrollbar-color:var(--border) transparent;
+}
+#conv-list::-webkit-scrollbar{width:4px;}
+#conv-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+
+.conv-group-label{
+  font-size:.67rem;font-weight:600;color:var(--text-muted);
+  letter-spacing:.07em;text-transform:uppercase;padding:12px 8px 5px;
+}
+.conv-item{
+  padding:9px 10px;border-radius:8px;cursor:pointer;
+  margin-bottom:1px;transition:background .12s;border:1px solid transparent;
+}
+.conv-item:hover{background:var(--surface);}
+.conv-item.active{background:var(--surface);border-color:var(--border);}
+.conv-title{
+  font-size:.84rem;font-weight:500;color:var(--text);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.4;
+}
+.conv-row{display:flex;align-items:center;gap:6px;margin-top:3px;}
+.conv-subj{
+  font-size:.67rem;font-weight:600;color:var(--accent);
+  background:rgba(59,130,246,.12);padding:1px 6px;border-radius:4px;flex-shrink:0;
+}
+.conv-time{font-size:.68rem;color:var(--text-muted);}
+
+#sb-footer{padding:10px 8px;border-top:1px solid var(--border);flex-shrink:0;}
+#clear-all-btn{
+  width:100%;padding:8px;border-radius:8px;
+  border:1px solid var(--border);background:transparent;
+  font-family:inherit;font-size:.78rem;color:var(--text-muted);
+  cursor:pointer;transition:all .13s;
+}
+#clear-all-btn:hover{border-color:#ef4444;color:#ef4444;}
+
+#sb-empty{
+  text-align:center;padding:40px 16px;
+  font-size:.82rem;color:var(--text-muted);line-height:1.6;
+}
+
+/* ── Mobile overlay ── */
+#sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;}
+#sb-overlay.show{display:block;}
+
+/* ── Main column ── */
+#main-col{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
 
 /* ── Header ── */
 #hdr{
   display:flex;align-items:center;justify-content:space-between;
-  padding:0 20px;height:56px;background:var(--hdr);
+  padding:0 16px;height:56px;background:var(--hdr);
   border-bottom:1px solid var(--border);flex-shrink:0;z-index:100;
-  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
 }
-.hdr-l{display:flex;align-items:center;gap:14px;}
+.hdr-l{display:flex;align-items:center;gap:8px;}
+#sb-toggle{
+  display:none;width:34px;height:34px;border-radius:8px;
+  border:1px solid var(--border);background:transparent;
+  cursor:pointer;align-items:center;justify-content:center;color:var(--text-mid);
+}
 .back-btn{
   display:flex;align-items:center;gap:5px;text-decoration:none;
   padding:6px 10px;border-radius:8px;font-size:.82rem;font-weight:500;
@@ -71,7 +144,6 @@ body{
 .hdr-title{font-size:.95rem;font-weight:700;color:var(--text);}
 .hdr-r{display:flex;align-items:center;gap:8px;}
 
-/* Privacy button */
 .priv-btn{
   display:flex;align-items:center;gap:5px;padding:6px 12px;
   border-radius:99px;border:1px solid var(--border);background:transparent;
@@ -81,7 +153,6 @@ body{
 .priv-btn:hover{border-color:var(--accent);color:var(--accent);}
 .priv-btn.on{background:var(--priv-bg);border-color:var(--priv-border);color:var(--priv-text);}
 
-/* Theme toggle */
 .theme-grp{
   display:flex;align-items:center;background:var(--surface);
   border:1px solid var(--border);border-radius:99px;padding:3px;gap:1px;
@@ -118,6 +189,19 @@ body{
   font-size:.76rem;font-weight:600;color:var(--priv-text);flex-shrink:0;
 }
 #priv-bar.show{display:flex;}
+
+/* ── View mode banner ── */
+#view-banner{
+  display:none;align-items:center;justify-content:center;gap:10px;
+  padding:7px 20px;background:var(--surface);
+  border-bottom:1px solid var(--border);
+  font-size:.78rem;color:var(--text-mid);flex-shrink:0;
+}
+#view-banner.show{display:flex;}
+#view-new-btn{
+  padding:4px 12px;border-radius:6px;background:var(--accent);color:#fff;
+  border:none;font-family:inherit;font-size:.75rem;font-weight:600;cursor:pointer;
+}
 
 /* ── Chat main ── */
 #chat-main{flex:1;overflow-y:auto;min-height:0;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
@@ -173,7 +257,6 @@ body{
 .copy-btn:hover{border-color:var(--accent);color:var(--accent);}
 .copy-btn.copied{color:#10b981;border-color:#10b981;}
 
-/* Typing */
 .t-row{display:flex;gap:10px;padding:8px 0;align-items:flex-start;}
 .t-dots{display:flex;gap:4px;align-items:center;padding:8px 2px;}
 .tdot{width:7px;height:7px;border-radius:50%;background:var(--text-muted);animation:blink 1.2s infinite;}
@@ -183,11 +266,9 @@ body{
 /* ── Input ── */
 #input-area{flex-shrink:0;padding:12px 20px 16px;background:var(--bg);border-top:1px solid var(--border);}
 .inp-inner{
-  max-width:720px;margin:0 auto;
-  display:flex;align-items:flex-end;gap:10px;
+  max-width:720px;margin:0 auto;display:flex;align-items:flex-end;gap:10px;
   background:var(--input-bg);border:1.5px solid var(--input-border);
-  border-radius:14px;padding:10px 10px 10px 16px;
-  transition:border-color .15s,box-shadow .15s;
+  border-radius:14px;padding:10px 10px 10px 16px;transition:border-color .15s,box-shadow .15s;
 }
 .inp-inner:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(59,130,246,.1);}
 #inp{
@@ -196,6 +277,7 @@ body{
   max-height:160px;overflow-y:auto;line-height:1.55;scrollbar-width:thin;
 }
 #inp::placeholder{color:var(--text-muted);}
+#inp:disabled{opacity:.5;cursor:not-allowed;}
 #send-btn{
   width:36px;height:36px;border-radius:10px;background:var(--accent);
   border:none;cursor:pointer;color:#fff;
@@ -212,24 +294,19 @@ body{
 .l-mark{width:44px;height:44px;border-radius:12px;background:var(--accent);display:flex;align-items:center;justify-content:center;animation:pulse 1.5s ease-in-out infinite;}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(.91)}}
 
-/* ── History ── */
-.hist-hdr{display:flex;align-items:center;justify-content:space-between;padding:20px 0 10px;}
-.hist-label{font-size:.72rem;font-weight:600;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;}
-.hist-clear{font-size:.73rem;color:var(--text-muted);background:none;border:1px solid var(--border);border-radius:6px;padding:3px 9px;cursor:pointer;font-family:inherit;transition:all .13s;}
-.hist-clear:hover{border-color:var(--accent);color:var(--accent);}
-.hist-sep{border:none;border-top:1px solid var(--border);margin:10px 0 4px;}
-.hist-new{text-align:center;font-size:.72rem;color:var(--text-muted);padding:4px 0 14px;}
-.mrow.past{opacity:.55;}
-.mrow.past .m-actions{display:none;}
-
 /* ── Mobile ── */
+@media(max-width:767px){
+  #sidebar{position:fixed;left:0;top:0;bottom:0;transform:translateX(-100%);}
+  #sidebar.open{transform:translateX(0);}
+  #sb-toggle{display:flex!important;}
+  .back-label{display:none;}
+}
 @media(max-width:580px){
   .sug-grid{grid-template-columns:1fr;}
   .e-title{font-size:1.3rem;}
-  #hdr{padding:0 14px;}
-  #subj-strip{padding:8px 14px;}
+  #hdr{padding:0 12px;}
+  #subj-strip{padding:8px 12px;}
   #input-area{padding:10px 12px 14px;}
-  .back-label{display:none;}
 }
   </style>
 </head>
@@ -246,78 +323,111 @@ body{
   </div>
 </div>
 
-<header id="hdr">
-  <div class="hdr-l">
-    <a href="dashboard.html" class="back-btn">
-      <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"/></svg>
-      <span class="back-label">Dashboard</span>
-    </a>
-    <span class="hdr-title">AI Companion</span>
-  </div>
-  <div class="hdr-r">
-    <button class="priv-btn" id="priv-btn">
-      <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>
-      <span id="priv-label">Privacy</span>
-    </button>
-    <div class="theme-grp">
-      <button class="tbtn" data-t="light" title="Light">
-        <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"/></svg>
-      </button>
-      <button class="tbtn" data-t="device" title="Device">
-        <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.22l.123.489.804.804A1 1 0 0113 18H7a1 1 0 01-.707-1.707l.804-.804L7.22 15H5a2 2 0 01-2-2V5zm5.771 7H5V5h10v7H8.771z" clip-rule="evenodd"/></svg>
-      </button>
-      <button class="tbtn" data-t="dark" title="Dark">
-        <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/></svg>
+<div id="sb-overlay"></div>
+
+<div id="app">
+
+  <!-- Sidebar -->
+  <aside id="sidebar">
+    <div id="sb-top">
+      <span id="sb-logo">StudyEase AI</span>
+      <button id="new-chat-btn">
+        <svg width="12" height="12" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>
+        New Chat
       </button>
     </div>
-  </div>
-</header>
-
-<div id="subj-strip">
-  <button class="sp active" data-subj="">General</button>
-  <button class="sp" data-subj="Maths">📐 Maths</button>
-  <button class="sp" data-subj="Physics">⚡ Physics</button>
-  <button class="sp" data-subj="Chemistry">⚗️ Chemistry</button>
-  <button class="sp" data-subj="Biology">🌿 Biology</button>
-</div>
-
-<div id="priv-bar">
-  <svg width="12" height="12" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>
-  Privacy mode — this chat won't be saved anywhere
-</div>
-
-<main id="chat-main">
-  <div class="chat-inner">
-    <div id="empty-state">
-      <div class="e-icon">
-        <svg width="26" height="26" viewBox="0 0 18 18" fill="none">
-          <rect x="2" y="2" width="6" height="8" rx="1.5" fill="white"/>
-          <rect x="10" y="2" width="6" height="5" rx="1.5" fill="rgba(255,255,255,0.5)"/>
-          <rect x="2" y="12" width="14" height="2.5" rx="1.25" fill="rgba(255,255,255,0.3)"/>
-          <rect x="10" y="9" width="6" height="2.5" rx="1.25" fill="rgba(255,255,255,0.4)"/>
-        </svg>
-      </div>
-      <div class="e-title">AI Companion</div>
-      <div class="e-sub">Your CBSE Class 10 study buddy</div>
-      <div class="sug-grid">
-        <button class="sc" data-q="Explain this concept in simple language a Class 10 student can understand">💡 Explain simply</button>
-        <button class="sc" data-q="How should I write the perfect answer for a 5 mark board exam question?">📝 5 mark format</button>
-        <button class="sc" data-q="Give me a clear step-by-step solution with examples">🔢 Step by step</button>
-        <button class="sc" data-q="What are the most important topics for CBSE Class 10 board exams?">🎯 Board tips</button>
-      </div>
+    <div id="conv-list">
+      <div id="sb-empty">Start a conversation to see your history here</div>
     </div>
-    <div id="msgs"></div>
-  </div>
-</main>
+    <div id="sb-footer">
+      <button id="clear-all-btn">Clear all history</button>
+    </div>
+  </aside>
 
-<div id="input-area">
-  <div class="inp-inner">
-    <textarea id="inp" placeholder="Ask a doubt…" rows="1"></textarea>
-    <button id="send-btn" disabled>
-      <svg width="15" height="15" viewBox="0 0 20 20" fill="currentColor"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/></svg>
-    </button>
+  <!-- Main -->
+  <div id="main-col">
+    <header id="hdr">
+      <div class="hdr-l">
+        <button id="sb-toggle" title="Toggle sidebar">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/></svg>
+        </button>
+        <a href="dashboard.html" class="back-btn">
+          <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"/></svg>
+          <span class="back-label">Dashboard</span>
+        </a>
+        <span class="hdr-title">AI Companion</span>
+      </div>
+      <div class="hdr-r">
+        <button class="priv-btn" id="priv-btn">
+          <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>
+          <span id="priv-label">Privacy</span>
+        </button>
+        <div class="theme-grp">
+          <button class="tbtn" data-t="light" title="Light">
+            <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"/></svg>
+          </button>
+          <button class="tbtn" data-t="device" title="Device">
+            <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.22l.123.489.804.804A1 1 0 0113 18H7a1 1 0 01-.707-1.707l.804-.804L7.22 15H5a2 2 0 01-2-2V5zm5.771 7H5V5h10v7H8.771z" clip-rule="evenodd"/></svg>
+          </button>
+          <button class="tbtn" data-t="dark" title="Dark">
+            <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/></svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div id="subj-strip">
+      <button class="sp active" data-subj="">General</button>
+      <button class="sp" data-subj="Maths">📐 Maths</button>
+      <button class="sp" data-subj="Physics">⚡ Physics</button>
+      <button class="sp" data-subj="Chemistry">⚗️ Chemistry</button>
+      <button class="sp" data-subj="Biology">🌿 Biology</button>
+    </div>
+
+    <div id="priv-bar">
+      <svg width="12" height="12" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>
+      Privacy mode — this chat won't be saved anywhere
+    </div>
+
+    <div id="view-banner">
+      <span id="view-banner-text">Past conversation</span>
+      <button id="view-new-btn">New Chat</button>
+    </div>
+
+    <main id="chat-main">
+      <div class="chat-inner">
+        <div id="empty-state">
+          <div class="e-icon">
+            <svg width="26" height="26" viewBox="0 0 18 18" fill="none">
+              <rect x="2" y="2" width="6" height="8" rx="1.5" fill="white"/>
+              <rect x="10" y="2" width="6" height="5" rx="1.5" fill="rgba(255,255,255,0.5)"/>
+              <rect x="2" y="12" width="14" height="2.5" rx="1.25" fill="rgba(255,255,255,0.3)"/>
+              <rect x="10" y="9" width="6" height="2.5" rx="1.25" fill="rgba(255,255,255,0.4)"/>
+            </svg>
+          </div>
+          <div class="e-title">AI Companion</div>
+          <div class="e-sub">Your CBSE Class 10 study buddy</div>
+          <div class="sug-grid">
+            <button class="sc" data-q="Explain this concept in simple language a Class 10 student can understand">💡 Explain simply</button>
+            <button class="sc" data-q="How should I write the perfect answer for a 5 mark board exam question?">📝 5 mark format</button>
+            <button class="sc" data-q="Give me a clear step-by-step solution with examples">🔢 Step by step</button>
+            <button class="sc" data-q="What are the most important topics for CBSE Class 10 board exams?">🎯 Board tips</button>
+          </div>
+        </div>
+        <div id="msgs"></div>
+      </div>
+    </main>
+
+    <div id="input-area">
+      <div class="inp-inner">
+        <textarea id="inp" placeholder="Ask a doubt…" rows="1"></textarea>
+        <button id="send-btn" disabled>
+          <svg width="15" height="15" viewBox="0 0 20 20" fill="currentColor"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/></svg>
+        </button>
+      </div>
+      <div class="inp-hint">Enter to send · Shift+Enter for new line</div>
+    </div>
   </div>
-  <div class="inp-hint">Enter to send · Shift+Enter for new line</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -328,6 +438,8 @@ body{
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd3J2YnRyeWVlc2ZnZXlkeG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMTQ0NDAsImV4cCI6MjA5NDU5MDQ0MH0.3Sp9dlc8cNsrzdHAGy74pCqscjL1MFV9ZWMW90QbhqE'
   );
 
+  /* ── Auth ── */
+  var currentUserId=null;
   sb.auth.onAuthStateChange(function(ev,session){
     if(ev==='SIGNED_OUT'||(ev==='INITIAL_SESSION'&&!session)){window.location.href='index.html';return;}
     if(session&&session.user){
@@ -378,14 +490,38 @@ body{
     });
   });
 
-  /* ── Chat ── */
-  var chatHistory=[],busy=false,hasMessages=false,currentUserId=null;
+  /* ── Mobile sidebar ── */
+  var sidebar=document.getElementById('sidebar');
+  var overlay=document.getElementById('sb-overlay');
+  function openSidebar(){sidebar.classList.add('open');overlay.classList.add('show');}
+  function closeSidebar(){sidebar.classList.remove('open');overlay.classList.remove('show');}
+  document.getElementById('sb-toggle').addEventListener('click',function(){
+    sidebar.classList.contains('open')?closeSidebar():openSidebar();
+  });
+  overlay.addEventListener('click',closeSidebar);
+
+  /* ── New chat ── */
+  document.getElementById('new-chat-btn').addEventListener('click',startNewChat);
+  document.getElementById('view-new-btn').addEventListener('click',startNewChat);
+
+  /* ── Clear all ── */
+  document.getElementById('clear-all-btn').addEventListener('click',function(){
+    if(!currentUserId||!confirm('Delete all chat history?'))return;
+    sb.from('chat_history').delete().eq('user_id',currentUserId).then(function(){
+      renderSidebar([]);
+      startNewChat();
+    });
+  });
+
+  /* ── Chat state ── */
+  var chatHistory=[],busy=false,hasMessages=false,viewMode=false;
   var msgs=document.getElementById('msgs');
   var inp=document.getElementById('inp');
   var sendBtn=document.getElementById('send-btn');
   var emptyEl=document.getElementById('empty-state');
 
   inp.addEventListener('input',function(){
+    if(viewMode)return;
     sendBtn.disabled=!inp.value.trim();
     inp.style.height='auto';
     inp.style.height=Math.min(inp.scrollHeight,160)+'px';
@@ -402,14 +538,22 @@ body{
       .replace(/`([^`]+)`/g,'$1').replace(/^\s*[-*+]\s+/gm,'• ');
   }
 
+  function startNewChat(){
+    viewMode=false;chatHistory=[];hasMessages=false;
+    msgs.innerHTML='';emptyEl.style.display='';
+    inp.disabled=false;inp.value='';inp.style.height='auto';sendBtn.disabled=true;
+    document.getElementById('view-banner').classList.remove('show');
+    document.querySelectorAll('.conv-item').forEach(function(el){el.classList.remove('active');});
+    closeSidebar();inp.focus();
+  }
+
   function addUser(text){
     if(!hasMessages){emptyEl.style.display='none';hasMessages=true;}
     var row=document.createElement('div');row.className='mrow mrow--user';
     var content=document.createElement('div');content.className='m-content';
     var bubble=document.createElement('div');bubble.className='m-bubble';
     bubble.innerHTML=esc(text).replace(/\n/g,'<br>');
-    content.appendChild(bubble);row.appendChild(content);
-    msgs.appendChild(row);scrollBottom();
+    content.appendChild(bubble);row.appendChild(content);msgs.appendChild(row);scrollBottom();
   }
 
   function addAI(text){
@@ -433,8 +577,7 @@ body{
     });
     actions.appendChild(copyBtn);
     content.appendChild(textEl);content.appendChild(actions);
-    row.appendChild(av);row.appendChild(content);
-    msgs.appendChild(row);scrollBottom();
+    row.appendChild(av);row.appendChild(content);msgs.appendChild(row);scrollBottom();
   }
 
   function addTyping(){
@@ -442,16 +585,15 @@ body{
     var av=document.createElement('div');av.className='m-av';av.textContent='SE';
     var dots=document.createElement('div');dots.className='t-dots';
     dots.innerHTML='<div class="tdot"></div><div class="tdot"></div><div class="tdot"></div>';
-    row.appendChild(av);row.appendChild(dots);
-    msgs.appendChild(row);scrollBottom();
+    row.appendChild(av);row.appendChild(dots);msgs.appendChild(row);scrollBottom();
   }
 
   function send(){
+    if(viewMode)return;
     var t=inp.value.trim();if(!t||busy)return;
     busy=true;sendBtn.disabled=true;
     var msg=subject?'['+subject+'] '+t:t;
-    addUser(t);inp.value='';inp.style.height='auto';
-    addTyping();
+    addUser(t);inp.value='';inp.style.height='auto';addTyping();
     fetch('https://xiwrvbtryeesfgeydxnf.supabase.co/functions/v1/ai-chat',{
       method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({message:msg,history:privacy?[]:chatHistory})
@@ -461,8 +603,9 @@ body{
       var el=document.getElementById('typing-row');if(el)el.remove();
       var reply=d.reply||'Sorry, something went wrong.';
       addAI(reply);
-      if(!privacy){
-        if(currentUserId){sb.from('chat_history').insert({user_id:currentUserId,user_message:t,ai_reply:reply,subject:subject||'General'}).then(function(r){if(r.error)console.error('[History save error]',r.error);}).catch(function(err){console.error('[History save error]',err);});}
+      if(!privacy&&currentUserId){
+        sb.from('chat_history').insert({user_id:currentUserId,user_message:t,ai_reply:reply,subject:subject||'General'})
+          .then(function(r){if(!r.error)loadHistory();});
         chatHistory.push({role:'user',content:msg});
         chatHistory.push({role:'assistant',content:reply});
         if(chatHistory.length>20)chatHistory=chatHistory.slice(-20);
@@ -472,10 +615,89 @@ body{
       var el=document.getElementById('typing-row');if(el)el.remove();
       addAI('Network error — please check your connection.');
     })
-    .finally(function(){busy=false;});
+    .finally(function(){busy=false;if(!viewMode)sendBtn.disabled=!inp.value.trim();});
   }
 
   function scrollBottom(){document.getElementById('chat-main').scrollTop=9999999;}
+
+  /* ── Sidebar / History ── */
+  function groupConversations(rows){
+    var convs=[],current=null,GAP=60*60*1000;
+    rows.forEach(function(row){
+      var t=new Date(row.created_at).getTime();
+      if(!current||t-current.lastTime>GAP){
+        current={title:row.user_message,subject:row.subject,startTime:new Date(row.created_at),lastTime:t,messages:[]};
+        convs.push(current);
+      }
+      current.messages.push(row);current.lastTime=t;
+    });
+    return convs.reverse();
+  }
+
+  function dayLabel(date){
+    var now=new Date(),d=new Date(date);
+    var diff=Math.floor((now-d)/86400000);
+    if(diff===0)return'Today';
+    if(diff===1)return'Yesterday';
+    if(diff<7)return d.toLocaleDateString('en-IN',{weekday:'long'});
+    return d.toLocaleDateString('en-IN',{month:'short',day:'numeric'});
+  }
+
+  function renderSidebar(convs){
+    var list=document.getElementById('conv-list');
+    list.innerHTML='';
+    if(!convs.length){
+      list.innerHTML='<div id="sb-empty">Start a conversation to see your history here</div>';
+      return;
+    }
+    var lastLabel='';
+    convs.forEach(function(conv){
+      var label=dayLabel(conv.startTime);
+      if(label!==lastLabel){
+        var g=document.createElement('div');g.className='conv-group-label';g.textContent=label;
+        list.appendChild(g);lastLabel=label;
+      }
+      var item=document.createElement('div');item.className='conv-item';
+      var titleEl=document.createElement('div');titleEl.className='conv-title';
+      titleEl.textContent=conv.title.length>44?conv.title.slice(0,44)+'…':conv.title;
+      var row=document.createElement('div');row.className='conv-row';
+      if(conv.subject&&conv.subject!=='General'){
+        var subjEl=document.createElement('span');subjEl.className='conv-subj';subjEl.textContent=conv.subject;
+        row.appendChild(subjEl);
+      }
+      var timeEl=document.createElement('span');timeEl.className='conv-time';
+      timeEl.textContent=new Date(conv.startTime).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true});
+      row.appendChild(timeEl);
+      item.appendChild(titleEl);item.appendChild(row);
+      item.addEventListener('click',function(){openConversation(conv,item);});
+      list.appendChild(item);
+    });
+  }
+
+  function openConversation(conv,itemEl){
+    viewMode=true;msgs.innerHTML='';
+    emptyEl.style.display='none';hasMessages=true;
+    inp.disabled=true;sendBtn.disabled=true;inp.value='';
+    document.querySelectorAll('.conv-item').forEach(function(el){el.classList.remove('active');});
+    if(itemEl)itemEl.classList.add('active');
+    document.getElementById('view-banner-text').textContent=
+      'Past conversation · '+new Date(conv.startTime).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+    document.getElementById('view-banner').classList.add('show');
+    conv.messages.forEach(function(entry){
+      var urow=document.createElement('div');urow.className='mrow mrow--user';
+      var ucontent=document.createElement('div');ucontent.className='m-content';
+      var ububble=document.createElement('div');ububble.className='m-bubble';
+      ububble.innerHTML=esc(entry.user_message).replace(/\n/g,'<br>');
+      ucontent.appendChild(ububble);urow.appendChild(ucontent);msgs.appendChild(urow);
+      var arow=document.createElement('div');arow.className='mrow';
+      var aav=document.createElement('div');aav.className='m-av';aav.textContent='SE';
+      var acontent=document.createElement('div');acontent.className='m-content';
+      var atxt=document.createElement('div');atxt.className='m-text';
+      atxt.innerHTML=esc(stripMd(entry.ai_reply)).replace(/\n/g,'<br>');
+      acontent.appendChild(atxt);arow.appendChild(aav);arow.appendChild(acontent);msgs.appendChild(arow);
+    });
+    scrollBottom();closeSidebar();
+  }
 
   function loadHistory(){
     if(!currentUserId)return;
@@ -483,37 +705,12 @@ body{
       .select('user_message,ai_reply,subject,created_at')
       .eq('user_id',currentUserId)
       .order('created_at',{ascending:true})
-      .limit(50)
+      .limit(200)
       .then(function(res){
-        console.log('[History query]', res);
-        if(res.error){console.error('[History query error]',res.error);return;}
-        if(!res.data||!res.data.length)return;
-        emptyEl.style.display='none';hasMessages=true;
-        var hdr=document.createElement('div');hdr.className='hist-hdr';
-        var lbl=document.createElement('span');lbl.className='hist-label';lbl.textContent='History';
-        var clr=document.createElement('button');clr.className='hist-clear';clr.textContent='Clear all';
-        clr.addEventListener('click',function(){
-          sb.from('chat_history').delete().eq('user_id',currentUserId).then(function(){window.location.reload();});
-        });
-        hdr.appendChild(lbl);hdr.appendChild(clr);msgs.appendChild(hdr);
-        res.data.forEach(function(entry){
-          var urow=document.createElement('div');urow.className='mrow mrow--user past';
-          var ucontent=document.createElement('div');ucontent.className='m-content';
-          var ububble=document.createElement('div');ububble.className='m-bubble';
-          var subjHtml=(entry.subject&&entry.subject!=='General')?'<span style="font-size:.68rem;opacity:.75;display:block;margin-bottom:4px;">'+esc(entry.subject)+'</span>':'';
-          ububble.innerHTML=subjHtml+esc(entry.user_message).replace(/\n/g,'<br>');
-          ucontent.appendChild(ububble);urow.appendChild(ucontent);msgs.appendChild(urow);
-          var arow=document.createElement('div');arow.className='mrow past';
-          var aav=document.createElement('div');aav.className='m-av';aav.textContent='SE';
-          var acontent=document.createElement('div');acontent.className='m-content';
-          var atxt=document.createElement('div');atxt.className='m-text';
-          atxt.innerHTML=esc(stripMd(entry.ai_reply)).replace(/\n/g,'<br>');
-          acontent.appendChild(atxt);arow.appendChild(aav);arow.appendChild(acontent);msgs.appendChild(arow);
-        });
-        var sep=document.createElement('hr');sep.className='hist-sep';msgs.appendChild(sep);
-        var newLbl=document.createElement('div');newLbl.className='hist-new';newLbl.textContent='New conversation';msgs.appendChild(newLbl);
-        scrollBottom();
-      }).catch(function(err){console.error('[History load error]', err);});
+        if(res.error){console.error('[History error]',res.error);return;}
+        renderSidebar(groupConversations(res.data||[]));
+      })
+      .catch(function(err){console.error('[History error]',err);});
   }
 })();
 </script>
