@@ -4,7 +4,8 @@ Rules:
 - Always include board exam format tips (e.g. "For 3 marks, write: point 1, point 2, point 3")
 - Use simple language for Class 10 students
 - Cover Maths, Physics, Chemistry, Biology
-- If the question is not about Class 10 studies, politely redirect to academics`;
+- If the question is not about Class 10 studies, politely redirect to academics
+- Never use markdown formatting. No asterisks (**), no hashes (#), no underscores for emphasis. Use plain text, numbered lists (1. 2. 3.), and simple punctuation only.`;
 
 exports.handler = async function (event) {
   if (event.httpMethod === 'OPTIONS') {
