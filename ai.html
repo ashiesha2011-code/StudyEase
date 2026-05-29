@@ -101,6 +101,14 @@ body{
   background:rgba(59,130,246,.12);padding:1px 6px;border-radius:4px;flex-shrink:0;
 }
 .conv-time{font-size:.68rem;color:var(--text-muted);}
+.conv-del{
+  margin-left:auto;flex-shrink:0;width:22px;height:22px;border-radius:5px;
+  border:none;background:transparent;cursor:pointer;
+  display:none;align-items:center;justify-content:center;
+  color:var(--text-muted);transition:color .12s,background .12s;
+}
+.conv-item:hover .conv-del{display:flex;}
+.conv-del:hover{color:#ef4444;background:rgba(239,68,68,.1);}
 
 #sb-footer{padding:10px 8px;border-top:1px solid var(--border);flex-shrink:0;}
 #clear-all-btn{
@@ -668,6 +676,16 @@ body{
       var timeEl=document.createElement('span');timeEl.className='conv-time';
       timeEl.textContent=new Date(conv.startTime).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true});
       row.appendChild(timeEl);
+      var delBtn=document.createElement('button');delBtn.className='conv-del';delBtn.title='Delete';
+      delBtn.innerHTML='<svg width="12" height="12" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 012 0v6a1 1 0 11-2 0V8z" clip-rule="evenodd"/></svg>';
+      delBtn.addEventListener('click',function(e){
+        e.stopPropagation();
+        var ids=conv.messages.map(function(m){return m.id;});
+        sb.from('chat_history').delete().in('id',ids).then(function(r){
+          if(!r.error){if(viewMode&&item.classList.contains('active'))startNewChat();loadHistory();}
+        });
+      });
+      row.appendChild(delBtn);
       item.appendChild(titleEl);item.appendChild(row);
       item.addEventListener('click',function(){openConversation(conv,item);});
       list.appendChild(item);
@@ -702,7 +720,7 @@ body{
   function loadHistory(){
     if(!currentUserId)return;
     sb.from('chat_history')
-      .select('user_message,ai_reply,subject,created_at')
+      .select('id,user_message,ai_reply,subject,created_at')
       .eq('user_id',currentUserId)
       .order('created_at',{ascending:true})
       .limit(200)
