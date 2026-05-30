@@ -225,9 +225,9 @@ try{
 
 function saveSessionToDB(type,mode,duration){
   if(!_sb||!_uid)return;
-  _sb.from('breathing_sessions')
-    .insert({user_id:_uid,type:type,mode:mode,duration:duration})
-    .then(function(r){if(r.error)console.error('Breathing save error:',r.error);});
+  _sb.from('mood_checkins')
+    .insert({user_id:_uid,type:type,mode:mode,duration:duration,date:new Date().toDateString()})
+    .then(function(r){if(r.error)console.error('Mindfulness save error:',r.error);});
 }
 
 /* ── LocalStorage ── */
