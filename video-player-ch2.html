@@ -245,9 +245,35 @@ video::-webkit-media-controls-enclosure{display:none!important}
   .content{padding:14px}.mode-card{flex-direction:column;align-items:flex-start}
   .mode-btns{width:100%}.mode-btn{flex:1;justify-content:center}
 }
-#ai-fab{position:fixed;bottom:24px;right:24px;width:52px;height:52px;border-radius:50%;background:#8B5CF6;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:white;z-index:9000;box-shadow:0 4px 20px rgba(139,92,246,.4);transition:transform .15s,background .15s;animation:fab-in .3s .3s both ease-out}
-#ai-fab:hover{transform:scale(1.08);background:#7C3AED}
-@keyframes fab-in{from{opacity:0;transform:translateY(14px) scale(.88)}to{opacity:1;transform:none}}
+#vp-popup{position:fixed;bottom:80px;right:24px;width:340px;max-height:480px;background:#fff;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,.18);display:flex;flex-direction:column;z-index:9100;opacity:0;transform:translateY(14px) scale(.97);pointer-events:none;transition:opacity .2s,transform .2s;overflow:hidden}
+#vp-popup.open{opacity:1;transform:none;pointer-events:all}
+#vp-ph{padding:12px 16px;border-bottom:1px solid #E4E8EE;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+#vp-ph-title{font-size:.88rem;font-weight:700;color:#0A1628}
+#vp-ph-sub{font-size:.72rem;color:#94A3B8;margin-top:1px}
+#vp-close{background:none;border:none;cursor:pointer;color:#94A3B8;font-size:1.1rem;line-height:1;padding:2px}
+#vp-close:hover{color:#0A1628}
+#vp-msgs{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:10px;min-height:120px;scrollbar-width:thin}
+.vp-row{display:flex;gap:8px;align-items:flex-end}
+.vp-row--user{flex-direction:row-reverse}
+.vp-av{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;flex-shrink:0}
+.vp-av--ai{background:#0A1628;color:white}
+.vp-av--user{background:#8B5CF6;color:white}
+.vp-bbl{max-width:82%;padding:8px 12px;border-radius:12px;font-size:.82rem;line-height:1.5}
+.vp-bbl--ai{background:#F4F6F9;border:1px solid #E4E8EE;color:#1E293B;border-bottom-left-radius:3px}
+.vp-bbl--user{background:#8B5CF6;color:white;border-bottom-right-radius:3px}
+.vp-typing{display:flex;gap:4px;align-items:center;padding:3px 0}
+.vp-dot{width:5px;height:5px;border-radius:50%;background:#94A3B8;animation:vpdot 1.2s infinite}
+.vp-dot:nth-child(2){animation-delay:.2s}.vp-dot:nth-child(3){animation-delay:.4s}
+@keyframes vpdot{0%,80%,100%{opacity:.25}40%{opacity:1}}
+.vp-sugg{padding:8px 12px;border-top:1px solid #F0F2F6;display:flex;flex-wrap:wrap;gap:5px}
+.vp-sugg-chip{padding:4px 9px;background:#F4F6F9;border:1px solid #E4E8EE;border-radius:99px;font-size:.73rem;font-weight:500;color:#475569;cursor:pointer;font-family:inherit;transition:all .13s}
+.vp-sugg-chip:hover{border-color:#8B5CF6;color:#8B5CF6;background:#F5F3FF}
+#vp-input-row{display:flex;gap:7px;padding:10px 12px;border-top:1px solid #E4E8EE;flex-shrink:0}
+#vp-inp{flex:1;padding:8px 12px;border:1px solid #E4E8EE;border-radius:99px;font-family:inherit;font-size:.82rem;outline:none;background:#F4F6F9;transition:border-color .14s}
+#vp-inp:focus{border-color:#8B5CF6;background:white}
+#vp-send{width:34px;height:34px;border-radius:50%;background:#8B5CF6;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:white;flex-shrink:0;transition:background .14s}
+#vp-send:hover{background:#7C3AED}
+@media(max-width:540px){#vp-popup{width:calc(100vw - 32px);right:16px;bottom:70px}}
   </style>
 </head>
 <body style="opacity:0;transition:opacity .35s ease">
@@ -419,7 +445,7 @@ video::-webkit-media-controls-enclosure{display:none!important}
               <option value="1.5">1.5×</option>
               <option value="2">2×</option>
             </select>
-            <button class="c-btn c-btn--ai" onclick="showAI()">
+            <button class="c-btn c-btn--ai" onclick="toggleAI()">
               <svg width="12" height="12" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"/></svg>
               Ask AI
             </button>
@@ -430,42 +456,6 @@ video::-webkit-media-controls-enclosure{display:none!important}
         </div>
       </div>
 
-      <!-- AI panel -->
-      <div class="ai-panel" id="ai-panel">
-        <div class="ai-panel-head">
-          <div class="ai-panel-title"><div class="ai-dot"></div>Ask AI — Polynomials</div>
-          <button onclick="document.getElementById('ai-panel').style.display='none'" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:1.1rem;line-height:1;padding:0">✕</button>
-        </div>
-        <div class="ai-msgs" id="ai-msgs">
-          <div class="ai-msg ai-msg--ai">
-            <div class="ai-av ai-av--ai">SE</div>
-            <div class="ai-bubble ai-bubble--ai">Hi! Ask me anything about Chapter 2 Polynomials — I'll explain it in CBSE board format. 📐</div>
-          </div>
-        </div>
-        <div class="ai-sugg">
-          <button class="sugg-chip" onclick="sendSugg(this)">What is a zero of a polynomial?</button>
-          <button class="sugg-chip" onclick="sendSugg(this)">What is α + β = −b/a?</button>
-          <button class="sugg-chip" onclick="sendSugg(this)">How to find zeroes by factoring?</button>
-          <button class="sugg-chip" onclick="sendSugg(this)">Explain the Division Algorithm</button>
-        </div>
-        <div class="ai-input-row">
-          <input class="ai-inp" id="ai-inp" type="text" placeholder="Ask anything…"/>
-          <button class="ai-send-btn" id="ai-send"><svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/></svg></button>
-        </div>
-      </div>
-
-      <!-- Concepts -->
-      <div class="concepts-bar">
-        <div class="concepts-title">Key concepts — click to ask AI</div>
-        <div class="concepts-list">
-          <div class="concept-chip" onclick="askC("Explain Euclid\'s Division Lemma")"><div class="c-dot"></div>Euclid's Division Lemma</div>
-          <div class="concept-chip" onclick="askC("What is the Fundamental Theorem of Arithmetic?")"><div class="c-dot"></div>Fundamental Theorem</div>
-          <div class="concept-chip" onclick="askC("HCF times LCM equals product of two numbers — prove it")"><div class="c-dot"></div>HCF × LCM = a × b</div>
-          <div class="concept-chip" onclick="askC("How to prove root 2 is irrational?")"><div class="c-dot"></div>√2 is irrational</div>
-          <div class="concept-chip" onclick="askC("What are rational and irrational numbers?")"><div class="c-dot"></div>Rational vs Irrational</div>
-          <div class="concept-chip" onclick="askC("How to find HCF using Euclid division algorithm?")"><div class="c-dot"></div>HCF by Euclid's Algorithm</div>
-        </div>
-      </div>
 
     </div>
   </main>
@@ -1040,47 +1030,52 @@ window.retrySession=function(){
   vid.play().catch(function(){});
 };
 
-/* AI */
-window.showAI=function(){var p=document.getElementById('ai-panel');p.style.display='block';p.scrollIntoView({behavior:'smooth',block:'nearest'});document.getElementById('ai-inp').focus()};
-window.askC=function(q){sendAI(q)};
-window.sendSugg=function(b){sendAI(b.textContent)};
-
+/* AI Popup */
 var aiHistory=[],aiBusy=false;
 var AI_FN='https://xiwrvbtryeesfgeydxnf.supabase.co/functions/v1/ai-chat';
+
+window.toggleAI=function(){
+  var p=document.getElementById('vp-popup');
+  var isOpen=p.classList.toggle('open');
+  if(isOpen) setTimeout(function(){document.getElementById('vp-inp').focus();},60);
+};
 
 function stripMd(t){return t.replace(/#{1,6}\s*/g,'').replace(/\*\*(.+?)\*\*/gs,'$1').replace(/\*(.+?)\*/gs,'$1').replace(/`([^`]+)`/g,'$1').replace(/^\s*[-*+]\s+/gm,'• ');}
 
 function addMsg(text,type){
-  var msgs=document.getElementById('ai-msgs');
-  var d=document.createElement('div');d.className='ai-msg ai-msg--'+type;
+  var msgs=document.getElementById('vp-msgs');
+  var d=document.createElement('div');d.className='vp-row'+(type==='user'?' vp-row--user':'');
   var av=type==='user'?userAvatar:'SE';
   var display=type==='ai'?stripMd(text):text;
-  d.innerHTML='<div class="ai-av ai-av--'+type+'">'+av+'</div><div class="ai-bubble ai-bubble--'+type+'">'+display.replace(/\n/g,'<br>')+'</div>';
+  d.innerHTML='<div class="vp-av vp-av--'+type+'">'+av+'</div><div class="vp-bbl vp-bbl--'+type+'">'+display.replace(/\n/g,'<br>')+'</div>';
   msgs.appendChild(d);msgs.scrollTop=99999;
 }
 
 function sendAI(q){
-  if(!q.trim()||aiBusy)return;
+  if(!q||!q.trim()||aiBusy)return;
   aiBusy=true;
-  showAI();addMsg(q,'user');
-  var td=document.createElement('div');td.className='ai-msg ai-msg--ai';td.id='ai-typing';
-  td.innerHTML='<div class="ai-av ai-av--ai">SE</div><div class="ai-bubble ai-bubble--ai"><div class="ai-typing"><div class="ai-tdot"></div><div class="ai-tdot"></div><div class="ai-tdot"></div></div></div>';
-  document.getElementById('ai-msgs').appendChild(td);document.getElementById('ai-msgs').scrollTop=99999;
+  document.getElementById('vp-popup').classList.add('open');
+  addMsg(q,'user');
+  var msgs=document.getElementById('vp-msgs');
+  var td=document.createElement('div');td.className='vp-row';td.id='vp-typing';
+  td.innerHTML='<div class="vp-av vp-av--ai">SE</div><div class="vp-bbl vp-bbl--ai"><div class="vp-typing"><div class="vp-dot"></div><div class="vp-dot"></div><div class="vp-dot"></div></div></div>';
+  msgs.appendChild(td);msgs.scrollTop=99999;
   fetch(AI_FN,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:'[Maths] '+q,history:aiHistory})})
     .then(function(r){return r.json();})
     .then(function(data){
-      var el=document.getElementById('ai-typing');if(el)el.remove();
+      var el=document.getElementById('vp-typing');if(el)el.remove();
       var reply=data.reply||'Sorry, something went wrong.';
       addMsg(reply,'ai');
       aiHistory.push({role:'user',content:q});aiHistory.push({role:'assistant',content:reply});
       if(aiHistory.length>20)aiHistory=aiHistory.slice(-20);
     })
-    .catch(function(){var el=document.getElementById('ai-typing');if(el)el.remove();addMsg('Network error — check your connection.','ai');})
+    .catch(function(){var el=document.getElementById('vp-typing');if(el)el.remove();addMsg('Network error — check your connection.','ai');})
     .finally(function(){aiBusy=false;});
 }
 
-document.getElementById('ai-send').addEventListener('click',function(){var v=document.getElementById('ai-inp').value.trim();if(v){sendAI(v);document.getElementById('ai-inp').value=''}});
-document.getElementById('ai-inp').addEventListener('keydown',function(e){if(e.key==='Enter'){var v=this.value.trim();if(v){sendAI(v);this.value=''}}});
+window.sendSugg=function(t){sendAI(t)};
+document.getElementById('vp-send').addEventListener('click',function(){var v=document.getElementById('vp-inp').value.trim();if(v){sendAI(v);document.getElementById('vp-inp').value=''}});
+document.getElementById('vp-inp').addEventListener('keydown',function(e){if(e.key==='Enter'){var v=this.value.trim();if(v){sendAI(v);this.value=''}}})
 
 /* SIDEBAR */
 var sEl=document.getElementById('sidebar'),oEl=document.getElementById('overlay');
@@ -1090,9 +1085,30 @@ oEl.addEventListener('click',function(){sEl.classList.remove('open');oEl.classLi
 })();
 </script>
 
-<!-- Floating AI FAB -->
-<button id="ai-fab" onclick="showAI()" title="Ask AI">
-  <svg width="22" height="22" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"/></svg>
-</button>
+<!-- AI Popup -->
+<div id="vp-popup">
+  <div id="vp-ph">
+    <div>
+      <div id="vp-ph-title">✨ Ask AI — Polynomials</div>
+      <div id="vp-ph-sub">Ch. 2 · CBSE Board</div>
+    </div>
+    <button id="vp-close" onclick="document.getElementById('vp-popup').classList.remove('open')">✕</button>
+  </div>
+  <div id="vp-msgs">
+    <div class="vp-row">
+      <div class="vp-av vp-av--ai">SE</div>
+      <div class="vp-bbl vp-bbl--ai">Hi! Ask me anything about Chapter 2 Polynomials — I'll explain it in CBSE board format. 📐</div>
+    </div>
+  </div>
+  <div class="vp-sugg">
+    <button class="vp-sugg-chip" onclick="sendSugg('What is a zero of a polynomial?')">Zeroes</button>
+    <button class="vp-sugg-chip" onclick="sendSugg('What is α + β = −b/a?')">α + β formula</button>
+    <button class="vp-sugg-chip" onclick="sendSugg('Explain the Division Algorithm for polynomials')">Division Algorithm</button>
+  </div>
+  <div id="vp-input-row">
+    <input id="vp-inp" type="text" placeholder="Ask anything…"/>
+    <button id="vp-send"><svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/></svg></button>
+  </div>
+</div>
 </body>
 </html>

@@ -696,8 +696,8 @@ body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--off-whit
 <!-- ── Floating AI Chat Widget ── -->
 <style>
 #se-fab{position:fixed;bottom:24px;right:24px;z-index:900;font-family:'DM Sans',system-ui,sans-serif}
-#se-fab-btn{display:flex;align-items:center;gap:8px;padding:11px 20px;background:var(--accent,#8B5CF6);color:#fff;border:none;border-radius:99px;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.15);transition:all .2s}
-#se-fab-btn:hover{filter:brightness(1.09);transform:translateY(-2px)}
+#se-fab-btn{display:flex;align-items:center;gap:8px;padding:10px 18px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.3);color:#7C3AED;border-radius:99px;font-family:inherit;font-size:.84rem;font-weight:600;cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:all .2s}
+#se-fab-btn:hover{background:rgba(139,92,246,.18);border-color:rgba(139,92,246,.5);transform:translateY(-2px)}
 #se-ai-panel{display:none;position:absolute;bottom:58px;right:0;width:340px;background:#fff;border-radius:16px;box-shadow:0 8px 40px rgba(10,22,40,.15);border:1px solid #E4E8EE;overflow:hidden;animation:seSlideUp .2s ease}
 @keyframes seSlideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .se-ph{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid #F0F2F6}
