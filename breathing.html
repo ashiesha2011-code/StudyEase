@@ -3,164 +3,94 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Breathing Exercise — StudyEase</title>
+  <title>Mindfulness — StudyEase</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230A1628'/><text y='22' x='6' font-size='18' font-family='system-ui' font-weight='700' fill='%233B82F6'>S</text></svg>"/>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
   <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{
-  min-height:100%;font-family:'DM Sans',system-ui,sans-serif;
-  -webkit-font-smoothing:antialiased;
-}
-body{
-  background:linear-gradient(145deg,#E8F4FD 0%,#EAF7F0 50%,#F0FDF4 100%);
-  min-height:100vh;display:flex;flex-direction:column;
-  align-items:center;color:#1E293B;
-}
+html,body{min-height:100%;font-family:'DM Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+body{background:linear-gradient(145deg,#E8F4FD 0%,#EAF7F0 50%,#F0FDF4 100%);min-height:100vh;display:flex;flex-direction:column;align-items:center;color:#1E293B}
 
-/* Back link */
-.back-link{
-  position:fixed;top:20px;left:24px;
-  display:flex;align-items:center;gap:6px;
-  font-size:.84rem;font-weight:600;color:#64748B;
-  text-decoration:none;transition:color .15s;z-index:10;
-}
+.back-link{position:fixed;top:20px;left:24px;display:flex;align-items:center;gap:6px;font-size:.84rem;font-weight:600;color:#64748B;text-decoration:none;transition:color .15s;z-index:10}
 .back-link:hover{color:#0A1628}
-.back-link svg{flex-shrink:0}
+.session-badge{position:fixed;top:20px;right:24px;background:rgba(255,255,255,.75);backdrop-filter:blur(8px);border:1px solid rgba(20,184,166,.25);border-radius:99px;padding:6px 14px;font-size:.78rem;font-weight:600;color:#0F766E;z-index:10}
 
-/* Session counter */
-.session-badge{
-  position:fixed;top:20px;right:24px;
-  background:rgba(255,255,255,.7);backdrop-filter:blur(8px);
-  border:1px solid rgba(20,184,166,.25);border-radius:99px;
-  padding:6px 14px;font-size:.78rem;font-weight:600;color:#0F766E;
-  z-index:10;
-}
+/* Page tabs */
+.page-tabs{display:flex;gap:0;background:rgba(255,255,255,.6);backdrop-filter:blur(8px);border:1px solid rgba(20,184,166,.2);border-radius:99px;padding:4px;margin-bottom:28px}
+.page-tab{padding:8px 22px;border-radius:99px;border:none;background:none;font-family:inherit;font-size:.88rem;font-weight:600;color:#64748B;cursor:pointer;transition:all .18s}
+.page-tab.active{background:#14B8A6;color:white;box-shadow:0 2px 10px rgba(20,184,166,.3)}
 
-/* Main layout */
-.page{
-  flex:1;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  padding:80px 24px 40px;width:100%;max-width:520px;
-  gap:0;
-}
+.page{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 24px 40px;width:100%;max-width:520px}
 
 /* Mode picker */
-.mode-row{
-  display:flex;gap:8px;margin-bottom:36px;flex-wrap:wrap;justify-content:center;
-}
-.mode-btn{
-  padding:8px 18px;border-radius:99px;
-  border:1.5px solid rgba(20,184,166,.3);
-  background:rgba(255,255,255,.55);backdrop-filter:blur(6px);
-  font-family:inherit;font-size:.83rem;font-weight:600;
-  color:#475569;cursor:pointer;transition:all .18s;
-}
-.mode-btn:hover{border-color:#14B8A6;color:#0F766E;}
-.mode-btn.active{background:#14B8A6;border-color:#14B8A6;color:white;}
+.mode-row{display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap;justify-content:center}
+.mode-btn{padding:8px 18px;border-radius:99px;border:1.5px solid rgba(20,184,166,.3);background:rgba(255,255,255,.55);backdrop-filter:blur(6px);font-family:inherit;font-size:.83rem;font-weight:600;color:#475569;cursor:pointer;transition:all .18s}
+.mode-btn:hover{border-color:#14B8A6;color:#0F766E}
+.mode-btn.active{background:#14B8A6;border-color:#14B8A6;color:white}
 
-/* Breathing circle */
-.circle-wrap{
-  position:relative;display:flex;align-items:center;justify-content:center;
-  margin-bottom:32px;
-}
-.circle-outer{
-  width:220px;height:220px;border-radius:50%;
-  background:radial-gradient(circle,rgba(99,210,190,.25) 0%,rgba(147,197,253,.12) 60%,transparent 100%);
-  display:flex;align-items:center;justify-content:center;
-  position:relative;
-}
-.circle-ring{
-  position:absolute;inset:0;border-radius:50%;
-  border:2px solid rgba(20,184,166,.2);
-}
-.circle-main{
-  width:160px;height:160px;border-radius:50%;
-  background:linear-gradient(135deg,rgba(99,210,190,.55) 0%,rgba(147,197,253,.55) 100%);
-  box-shadow:0 0 40px rgba(99,210,190,.3),0 0 80px rgba(147,197,253,.15);
-  display:flex;align-items:center;justify-content:center;
-  flex-direction:column;gap:4px;
-  transition:transform .1s linear;
-}
-.circle-main.animating{transition:none}
+/* Circle */
+.circle-wrap{position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:28px}
+.circle-outer{width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(99,210,190,.25) 0%,rgba(147,197,253,.12) 60%,transparent 100%);display:flex;align-items:center;justify-content:center;position:relative}
+.circle-ring{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(20,184,166,.2)}
+.circle-main{width:160px;height:160px;border-radius:50%;background:linear-gradient(135deg,rgba(99,210,190,.55) 0%,rgba(147,197,253,.55) 100%);box-shadow:0 0 40px rgba(99,210,190,.3),0 0 80px rgba(147,197,253,.15);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;transition:transform .1s linear}
+.breath-label{font-size:1.05rem;font-weight:700;color:#0F766E;letter-spacing:.01em;text-align:center;line-height:1.3}
+.breath-count{font-size:2rem;font-weight:700;color:#0F766E;opacity:.85;line-height:1}
+.pulse-ring{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(20,184,166,.15);animation:pulse-out 3s ease-out infinite;pointer-events:none}
+.pulse-ring:nth-child(2){animation-delay:1s}.pulse-ring:nth-child(3){animation-delay:2s}
+@keyframes pulse-out{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.5);opacity:0}}
 
-.breath-label{
-  font-size:1.05rem;font-weight:700;color:#0F766E;
-  letter-spacing:.01em;text-align:center;line-height:1.3;
-}
-.breath-count{
-  font-size:2rem;font-weight:700;color:#0F766E;opacity:.85;line-height:1;
-}
+/* Meditation circle variant */
+.circle-main.med-mode{background:linear-gradient(135deg,rgba(167,139,250,.45) 0%,rgba(196,181,253,.45) 100%);box-shadow:0 0 40px rgba(139,92,246,.2),0 0 80px rgba(167,139,250,.1);animation:med-pulse 8s ease-in-out infinite}
+@keyframes med-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+.pulse-ring.med-mode{border-color:rgba(139,92,246,.15)}
 
-/* Phase progress ring (decorative) */
-.phase-ring{
-  position:absolute;inset:-12px;border-radius:50%;
-  border:3px solid transparent;
-  border-top-color:rgba(20,184,166,.5);
-  transition:transform .1s linear;
-}
-
-/* Timer + controls */
-.timer-row{
-  display:flex;align-items:center;gap:10px;margin-bottom:24px;
-}
-.timer-display{
-  font-size:1.6rem;font-weight:700;color:#0F766E;letter-spacing:-.02em;min-width:80px;text-align:center;
-}
+/* Timer row */
+.timer-row{display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap;justify-content:center}
+.timer-display{font-size:1.6rem;font-weight:700;color:#0F766E;letter-spacing:-.02em;min-width:80px;text-align:center}
 .timer-sep{color:#94A3B8;font-size:.8rem;font-weight:500}
-.duration-btns{display:flex;gap:6px;}
-.dur-btn{
-  padding:5px 12px;border-radius:99px;
-  border:1.5px solid rgba(20,184,166,.3);
-  background:rgba(255,255,255,.5);font-family:inherit;
-  font-size:.78rem;font-weight:600;color:#475569;cursor:pointer;transition:all .15s;
-}
+.duration-btns{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.dur-btn{padding:5px 12px;border-radius:99px;border:1.5px solid rgba(20,184,166,.3);background:rgba(255,255,255,.5);font-family:inherit;font-size:.78rem;font-weight:600;color:#475569;cursor:pointer;transition:all .15s}
 .dur-btn:hover{border-color:#14B8A6;color:#0F766E}
 .dur-btn.active{background:#14B8A6;border-color:#14B8A6;color:white}
 
-/* Start/stop button */
-.start-btn{
-  width:72px;height:72px;border-radius:50%;
-  background:linear-gradient(135deg,#14B8A6,#3B82F6);
-  border:none;cursor:pointer;color:white;
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 4px 24px rgba(20,184,166,.35);
-  transition:transform .15s,box-shadow .15s;font-size:1.5rem;
-}
-.start-btn:hover{transform:scale(1.06);box-shadow:0 6px 32px rgba(20,184,166,.45);}
+/* Custom time input */
+.custom-wrap{display:none;align-items:center;gap:6px;margin-top:8px}
+.custom-wrap.show{display:flex}
+.custom-inp{width:64px;padding:5px 10px;border:1.5px solid rgba(20,184,166,.4);border-radius:8px;font-family:inherit;font-size:.85rem;font-weight:600;color:#0F766E;text-align:center;outline:none;background:rgba(255,255,255,.7)}
+.custom-inp:focus{border-color:#14B8A6}
+.custom-set{padding:5px 14px;border-radius:99px;background:#14B8A6;border:none;color:white;font-family:inherit;font-size:.78rem;font-weight:600;cursor:pointer}
+.custom-lbl{font-size:.78rem;color:#64748B;font-weight:500}
+
+/* Start button */
+.start-btn{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#14B8A6,#3B82F6);border:none;cursor:pointer;color:white;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(20,184,166,.35);transition:transform .15s,box-shadow .15s;font-size:1.5rem}
+.start-btn:hover{transform:scale(1.06);box-shadow:0 6px 32px rgba(20,184,166,.45)}
 .start-btn:active{transform:scale(.97)}
+.start-btn.med-mode{background:linear-gradient(135deg,#8B5CF6,#6366F1)}
 
-/* Mode description */
-.mode-desc{
-  text-align:center;font-size:.82rem;color:#64748B;line-height:1.6;
-  max-width:320px;margin-top:18px;
-}
+/* Music toggle */
+.music-row{display:flex;align-items:center;gap:9px;margin-top:16px}
+.music-toggle{display:flex;align-items:center;gap:7px;padding:7px 16px;border-radius:99px;border:1.5px solid rgba(139,92,246,.3);background:rgba(255,255,255,.5);font-family:inherit;font-size:.82rem;font-weight:600;color:#7C3AED;cursor:pointer;transition:all .15s}
+.music-toggle:hover{border-color:#8B5CF6;background:rgba(139,92,246,.08)}
+.music-toggle.on{background:#8B5CF6;border-color:#8B5CF6;color:white}
+.music-dot{width:7px;height:7px;border-radius:50%;background:currentColor;animation:mdot 1s infinite;display:none}
+.music-toggle.on .music-dot{display:block}
+@keyframes mdot{0%,100%{opacity:1}50%{opacity:.3}}
 
-/* Cycle count */
-.cycle-row{
-  margin-top:14px;font-size:.78rem;color:#94A3B8;font-weight:500;text-align:center;
-}
+/* Prompt text (meditation) */
+.prompt-text{font-size:1rem;font-weight:500;color:#475569;text-align:center;min-height:1.5em;transition:opacity .6s;max-width:300px;line-height:1.6;margin-top:4px}
 
-/* Calm pulse rings (ambient) */
-.pulse-ring{
-  position:absolute;inset:0;border-radius:50%;
-  border:1px solid rgba(20,184,166,.15);
-  animation:pulse-out 3s ease-out infinite;
-  pointer-events:none;
-}
-.pulse-ring:nth-child(2){animation-delay:1s}
-.pulse-ring:nth-child(3){animation-delay:2s}
-@keyframes pulse-out{
-  0%{transform:scale(1);opacity:.6}
-  100%{transform:scale(1.5);opacity:0}
-}
+.cycle-row{margin-top:10px;font-size:.78rem;color:#94A3B8;font-weight:500;text-align:center}
+.mode-desc{text-align:center;font-size:.82rem;color:#64748B;line-height:1.6;max-width:320px;margin-top:12px}
+
+/* Section visibility */
+.breath-section{display:flex;flex-direction:column;align-items:center;width:100%}
+.med-section{display:none;flex-direction:column;align-items:center;width:100%}
 
 @media(max-width:480px){
-  .circle-outer{width:180px;height:180px}
-  .circle-main{width:130px;height:130px}
-  .breath-count{font-size:1.6rem}
-  .timer-display{font-size:1.3rem}
+  .circle-outer{width:180px;height:180px}.circle-main{width:130px;height:130px}
+  .breath-count{font-size:1.6rem}.timer-display{font-size:1.3rem}
+  .page-tab{padding:7px 16px;font-size:.82rem}
 }
   </style>
 </head>
@@ -175,201 +105,372 @@ body{
 
 <div class="page">
 
-  <!-- Mode picker -->
-  <div class="mode-row">
-    <button class="mode-btn active" data-mode="box" onclick="setMode('box',this)">Box Breathing</button>
-    <button class="mode-btn" data-mode="478" onclick="setMode('478',this)">4-7-8</button>
-    <button class="mode-btn" data-mode="simple" onclick="setMode('simple',this)">Simple Deep Breath</button>
+  <!-- Page tabs -->
+  <div class="page-tabs">
+    <button class="page-tab active" onclick="switchTab('breath',this)">🫁 Breathing</button>
+    <button class="page-tab" onclick="switchTab('med',this)">🧘 Meditation</button>
   </div>
 
-  <!-- Circle -->
-  <div class="circle-wrap">
-    <div class="circle-outer">
-      <div class="pulse-ring"></div>
-      <div class="pulse-ring"></div>
-      <div class="pulse-ring"></div>
-      <div class="circle-ring"></div>
-      <div class="circle-main" id="circle">
-        <div class="breath-label" id="breath-label">Ready</div>
-        <div class="breath-count" id="breath-count">–</div>
+  <!-- ── BREATHING SECTION ── -->
+  <div class="breath-section" id="breath-section">
+    <div class="mode-row">
+      <button class="mode-btn active" data-mode="box" onclick="setBreathMode('box',this)">Box Breathing</button>
+      <button class="mode-btn" data-mode="478" onclick="setBreathMode('478',this)">4-7-8</button>
+      <button class="mode-btn" data-mode="simple" onclick="setBreathMode('simple',this)">Simple Deep Breath</button>
+    </div>
+
+    <div class="circle-wrap">
+      <div class="circle-outer">
+        <div class="pulse-ring"></div>
+        <div class="pulse-ring"></div>
+        <div class="pulse-ring"></div>
+        <div class="circle-ring"></div>
+        <div class="circle-main" id="b-circle">
+          <div class="breath-label" id="b-label">Ready</div>
+          <div class="breath-count" id="b-count">–</div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Timer + duration -->
-  <div class="timer-row">
-    <div class="timer-display" id="timer-display">0:00</div>
-    <span class="timer-sep">of</span>
-    <div class="duration-btns">
-      <button class="dur-btn active" data-dur="120" onclick="setDuration(120,this)">2 min</button>
-      <button class="dur-btn" data-dur="300" onclick="setDuration(300,this)">5 min</button>
-      <button class="dur-btn" data-dur="600" onclick="setDuration(600,this)">10 min</button>
+    <div class="timer-row">
+      <div class="timer-display" id="b-timer">0:00</div>
+      <span class="timer-sep">of</span>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+        <div class="duration-btns">
+          <button class="dur-btn active" onclick="setDur('b',120,this)">2 min</button>
+          <button class="dur-btn" onclick="setDur('b',300,this)">5 min</button>
+          <button class="dur-btn" onclick="setDur('b',600,this)">10 min</button>
+          <button class="dur-btn" id="b-custom-btn" onclick="toggleCustom('b')">Custom</button>
+        </div>
+        <div class="custom-wrap" id="b-custom-wrap">
+          <input class="custom-inp" id="b-custom-inp" type="number" min="1" max="60" placeholder="5"/>
+          <span class="custom-lbl">min</span>
+          <button class="custom-set" onclick="applyCustom('b')">Set</button>
+        </div>
+      </div>
     </div>
+
+    <button class="start-btn" id="b-start" onclick="toggleBreath()">
+      <svg id="b-icon" width="24" height="24" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
+    </button>
+
+    <div class="cycle-row" id="b-cycle"></div>
+    <div class="mode-desc" id="b-desc">Inhale 4s · Hold 4s · Exhale 4s · Hold 4s</div>
   </div>
 
-  <!-- Start button -->
-  <button class="start-btn" id="start-btn" onclick="toggleSession()">
-    <svg id="start-icon" width="24" height="24" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
-  </button>
+  <!-- ── MEDITATION SECTION ── -->
+  <div class="med-section" id="med-section">
 
-  <div class="cycle-row" id="cycle-row"></div>
-  <div class="mode-desc" id="mode-desc">Inhale 4s · Hold 4s · Exhale 4s · Hold 4s</div>
+    <div class="circle-wrap">
+      <div class="circle-outer">
+        <div class="pulse-ring med-mode"></div>
+        <div class="pulse-ring med-mode"></div>
+        <div class="pulse-ring med-mode"></div>
+        <div class="circle-ring"></div>
+        <div class="circle-main med-mode" id="m-circle">
+          <div class="breath-label" id="m-label" style="color:#7C3AED">Ready</div>
+          <div class="breath-count" id="m-count" style="color:#7C3AED">–</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prompt-text" id="m-prompt">Find a comfortable position and close your eyes.</div>
+
+    <div class="timer-row">
+      <div class="timer-display" id="m-timer" style="color:#7C3AED">0:00</div>
+      <span class="timer-sep">of</span>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+        <div class="duration-btns">
+          <button class="dur-btn active" onclick="setDur('m',300,this)">5 min</button>
+          <button class="dur-btn" onclick="setDur('m',600,this)">10 min</button>
+          <button class="dur-btn" onclick="setDur('m',900,this)">15 min</button>
+          <button class="dur-btn" id="m-custom-btn" onclick="toggleCustom('m')">Custom</button>
+        </div>
+        <div class="custom-wrap" id="m-custom-wrap">
+          <input class="custom-inp" id="m-custom-inp" type="number" min="1" max="60" placeholder="10"/>
+          <span class="custom-lbl">min</span>
+          <button class="custom-set" onclick="applyCustom('m')">Set</button>
+        </div>
+      </div>
+    </div>
+
+    <button class="start-btn med-mode" id="m-start" onclick="toggleMed()">
+      <svg id="m-icon" width="24" height="24" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
+    </button>
+
+    <div class="music-row">
+      <button class="music-toggle" id="music-toggle" onclick="toggleMusic()">
+        <div class="music-dot"></div>
+        🎵 Ambient music
+      </button>
+    </div>
+
+    <div class="cycle-row" id="m-cycle"></div>
+  </div>
 
 </div>
 
 <script>
 (function(){
 
-var MODES={
-  box:   {phases:['Breathe in','Hold','Breathe out','Hold'],times:[4,4,4,4],desc:'Inhale 4s · Hold 4s · Exhale 4s · Hold 4s'},
-  '478': {phases:['Breathe in','Hold','Breathe out'],        times:[4,7,8],  desc:'Inhale 4s · Hold 7s · Exhale 8s — calms the nervous system'},
-  simple:{phases:['Breathe in','Hold','Breathe out'],        times:[4,4,8],  desc:'Inhale 4s · Hold 4s · Exhale 8s — slow and steady'},
-};
-
-var currentMode='box';
-var targetDuration=120;
-var running=false;
-var elapsed=0,phaseTime=0,phaseIdx=0,cycleCount=0;
-var timerInt=null,countInt=null;
-var MAX_SCALE=1.22,MIN_SCALE=0.82;
-
-/* ── Audio (Web Audio API — no files needed) ── */
-var audioCtx=null;
-function getCtx(){
-  if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)();
-  if(audioCtx.state==='suspended') audioCtx.resume();
-  return audioCtx;
-}
-function playTone(freq,dur,vol,type){
-  try{
-    var ctx=getCtx();
-    var o=ctx.createOscillator(),g=ctx.createGain();
-    o.connect(g);g.connect(ctx.destination);
-    o.type=type||'sine';
-    o.frequency.setValueAtTime(freq,ctx.currentTime);
-    g.gain.setValueAtTime(0,ctx.currentTime);
-    g.gain.linearRampToValueAtTime(vol,ctx.currentTime+0.02);
-    g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+dur);
-    o.start(ctx.currentTime);o.stop(ctx.currentTime+dur);
-  }catch(e){}
-}
-/* Phase-start chime: rising for inhale, neutral for hold, falling for exhale */
-function chimePhase(phase){
-  if(phase==='Breathe in')  { playTone(523,.35,.18); setTimeout(function(){playTone(659,.3,.14)},120); }
-  else if(phase==='Hold')   { playTone(440,.3,.12); }
-  else if(phase==='Breathe out'){ playTone(494,.35,.16); setTimeout(function(){playTone(392,.4,.12)},140); }
-}
-/* Countdown beep: 3 = low, 2 = mid, 1 = high */
-var BEEP_FREQS={3:330,2:392,1:523};
-function beepCount(n){
-  if(n>=1&&n<=3) playTone(BEEP_FREQS[n],.18,.22,'triangle');
-}
-
-/* LocalStorage */
+/* ── LocalStorage ── */
 var TODAY=new Date().toDateString();
 var stored=JSON.parse(localStorage.getItem('se_breath')||'{}');
-if(stored.date!==TODAY){stored={date:TODAY,sessions:0};}
+if(stored.date!==TODAY)stored={date:TODAY,sessions:0};
+function updateBadge(){var s=stored.sessions||0;document.getElementById('session-badge').textContent=s===0?'0 sessions today':s+' session'+(s!==1?'s':'')+' today';}
 updateBadge();
 
-function updateBadge(){
-  var s=stored.sessions||0;
-  document.getElementById('session-badge').textContent=s===0?'0 sessions today':s+' session'+(s!==1?'s':'')+' today';
+/* ── Tab switch ── */
+window.switchTab=function(tab,btn){
+  document.querySelectorAll('.page-tab').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  document.getElementById('breath-section').style.display=tab==='breath'?'flex':'none';
+  document.getElementById('med-section').style.display=tab==='med'?'flex':'none';
+};
+
+/* ── Custom timer ── */
+window.toggleCustom=function(pfx){
+  var w=document.getElementById(pfx+'-custom-wrap');
+  var showing=w.classList.toggle('show');
+  document.getElementById(pfx+'-custom-btn').classList.toggle('active',showing);
+};
+window.applyCustom=function(pfx){
+  var v=parseInt(document.getElementById(pfx+'-custom-inp').value)||0;
+  if(v<1||v>60)return;
+  var secs=v*60;
+  if(pfx==='b'){bTarget=secs;}else{mTarget=secs;}
+  document.querySelectorAll(pfx==='b'?'.breath-section .dur-btn':'.med-section .dur-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById(pfx+'-custom-btn').classList.add('active');
+  document.getElementById(pfx+'-custom-wrap').classList.remove('show');
+};
+window.setDur=function(pfx,secs,btn){
+  if(pfx==='b')bTarget=secs;else mTarget=secs;
+  document.querySelectorAll(pfx==='b'?'.breath-section .dur-btn':'.med-section .dur-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  document.getElementById(pfx+'-custom-wrap').classList.remove('show');
+};
+
+/* ══════════════════ AUDIO ENGINE ══════════════════ */
+var audioCtx=null;
+function getCtx(){
+  if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==='suspended')audioCtx.resume();
+  return audioCtx;
 }
 
-window.setMode=function(m,btn){
-  if(running)return;
-  currentMode=m;
-  document.querySelectorAll('.mode-btn').forEach(function(b){b.classList.remove('active');});
-  btn.classList.add('active');
-  document.getElementById('mode-desc').textContent=MODES[m].desc;
-  resetCircle();
-};
+/* Breathing beeps */
+function playTone(freq,dur,vol,type){
+  try{var ctx=getCtx(),o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type=type||'sine';o.frequency.setValueAtTime(freq,ctx.currentTime);g.gain.setValueAtTime(0,ctx.currentTime);g.gain.linearRampToValueAtTime(vol,ctx.currentTime+0.02);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+dur);o.start(ctx.currentTime);o.stop(ctx.currentTime+dur);}catch(e){}
+}
+function chimePhase(phase){
+  if(phase==='Breathe in'){playTone(523,.35,.18);setTimeout(function(){playTone(659,.3,.14)},120);}
+  else if(phase==='Hold'){playTone(440,.3,.12);}
+  else{playTone(494,.35,.16);setTimeout(function(){playTone(392,.4,.12)},140);}
+}
+var BEEP={3:330,2:392,1:523};
+function beepCount(n){if(n>=1&&n<=3)playTone(BEEP[n],.18,.22,'triangle');}
 
-window.setDuration=function(d,btn){
-  targetDuration=d;
-  document.querySelectorAll('.dur-btn').forEach(function(b){b.classList.remove('active');});
-  btn.classList.add('active');
-};
-
-window.toggleSession=function(){
-  running?stopSession():startSession();
-};
-
-function startSession(){
-  running=true;elapsed=0;phaseIdx=0;phaseTime=0;cycleCount=0;
-  document.getElementById('start-icon').innerHTML='<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>';
-  renderPhase();
-  timerInt=setInterval(tick,1000);
+/* Meditation bell */
+function playBell(vol){
+  vol=vol||0.28;
+  try{
+    var ctx=getCtx();
+    [[880,vol,3],[1760,vol*.28,2],[2637,vol*.12,1.5]].forEach(function(p){
+      var o=ctx.createOscillator(),g=ctx.createGain();
+      o.connect(g);g.connect(ctx.destination);o.type='sine';
+      o.frequency.setValueAtTime(p[0],ctx.currentTime);
+      g.gain.setValueAtTime(p[1],ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+p[2]);
+      o.start(ctx.currentTime);o.stop(ctx.currentTime+p[2]);
+    });
+  }catch(e){}
 }
 
-function stopSession(){
-  running=false;
-  clearInterval(timerInt);clearInterval(countInt);
+/* Ambient drone */
+var droneNodes=[];
+var musicOn=false;
+function startDrone(){
+  if(droneNodes.length)return;
+  try{
+    var ctx=getCtx();
+    var master=ctx.createGain();master.gain.value=0.001;master.connect(ctx.destination);
+    master.gain.linearRampToValueAtTime(1,ctx.currentTime+3);
+    /* Layered detuned pairs for warmth */
+    [[110,112],[165,166.5],[220,221.5],[330,330.8]].forEach(function(pair,i){
+      pair.forEach(function(freq){
+        var o=ctx.createOscillator(),g=ctx.createGain();
+        o.type='sine';o.frequency.value=freq;
+        var v=[.055,.04,.03,.018][i];
+        g.gain.value=v;
+        o.connect(g);g.connect(master);o.start();
+        droneNodes.push(o);
+      });
+    });
+    droneNodes.push(master);
+  }catch(e){}
+}
+function stopDrone(){
+  if(!droneNodes.length)return;
+  try{
+    var ctx=getCtx();
+    var master=droneNodes[droneNodes.length-1];
+    master.gain.setValueAtTime(master.gain.value,ctx.currentTime);
+    master.gain.linearRampToValueAtTime(0,ctx.currentTime+2);
+    setTimeout(function(){
+      droneNodes.forEach(function(n){try{n.stop&&n.stop();}catch(e){}});
+      droneNodes=[];
+    },2200);
+  }catch(e){droneNodes=[];}
+}
+window.toggleMusic=function(){
+  getCtx();
+  musicOn=!musicOn;
+  var btn=document.getElementById('music-toggle');
+  btn.classList.toggle('on',musicOn);
+  if(musicOn){startDrone();if(medRunning)playBell(.15);}
+  else stopDrone();
+};
+
+/* Bell interval during meditation */
+var bellInt=null;
+function startBells(){bellInt=setInterval(function(){if(musicOn)playBell(.18);},30000);}
+function stopBells(){clearInterval(bellInt);bellInt=null;}
+
+/* ══════════════════ BREATHING ══════════════════ */
+var MODES={
+  box:   {phases:['Breathe in','Hold','Breathe out','Hold'],times:[4,4,4,4],desc:'Inhale 4s · Hold 4s · Exhale 4s · Hold 4s'},
+  '478': {phases:['Breathe in','Hold','Breathe out'],times:[4,7,8],desc:'Inhale 4s · Hold 7s · Exhale 8s — calms the nervous system'},
+  simple:{phases:['Breathe in','Hold','Breathe out'],times:[4,4,8],desc:'Inhale 4s · Hold 4s · Exhale 8s — slow and steady'},
+};
+var bMode='box',bTarget=120,bRunning=false,bElapsed=0,bPhaseTime=0,bPhaseIdx=0,bCycles=0,bInt=null;
+var MAX_S=1.22,MIN_S=0.82;
+
+window.setBreathMode=function(m,btn){
+  if(bRunning)return;
+  bMode=m;
+  document.querySelectorAll('.breath-section .mode-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  document.getElementById('b-desc').textContent=MODES[m].desc;
+  document.getElementById('b-label').textContent='Ready';
+  document.getElementById('b-count').textContent='–';
+  document.getElementById('b-circle').style.transform='scale(1)';
+};
+
+window.toggleBreath=function(){bRunning?stopBreath():startBreath();};
+
+function startBreath(){
+  bRunning=true;bElapsed=0;bPhaseTime=0;bPhaseIdx=0;bCycles=0;
+  document.getElementById('b-icon').innerHTML='<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>';
+  renderBreathPhase();
+  bInt=setInterval(bTick,1000);
+}
+function stopBreath(){
+  bRunning=false;clearInterval(bInt);
+  saved();
+  document.getElementById('b-icon').innerHTML='<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/>';
+  document.getElementById('b-label').textContent='Done';
+  document.getElementById('b-count').textContent='';
+  document.getElementById('b-circle').style.transform='scale(1)';
+  document.getElementById('b-cycle').textContent=bCycles?'Completed '+bCycles+' cycle'+(bCycles!==1?'s':''):'';
+}
+function bTick(){
+  bElapsed++;bPhaseTime++;
+  var m=MODES[bMode],dur=m.times[bPhaseIdx],rem=dur-bPhaseTime;
+  document.getElementById('b-count').textContent=rem>0?rem:'';
+  document.getElementById('b-timer').textContent=fmtTime(bElapsed);
+  animBreath();
+  if(rem>=1&&rem<=3)beepCount(rem);
+  if(bPhaseTime>=dur){
+    bPhaseIdx=(bPhaseIdx+1)%m.phases.length;
+    if(bPhaseIdx===0)bCycles++;
+    bPhaseTime=0;renderBreathPhase();
+  }
+  if(bElapsed>=bTarget)stopBreath();
+}
+function renderBreathPhase(){
+  var m=MODES[bMode],label=m.phases[bPhaseIdx],dur=m.times[bPhaseIdx];
+  document.getElementById('b-label').textContent=label;
+  document.getElementById('b-count').textContent=dur;
+  document.getElementById('b-cycle').textContent=bCycles?'Cycle '+bCycles:'';
+  animBreath();chimePhase(label);
+}
+function animBreath(){
+  var m=MODES[bMode],phase=m.phases[bPhaseIdx],dur=m.times[bPhaseIdx],pct=bPhaseTime/dur,scale;
+  if(phase==='Breathe in')scale=MIN_S+(MAX_S-MIN_S)*pct;
+  else if(phase==='Breathe out')scale=MAX_S-(MAX_S-MIN_S)*pct;
+  else if(phase==='Hold'&&bPhaseIdx===1)scale=MAX_S;
+  else scale=MIN_S;
+  document.getElementById('b-circle').style.transform='scale('+scale+')';
+}
+
+/* ══════════════════ MEDITATION ══════════════════ */
+var PROMPTS=[
+  'Close your eyes and settle in…',
+  'Focus on your breath.',
+  'Notice each inhale and exhale.',
+  'Let your thoughts pass like clouds.',
+  'Return gently to the present moment.',
+  'Feel the ground beneath you.',
+  'You are safe. You are calm.',
+  'Release any tension you\'re holding.',
+  'There is nowhere else to be right now.',
+  'Each breath is a fresh start.',
+  'Notice the stillness around you.',
+  'You are doing wonderfully.',
+];
+var mTarget=300,medRunning=false,mElapsed=0,mInt=null,mPromptIdx=0,mPromptInt=null;
+
+window.toggleMed=function(){medRunning?stopMed():startMed();};
+
+function startMed(){
+  medRunning=true;mElapsed=0;mPromptIdx=0;
+  document.getElementById('m-icon').innerHTML='<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>';
+  document.getElementById('m-label').textContent='Breathe';
+  document.getElementById('m-count').textContent='';
+  showPrompt(PROMPTS[0]);
+  if(musicOn){startDrone();playBell(.2);}
+  startBells();
+  mInt=setInterval(mTick,1000);
+  mPromptInt=setInterval(function(){
+    mPromptIdx=(mPromptIdx+1)%PROMPTS.length;
+    showPrompt(PROMPTS[mPromptIdx]);
+  },20000);
+}
+function stopMed(){
+  medRunning=false;clearInterval(mInt);clearInterval(mPromptInt);
+  if(musicOn)playBell(.15);
+  stopBells();
+  saved();
+  document.getElementById('m-icon').innerHTML='<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/>';
+  showPrompt('Session complete. Well done. 🙏');
+  document.getElementById('m-label').textContent='Done';
+  document.getElementById('m-count').textContent='';
+  document.getElementById('m-cycle').textContent='';
+}
+function mTick(){
+  mElapsed++;
+  document.getElementById('m-timer').textContent=fmtTime(mElapsed);
+  var rem=mTarget-mElapsed;
+  document.getElementById('m-count').textContent=rem>0?fmtTime(rem):'';
+  if(mElapsed>=mTarget)stopMed();
+}
+function showPrompt(text){
+  var el=document.getElementById('m-prompt');
+  el.style.opacity=0;
+  setTimeout(function(){el.textContent=text;el.style.opacity=1;},300);
+}
+
+/* ── Shared ── */
+function saved(){
   stored.sessions=(stored.sessions||0)+1;
   localStorage.setItem('se_breath',JSON.stringify(stored));
   updateBadge();
-  document.getElementById('start-icon').innerHTML='<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/>';
-  resetCircle();
-  document.getElementById('cycle-row').textContent=cycleCount?'Completed '+cycleCount+' cycle'+(cycleCount!==1?'s':''):'';
 }
+function fmtTime(s){var m=Math.floor(s/60),sec=s%60;return m+':'+(sec<10?'0':'')+sec;}
 
-function tick(){
-  elapsed++;phaseTime++;
-  updateTimerDisplay();
-  var mode=MODES[currentMode];
-  var phDuration=mode.times[phaseIdx];
-  var remaining=phDuration-phaseTime;
-  document.getElementById('breath-count').textContent=remaining>0?remaining:'';
-  animateCircle();
-  /* Countdown beeps for last 3 seconds of each phase */
-  if(remaining>=1&&remaining<=3) beepCount(remaining);
-  if(phaseTime>=phDuration){
-    phaseIdx=(phaseIdx+1)%mode.phases.length;
-    if(phaseIdx===0)cycleCount++;
-    phaseTime=0;
-    renderPhase();
-  }
-  if(elapsed>=targetDuration)stopSession();
-}
-
-function renderPhase(){
-  var mode=MODES[currentMode];
-  var label=mode.phases[phaseIdx];
-  var dur=mode.times[phaseIdx];
-  document.getElementById('breath-label').textContent=label;
-  document.getElementById('breath-count').textContent=dur;
-  document.getElementById('cycle-row').textContent=cycleCount?'Cycle '+cycleCount:'';
-  animateCircle();
-  chimePhase(label);
-}
-
-function animateCircle(){
-  var mode=MODES[currentMode];
-  var phase=mode.phases[phaseIdx];
-  var dur=mode.times[phaseIdx];
-  var pct=phaseTime/dur;
-  var scale;
-  if(phase==='Breathe in')  scale=MIN_SCALE+(MAX_SCALE-MIN_SCALE)*pct;
-  else if(phase==='Breathe out') scale=MAX_SCALE-(MAX_SCALE-MIN_SCALE)*pct;
-  else if(phase==='Hold'&&phaseIdx===1) scale=MAX_SCALE;
-  else scale=MIN_SCALE;
-  document.getElementById('circle').style.transform='scale('+scale+')';
-}
-
-function resetCircle(){
-  document.getElementById('breath-label').textContent='Ready';
-  document.getElementById('breath-count').textContent='–';
-  document.getElementById('circle').style.transform='scale(1)';
-  document.getElementById('timer-display').textContent='0:00';
-}
-
-function updateTimerDisplay(){
-  var m=Math.floor(elapsed/60),s=elapsed%60;
-  document.getElementById('timer-display').textContent=m+':'+(s<10?'0':'')+s;
-}
-
-/* Init desc */
-document.getElementById('mode-desc').textContent=MODES[currentMode].desc;
+/* Init */
+document.getElementById('b-desc').textContent=MODES.box.desc;
+document.getElementById('med-section').style.display='none';
 
 })();
 </script>
