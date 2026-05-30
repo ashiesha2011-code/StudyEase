@@ -492,6 +492,11 @@ body {
         Flashcards
       </a>
 
+      <a href="breathing.html" class="sb-item">
+        <svg class="sb-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/></svg>
+        Breathing
+      </a>
+
       <div class="sb-section-label" style="margin-top:8px;">Account</div>
       <a href="#" class="sb-item">
         <svg class="sb-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zm6-4a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zm6-3a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/></svg>
@@ -601,9 +606,9 @@ body {
               <div class="health-name">How are you doing?</div>
             </div>
           </div>
-          <div class="health-title">Tell us honestly — no judgment.</div>
-          <div class="health-sub">Tap how you're feeling right now.</div>
-          <div class="mood-row">
+          <div class="health-title" id="health-title">Tell us honestly — no judgment.</div>
+          <div class="health-sub" id="health-sub">Tap how you're feeling right now.</div>
+          <div class="mood-row" id="mood-row">
             <button class="mood-btn" onclick="selectMood(this,'great')">😊 Great</button>
             <button class="mood-btn" onclick="selectMood(this,'okay')">😐 Okay</button>
             <button class="mood-btn" onclick="selectMood(this,'stressed')">😟 Stressed</button>
@@ -753,20 +758,47 @@ body {
     await sb.auth.signOut(); window.location.href = 'index.html';
   });
 
-  /* ── Mental health tips ── */
-  var moodTips = {
-    great: '<strong>That\'s wonderful! 🌟</strong> You\'re in a great headspace — perfect time to tackle a tough chapter or try a few practice questions. Ride this wave!',
-    okay: '<strong>Okay is completely fine.</strong> Try the 2-minute rule — open one chapter, read just the first page. You\'ll usually want to keep going once you start.',
-    stressed: '<strong>Take a breath first. 🌬️</strong> Seriously — 4 counts in, hold 4, out 4. Then pick just ONE topic for today. Progress beats perfection every time.',
-    struggling: '<strong>We see you, and it\'s okay. 💙</strong> You don\'t have to do it all today. Talk to someone you trust — a friend, parent, or teacher. You are not alone in this.'
+  /* ── Mental health check-in ── */
+  var MOOD_TIPS = {
+    great: '<strong>That\'s wonderful! 🌟</strong> You\'re in a great headspace — perfect time to tackle a tough chapter or try a few practice questions. Ride this wave!<br><br>💡 <em>Today\'s tip: Start with your hardest topic first while your energy is high.</em>',
+    okay: '<strong>Okay is completely fine. 👍</strong> Try the 2-minute rule — open one chapter, read just the first page. You\'ll usually want to keep going.<br><br>💡 <em>Today\'s tip: Break today into two 25-minute focused blocks with a break in between.</em>',
+    stressed: '<strong>Take a breath first. 🌬️</strong> Pressure is real, but you\'ve got this. Set yourself just one small goal for today — finishing one chapter is enough.<br><br><a href="breathing.html" style="display:inline-flex;align-items:center;gap:6px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;padding:8px 14px;color:#3B82F6;text-decoration:none;font-weight:600;font-size:.83rem;margin-top:4px">🫁 Try a breathing exercise →</a>',
+    struggling: '<strong>We see you, and it\'s okay. 💙</strong> You don\'t have to do it all today. Please talk to someone you trust — a friend, parent, or teacher. You are not alone.<br><br><a href="breathing.html" style="display:inline-flex;align-items:center;gap:6px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;padding:8px 14px;color:#3B82F6;text-decoration:none;font-weight:600;font-size:.83rem;margin-top:4px">🫁 Try a breathing exercise →</a>'
   };
-  window.selectMood = function(btn, mood) {
+  var MOOD_LABELS = {great:'Great',okay:'Okay',stressed:'Stressed',struggling:'Struggling'};
+  var MOOD_EMOJIS = {great:'😊',okay:'😐',stressed:'😟',struggling:'😔'};
+
+  function applyMood(mood, skipSave) {
     document.querySelectorAll('.mood-btn').forEach(function(b){ b.classList.remove('selected'); });
-    btn.classList.add('selected');
+    document.querySelectorAll('.mood-btn').forEach(function(b){
+      if(b.textContent.toLowerCase().includes(mood)) b.classList.add('selected');
+    });
     var tip = document.getElementById('health-tip');
-    tip.innerHTML = moodTips[mood];
+    tip.innerHTML = MOOD_TIPS[mood];
     tip.classList.add('show');
+    if(!skipSave) {
+      localStorage.setItem('se_mood', JSON.stringify({mood:mood, date:new Date().toDateString()}));
+    }
+  }
+
+  window.selectMood = function(btn, mood) {
+    btn.classList.add('selected');
+    applyMood(mood, false);
   };
+
+  /* Restore today's mood on load */
+  (function(){
+    var stored = localStorage.getItem('se_mood');
+    if(!stored) return;
+    try{
+      var data = JSON.parse(stored);
+      if(data.date !== new Date().toDateString()) return;
+      var mood = data.mood;
+      document.getElementById('health-title').textContent = 'You\'re feeling ' + MOOD_EMOJIS[mood] + ' ' + MOOD_LABELS[mood] + ' today';
+      document.getElementById('health-sub').textContent = 'Your check-in is saved for today.';
+      applyMood(mood, true);
+    }catch(e){}
+  })();
 
   /* ── Progress card — load from Supabase ── */
   function loadProgressCard(userId){

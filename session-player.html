@@ -286,6 +286,38 @@ html,body{
   .timer-wrap{width:36px;height:36px}
   .timer-svg{width:36px;height:36px}
 }
+
+/* ── Session AI FAB + Popup ── */
+#s-ai-fab{position:fixed;bottom:24px;right:24px;width:52px;height:52px;border-radius:50%;background:#8B5CF6;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:white;z-index:9000;box-shadow:0 4px 20px rgba(139,92,246,.4);transition:transform .15s,background .15s,opacity .2s;animation:fab-in .3s .5s both ease-out}
+#s-ai-fab:hover{transform:scale(1.08);background:#7C3AED}
+#s-ai-fab.hidden{opacity:0;pointer-events:none}
+@keyframes fab-in{from{opacity:0;transform:translateY(14px) scale(.88)}to{opacity:1;transform:none}}
+#s-ai-popup{position:fixed;bottom:88px;right:24px;width:340px;max-height:480px;background:#fff;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,.28);display:flex;flex-direction:column;z-index:9000;opacity:0;transform:translateY(14px) scale(.97);pointer-events:none;transition:opacity .2s,transform .2s;overflow:hidden}
+#s-ai-popup.open{opacity:1;transform:none;pointer-events:all}
+#s-ai-ph{padding:12px 16px;border-bottom:1px solid #E4E8EE;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+#s-ai-ph-title{font-size:.88rem;font-weight:700;color:#0A1628;display:flex;align-items:center;gap:6px}
+#s-ai-ph-sub{font-size:.72rem;color:#94A3B8;margin-top:1px}
+#s-ai-close{background:none;border:none;cursor:pointer;color:#94A3B8;font-size:1.1rem;line-height:1;padding:2px}
+#s-ai-close:hover{color:#0A1628}
+#s-ai-msgs{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:10px;min-height:120px;scrollbar-width:thin}
+.s-ai-row{display:flex;gap:8px;align-items:flex-end}
+.s-ai-row--user{flex-direction:row-reverse}
+.s-ai-av{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;flex-shrink:0}
+.s-ai-av--ai{background:#0A1628;color:white}
+.s-ai-av--user{background:#8B5CF6;color:white}
+.s-ai-bbl{max-width:82%;padding:8px 12px;border-radius:12px;font-size:.82rem;line-height:1.5}
+.s-ai-bbl--ai{background:#F4F6F9;border:1px solid #E4E8EE;color:#1E293B;border-bottom-left-radius:3px}
+.s-ai-bbl--user{background:#8B5CF6;color:white;border-bottom-right-radius:3px}
+.s-ai-typing{display:flex;gap:4px;align-items:center;padding:3px 0}
+.s-ai-dot{width:5px;height:5px;border-radius:50%;background:#94A3B8;animation:sdot 1.2s infinite}
+.s-ai-dot:nth-child(2){animation-delay:.2s}.s-ai-dot:nth-child(3){animation-delay:.4s}
+@keyframes sdot{0%,80%,100%{opacity:.25}40%{opacity:1}}
+#s-ai-input-row{display:flex;gap:7px;padding:10px 12px;border-top:1px solid #E4E8EE;flex-shrink:0}
+#s-ai-inp{flex:1;padding:8px 12px;border:1px solid #E4E8EE;border-radius:99px;font-family:inherit;font-size:.82rem;outline:none;background:#F4F6F9;transition:border-color .14s}
+#s-ai-inp:focus{border-color:#8B5CF6;background:white}
+#s-ai-send{width:34px;height:34px;border-radius:50%;background:#8B5CF6;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:white;flex-shrink:0;transition:background .14s}
+#s-ai-send:hover{background:#7C3AED}
+@media(max-width:540px){#s-ai-popup{width:calc(100vw - 32px);right:16px}}
   </style>
 </head>
 <body>
@@ -1101,6 +1133,100 @@ function hide(id){
   setTimeout(function(){el.style.display='none'},420);
 }
 
+})();
+</script>
+
+<!-- Floating AI FAB + Popup -->
+<button id="s-ai-fab" title="Ask AI" onclick="toggleSAI()">
+  <svg width="22" height="22" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"/></svg>
+</button>
+
+<div id="s-ai-popup">
+  <div id="s-ai-ph">
+    <div>
+      <div id="s-ai-ph-title">✨ Ask AI</div>
+      <div id="s-ai-ph-sub">Real Numbers · Ch. 1</div>
+    </div>
+    <button id="s-ai-close" onclick="toggleSAI()">✕</button>
+  </div>
+  <div id="s-ai-msgs">
+    <div class="s-ai-row">
+      <div class="s-ai-av s-ai-av--ai">SE</div>
+      <div class="s-ai-bbl s-ai-bbl--ai">Hi! Ask me anything about Real Numbers — I'll keep it brief so you can get back to the session. 📚</div>
+    </div>
+  </div>
+  <div id="s-ai-input-row">
+    <input id="s-ai-inp" type="text" placeholder="Ask a doubt…"/>
+    <button id="s-ai-send"><svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/></svg></button>
+  </div>
+</div>
+
+<script>
+(function(){
+  var popup=document.getElementById('s-ai-popup');
+  var fab=document.getElementById('s-ai-fab');
+  var msgs=document.getElementById('s-ai-msgs');
+  var inp=document.getElementById('s-ai-inp');
+  var aiHistory=[],aiBusy=false;
+  var AI_FN='https://xiwrvbtryeesfgeydxnf.supabase.co/functions/v1/ai-chat';
+
+  window.toggleSAI=function(){
+    var open=popup.classList.toggle('open');
+    if(open)setTimeout(function(){inp.focus();},60);
+  };
+
+  window.hideSAIFab=function(){fab.classList.add('hidden');popup.classList.remove('open');};
+  window.showSAIFab=function(){fab.classList.remove('hidden');};
+
+  function stripMd(t){return t.replace(/#{1,6}\s*/g,'').replace(/\*\*(.+?)\*\*/gs,'$1').replace(/\*(.+?)\*/gs,'$1').replace(/`([^`]+)`/g,'$1').replace(/^\s*[-*+]\s+/gm,'• ');}
+
+  function addMsg(text,type){
+    var d=document.createElement('div');d.className='s-ai-row'+(type==='user'?' s-ai-row--user':'');
+    var av=type==='user'?'U':'SE';
+    var display=type==='ai'?stripMd(text):text;
+    d.innerHTML='<div class="s-ai-av s-ai-av--'+type+'">'+av+'</div><div class="s-ai-bbl s-ai-bbl--'+type+'">'+display.replace(/\n/g,'<br>')+'</div>';
+    msgs.appendChild(d);msgs.scrollTop=99999;
+  }
+
+  function sendSAI(){
+    var q=inp.value.trim();
+    if(!q||aiBusy)return;
+    aiBusy=true;inp.value='';
+    addMsg(q,'user');
+    var td=document.createElement('div');td.className='s-ai-row';td.id='s-ai-typing';
+    td.innerHTML='<div class="s-ai-av s-ai-av--ai">SE</div><div class="s-ai-bbl s-ai-bbl--ai"><div class="s-ai-typing"><div class="s-ai-dot"></div><div class="s-ai-dot"></div><div class="s-ai-dot"></div></div></div>';
+    msgs.appendChild(td);msgs.scrollTop=99999;
+    fetch(AI_FN,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:'[Real Numbers] '+q,history:aiHistory})})
+      .then(function(r){return r.json();})
+      .then(function(data){
+        var el=document.getElementById('s-ai-typing');if(el)el.remove();
+        var reply=data.reply||'Sorry, something went wrong.';
+        addMsg(reply,'ai');
+        aiHistory.push({role:'user',content:q});aiHistory.push({role:'assistant',content:reply});
+        if(aiHistory.length>20)aiHistory=aiHistory.slice(-20);
+      })
+      .catch(function(){var el=document.getElementById('s-ai-typing');if(el)el.remove();addMsg('Network error — check your connection.','ai');})
+      .finally(function(){aiBusy=false;});
+  }
+
+  document.getElementById('s-ai-send').addEventListener('click',sendSAI);
+  inp.addEventListener('keydown',function(e){if(e.key==='Enter')sendSAI();});
+
+  /* Hide FAB during poll/ready prompts — patch into existing functions */
+  var _showReady=window.showReady;
+  window.showReady=function(idx){hideSAIFab();if(_showReady)_showReady(idx);else{/* fallback: original already defined inline */}};
+
+  /* Hook into classList.add('show') for ready-prompt and poll-overlay */
+  var readyEl=document.getElementById('ready-prompt');
+  var pollEl=document.getElementById('poll-overlay');
+  var origReadyAdd=readyEl.classList.add.bind(readyEl.classList);
+  readyEl.classList.add=function(c){if(c==='show')hideSAIFab();origReadyAdd(c);};
+  var origPollAdd=pollEl.classList.add.bind(pollEl.classList);
+  pollEl.classList.add=function(c){if(c==='show')hideSAIFab();origPollAdd(c);};
+  var origReadyRemove=readyEl.classList.remove.bind(readyEl.classList);
+  readyEl.classList.remove=function(c){if(c==='show')showSAIFab();origReadyRemove(c);};
+  var origPollRemove=pollEl.classList.remove.bind(pollEl.classList);
+  pollEl.classList.remove=function(c){if(c==='show')showSAIFab();origPollRemove(c);};
 })();
 </script>
 </body>
