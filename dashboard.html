@@ -723,9 +723,11 @@ body {
   var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
   /* ── Auth ── */
+  var currentUserId = null;
   sb.auth.onAuthStateChange(function(event, session) {
     if (event === 'SIGNED_OUT') { window.location.href = 'index.html'; return; }
     if (session && session.user) {
+      currentUserId = session.user.id;
       var user = session.user;
       var name = (user.user_metadata && (user.user_metadata.name || user.user_metadata.full_name)) || user.email.split('@')[0];
       var initial = name.charAt(0).toUpperCase();
@@ -790,13 +792,11 @@ body {
     if(!skipSave) {
       var today = new Date().toDateString();
       localStorage.setItem('se_mood', JSON.stringify({mood:mood, date:today}));
-      sb.auth.getSession().then(function(res){
-        var uid = res.data && res.data.session && res.data.session.user.id;
-        if(!uid) return;
+      if(currentUserId) {
         sb.from('mood_checkins')
-          .upsert({user_id:uid, mood:mood, date:today}, {onConflict:'user_id,date'})
-          .catch(function(){});
-      });
+          .upsert({user_id:currentUserId, mood:mood, date:today}, {onConflict:'user_id,date'})
+          .then(function(res){ if(res.error) console.error('Mood save error:', res.error); });
+      }
     }
   }
 

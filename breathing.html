@@ -210,8 +210,25 @@ body{background:linear-gradient(145deg,#E8F4FD 0%,#EAF7F0 50%,#F0FDF4 100%);min-
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (function(){
+
+/* ── Supabase (optional — saves if user is logged in) ── */
+var _sb=null,_uid=null;
+try{
+  var _SURL='https://xiwrvbtryeesfgeydxnf.supabase.co';
+  var _SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd3J2YnRyeWVlc2ZnZXlkeG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMTQ0NDAsImV4cCI6MjA5NDU5MDQ0MH0.3Sp9dlc8cNsrzdHAGy74pCqscjL1MFV9ZWMW90QbhqE';
+  _sb=window.supabase?window.supabase.createClient(_SURL,_SKEY):null;
+  if(_sb)_sb.auth.getUser().then(function(r){if(r.data&&r.data.user)_uid=r.data.user.id;});
+}catch(e){}
+
+function saveSessionToDB(type,mode,duration){
+  if(!_sb||!_uid)return;
+  _sb.from('breathing_sessions')
+    .insert({user_id:_uid,type:type,mode:mode,duration:duration})
+    .then(function(r){if(r.error)console.error('Breathing save error:',r.error);});
+}
 
 /* ── LocalStorage ── */
 var TODAY=new Date().toDateString();
@@ -366,7 +383,7 @@ function startBreath(){
 }
 function stopBreath(){
   bRunning=false;clearInterval(bInt);
-  saved();
+  saved('breathing',bMode);
   document.getElementById('b-icon').innerHTML='<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/>';
   document.getElementById('b-label').textContent='Done';
   document.getElementById('b-count').textContent='';
@@ -440,7 +457,7 @@ function stopMed(){
   medRunning=false;clearInterval(mInt);clearInterval(mPromptInt);
   if(musicOn)playBell(.15);
   stopBells();
-  saved();
+  saved('meditation','guided');
   document.getElementById('m-icon').innerHTML='<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/>';
   showPrompt('Session complete. Well done. 🙏');
   document.getElementById('m-label').textContent='Done';
@@ -461,10 +478,11 @@ function showPrompt(text){
 }
 
 /* ── Shared ── */
-function saved(){
+function saved(type,mode){
   stored.sessions=(stored.sessions||0)+1;
   localStorage.setItem('se_breath',JSON.stringify(stored));
   updateBadge();
+  saveSessionToDB(type,mode,type==='breathing'?bElapsed:mElapsed);
 }
 function fmtTime(s){var m=Math.floor(s/60),sec=s%60;return m+':'+(sec<10?'0':'')+sec;}
 
