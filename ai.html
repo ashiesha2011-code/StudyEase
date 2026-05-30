@@ -705,7 +705,9 @@ body{
     var convs=[],current=null,GAP=60*60*1000;
     rows.forEach(function(row){
       var t=new Date(row.created_at).getTime();
-      if(!current||t-current.lastTime>GAP){
+      var rowSubj=row.subject||'General';
+      var curSubj=current?(current.subject||'General'):'';
+      if(!current||t-current.lastTime>GAP||rowSubj!==curSubj){
         current={title:row.user_message,subject:row.subject,startTime:new Date(row.created_at),lastTime:t,messages:[]};
         convs.push(current);
       }
