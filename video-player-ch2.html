@@ -471,10 +471,12 @@ var SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6I
 var sb=window.supabase.createClient(SURL,SKEY);
 var userPlan='free',userAvatar='?';
 
+var currentUserId=null;
 sb.auth.onAuthStateChange(function(ev,sess){
   if(ev==='SIGNED_OUT'){window.location.href='index.html';return}
   if(sess&&sess.user){
     var u=sess.user;
+    currentUserId=u.id;
     var name=(u.user_metadata&&(u.user_metadata.name||u.user_metadata.full_name))||u.email.split('@')[0];
     var init=name.charAt(0).toUpperCase();
     document.getElementById('sb-avatar').textContent=init;
@@ -604,8 +606,22 @@ window.toggleFullscreen=function(){
   }
 };
 /* Update icon when fullscreen state changes */
-document.addEventListener('fullscreenchange',updateFsIcon);
-document.addEventListener('webkitfullscreenchange',updateFsIcon);
+document.addEventListener('fullscreenchange',function(){updateFsIcon();handleFsPopup();});
+document.addEventListener('webkitfullscreenchange',function(){updateFsIcon();handleFsPopup();});
+function handleFsPopup(){
+  var popup=document.getElementById('vp-popup');
+  var pw=document.getElementById('player-wrap');
+  if(document.fullscreenElement||document.webkitFullscreenElement){
+    pw.style.overflow='visible';
+    popup.style.cssText='position:absolute;bottom:60px;right:16px;z-index:600;width:320px;max-height:440px;background:#fff;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,.35);display:flex;flex-direction:column;opacity:0;transform:translateY(14px) scale(.97);pointer-events:none;transition:opacity .2s,transform .2s;overflow:hidden';
+    pw.appendChild(popup);
+    if(popup.classList.contains('open')){popup.style.opacity='1';popup.style.transform='none';popup.style.pointerEvents='all';}
+  }else{
+    document.body.appendChild(popup);
+    popup.style.cssText='';
+    pw.style.overflow='';
+  }
+}
 function updateFsIcon(){
   var fsIcon=document.getElementById('fs-icon');
   if(!fsIcon)return;
@@ -1068,6 +1084,9 @@ function sendAI(q){
       addMsg(reply,'ai');
       aiHistory.push({role:'user',content:q});aiHistory.push({role:'assistant',content:reply});
       if(aiHistory.length>20)aiHistory=aiHistory.slice(-20);
+      if(currentUserId){
+        sb.from('chat_history').insert({user_id:currentUserId,user_message:q,ai_reply:reply,subject:'Maths'}).catch(function(){});
+      }
     })
     .catch(function(){var el=document.getElementById('vp-typing');if(el)el.remove();addMsg('Network error — check your connection.','ai');})
     .finally(function(){aiBusy=false;});
