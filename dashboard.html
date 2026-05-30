@@ -327,6 +327,14 @@ body {
   display: none;
 }
 .health-tip.show { display: block; }
+.breathing-cta {
+  display: inline-flex; align-items: center; gap: 7px;
+  margin-top: 14px; padding: 9px 16px;
+  background: rgba(255,255,255,0.7); border: 1.5px solid rgba(20,184,166,0.3);
+  border-radius: 99px; font-size: 0.83rem; font-weight: 600;
+  color: #0F766E; text-decoration: none; transition: all 0.15s;
+}
+.breathing-cta:hover { background: rgba(20,184,166,0.1); border-color: #14B8A6; }
 .health-tip strong { color: var(--navy); }
 
 
@@ -615,6 +623,9 @@ body {
             <button class="mood-btn" onclick="selectMood(this,'struggling')">😔 Struggling</button>
           </div>
           <div class="health-tip" id="health-tip"></div>
+          <a href="breathing.html" class="breathing-cta">
+            🫁 Try a breathing exercise
+          </a>
         </div>
       </div>
 
@@ -762,8 +773,8 @@ body {
   var MOOD_TIPS = {
     great: '<strong>That\'s wonderful! 🌟</strong> You\'re in a great headspace — perfect time to tackle a tough chapter or try a few practice questions. Ride this wave!<br><br>💡 <em>Today\'s tip: Start with your hardest topic first while your energy is high.</em>',
     okay: '<strong>Okay is completely fine. 👍</strong> Try the 2-minute rule — open one chapter, read just the first page. You\'ll usually want to keep going.<br><br>💡 <em>Today\'s tip: Break today into two 25-minute focused blocks with a break in between.</em>',
-    stressed: '<strong>Take a breath first. 🌬️</strong> Pressure is real, but you\'ve got this. Set yourself just one small goal for today — finishing one chapter is enough.<br><br><a href="breathing.html" style="display:inline-flex;align-items:center;gap:6px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;padding:8px 14px;color:#3B82F6;text-decoration:none;font-weight:600;font-size:.83rem;margin-top:4px">🫁 Try a breathing exercise →</a>',
-    struggling: '<strong>We see you, and it\'s okay. 💙</strong> You don\'t have to do it all today. Please talk to someone you trust — a friend, parent, or teacher. You are not alone.<br><br><a href="breathing.html" style="display:inline-flex;align-items:center;gap:6px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;padding:8px 14px;color:#3B82F6;text-decoration:none;font-weight:600;font-size:.83rem;margin-top:4px">🫁 Try a breathing exercise →</a>'
+    stressed: '<strong>Take a breath first. 🌬️</strong> Pressure is real, but you\'ve got this. Set yourself just one small goal for today — finishing one chapter is enough.',
+    struggling: '<strong>We see you, and it\'s okay. 💙</strong> You don\'t have to do it all today. Please talk to someone you trust — a friend, parent, or teacher. You are not alone.'
   };
   var MOOD_LABELS = {great:'Great',okay:'Okay',stressed:'Stressed',struggling:'Struggling'};
   var MOOD_EMOJIS = {great:'😊',okay:'😐',stressed:'😟',struggling:'😔'};
@@ -777,7 +788,15 @@ body {
     tip.innerHTML = MOOD_TIPS[mood];
     tip.classList.add('show');
     if(!skipSave) {
-      localStorage.setItem('se_mood', JSON.stringify({mood:mood, date:new Date().toDateString()}));
+      var today = new Date().toDateString();
+      localStorage.setItem('se_mood', JSON.stringify({mood:mood, date:today}));
+      sb.auth.getSession().then(function(res){
+        var uid = res.data && res.data.session && res.data.session.user.id;
+        if(!uid) return;
+        sb.from('mood_checkins')
+          .upsert({user_id:uid, mood:mood, date:today}, {onConflict:'user_id,date'})
+          .catch(function(){});
+      });
     }
   }
 
