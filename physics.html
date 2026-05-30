@@ -78,14 +78,14 @@ body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--off-whit
 .t-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; color: white; cursor: pointer; }
 
 /* ── Content ── */
-.content { padding: 24px 28px; flex: 1; }
+.content { padding: 30px 36px; flex: 1; }
 
 /* ── Subject hero ── */
 .subject-hero {
   background: var(--navy);
   border-radius: var(--radius-lg);
-  padding: 24px 28px;
-  margin-bottom: 22px;
+  padding: 28px 32px;
+  margin-bottom: 24px;
   display: flex; align-items: center; gap: 20px;
   position: relative; overflow: hidden;
 }
@@ -102,7 +102,7 @@ body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--off-whit
 .hero-tag { padding: 4px 12px; border-radius: 99px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); font-size: 0.75rem; font-weight: 600; color: rgba(255,255,255,0.7); }
 
 /* ── Two panel layout ── */
-.subject-layout { display: grid; grid-template-columns: 240px 1fr; gap: 20px; }
+.subject-layout { display: grid; grid-template-columns: 240px 1fr; gap: 26px; }
 
 /* Left panel — chapters list */
 .chapters-panel {
@@ -115,10 +115,10 @@ body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--off-whit
 .chapters-panel::-webkit-scrollbar { width: 4px; }
 .chapters-panel::-webkit-scrollbar-track { background: transparent; }
 .chapters-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-.panel-head { padding: 14px 16px; border-bottom: 1px solid var(--border-soft); font-size: 0.82rem; font-weight: 700; color: var(--navy); }
+.panel-head { padding: 16px 18px; border-bottom: 1px solid var(--border-soft); font-size: 0.82rem; font-weight: 700; color: var(--navy); }
 .chapter-item {
   display: flex; align-items: flex-start; gap: 10px;
-  padding: 11px 14px; cursor: pointer; transition: background 0.12s;
+  padding: 13px 16px; cursor: pointer; transition: background 0.12s;
   border-left: 3px solid transparent; text-decoration: none;
 }
 .chapter-item:hover { background: var(--off-white); }
@@ -126,16 +126,16 @@ body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--off-whit
 .chapter-item.active .ch-num { color: var(--accent); }
 .chapter-item.active .ch-name { color: var(--navy); }
 .ch-num { font-size: 0.7rem; font-weight: 700; color: var(--text-muted); flex-shrink: 0; padding-top: 1px; }
-.ch-name { font-size: 0.83rem; font-weight: 500; color: var(--text-mid); line-height: 1.4; }
+.ch-name { font-size: 0.88rem; font-weight: 500; color: var(--text-mid); line-height: 1.4; }
 .chapter-item.active .ch-name { font-weight: 600; }
 
 /* Right panel — content */
-.content-panel { display: flex; flex-direction: column; gap: 16px; }
+.content-panel { display: flex; flex-direction: column; gap: 20px; }
 
 /* Tabs */
 .tabs-bar { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); display: flex; overflow: hidden; }
 .tab-btn {
-  flex: 1; padding: 14px 16px; font-family: inherit;
+  flex: 1; padding: 15px 18px; font-family: inherit;
   font-size: 0.87rem; font-weight: 600; color: var(--text-muted);
   background: none; border: none; cursor: pointer;
   border-bottom: 3px solid transparent; transition: all 0.15s;
@@ -160,11 +160,11 @@ body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--off-whit
 
 /* Practice tab — sample questions */
 .practice-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
-.practice-head { padding: 16px 20px; border-bottom: 1px solid var(--border-soft); display: flex; align-items: center; justify-content: space-between; }
+.practice-head { padding: 18px 24px; border-bottom: 1px solid var(--border-soft); display: flex; align-items: center; justify-content: space-between; }
 .practice-title { font-size: 0.9rem; font-weight: 700; color: var(--navy); }
 .practice-meta { font-size: 0.77rem; color: var(--text-muted); }
 .q-list { padding: 4px 0; }
-.q-item { padding: 14px 20px; border-bottom: 1px solid var(--border-soft); transition: background 0.12s; cursor: pointer; }
+.q-item { padding: 16px 22px; border-bottom: 1px solid var(--border-soft); transition: background 0.12s; cursor: pointer; }
 .q-item:last-child { border-bottom: none; }
 .q-item:hover { background: var(--off-white); }
 .q-row { display: flex; align-items: flex-start; gap: 12px; }
@@ -178,12 +178,12 @@ body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--off-whit
 .q-locked { display: flex; align-items: center; gap: 7px; padding: 14px 20px; background: var(--off-white); border-top: 1px dashed var(--border); font-size: 0.83rem; color: var(--text-muted); }
 
 /* Notes tab */
-.notes-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px; }
-.notes-chapter-title { font-size: 1.1rem; font-weight: 800; color: var(--navy); margin-bottom: 16px; letter-spacing: -0.01em; }
+.notes-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 38px; }
+.notes-chapter-title { font-size: 1.2rem; font-weight: 800; color: var(--navy); margin-bottom: 16px; letter-spacing: -0.01em; }
 .notes-section { margin-bottom: 20px; }
-.notes-section-head { font-size: 0.88rem; font-weight: 700; color: var(--navy); margin-bottom: 8px; display: flex; align-items: center; gap: 7px; }
+.notes-section-head { font-size: 0.93rem; font-weight: 700; color: var(--navy); margin-bottom: 8px; display: flex; align-items: center; gap: 7px; }
 .notes-accent-bar { width: 3px; height: 16px; border-radius: 99px; background: var(--accent); flex-shrink: 0; }
-.notes-text { font-size: 0.85rem; color: var(--text-mid); line-height: 1.75; }
+.notes-text { font-size: 0.88rem; color: var(--text-mid); line-height: 1.75; }
 .notes-text strong { color: var(--navy); font-weight: 700; }
 .notes-formula {
   background: var(--accent-bg); border: 1px solid var(--accent-mid);
@@ -217,7 +217,7 @@ body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--off-whit
 
 /* Responsive */
 @media (max-width: 900px) { .subject-layout { grid-template-columns: 1fr; } .chapters-panel { position: static; max-height: none; } }
-@media (max-width: 768px) { .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); } .overlay.open { display: block; } .main { margin-left: 0; } .hamburger { display: flex; } .content { padding: 16px; } }
+@media (max-width: 768px) { .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); } .overlay.open { display: block; } .main { margin-left: 0; } .hamburger { display: flex; } .content { padding: 18px; } }
   </style>
 </head>
 <body style="opacity:0; transition: opacity 0.35s ease;">
