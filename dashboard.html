@@ -821,9 +821,12 @@ body {
     setAvatarDisplay(initial, null);
     document.getElementById('sb-username').textContent = name;
 
+    // Only show onboarding for accounts created in the last 2 minutes (brand new sign-ups)
+    var isNewAccount = (Date.now() - new Date(user.created_at).getTime()) < 120000;
+
     sb.from('profiles').select('plan, class, name, avatar_url, onboarding_done').eq('id', userId).single().then(function(res) {
       if (!res.data) {
-        showOnboarding(user);
+        if (isNewAccount) showOnboarding(user);
         return;
       }
       var p = res.data;
@@ -854,11 +857,12 @@ body {
         if(btn){btn.textContent = '🌟 ' + planName; btn.style.background = 'var(--emerald)';}
       }
 
-      if (!p.onboarding_done) {
+      // Only show onboarding for brand new accounts that haven't completed it
+      if (isNewAccount && !p.onboarding_done) {
         showOnboarding(user, p);
       }
-    }).catch(function() {
-      showOnboarding(user);
+    }).catch(function(err) {
+      console.error('Profile load error:', err);
     });
   }
 
