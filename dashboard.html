@@ -415,6 +415,66 @@ body {
 </head>
 <body style="opacity:0; transition: opacity 0.35s ease;">
 
+<!-- Onboarding Modal -->
+<div id="onboarding-overlay" style="display:none;position:fixed;inset:0;z-index:99999;background:linear-gradient(135deg,#f0f7ff 0%,#faf5ff 100%);overflow:hidden">
+  <div style="max-width:480px;margin:0 auto;height:100%;display:flex;flex-direction:column;padding:40px 24px 32px">
+
+    <!-- Logo -->
+    <div style="display:flex;align-items:center;gap:9px;margin-bottom:40px">
+      <div style="width:34px;height:34px;border-radius:9px;background:var(--blue);display:flex;align-items:center;justify-content:center">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="6" height="8" rx="1.5" fill="white"/><rect x="10" y="2" width="6" height="5" rx="1.5" fill="rgba(255,255,255,0.5)"/><rect x="2" y="12" width="14" height="2.5" rx="1.25" fill="rgba(255,255,255,0.3)"/><rect x="10" y="9" width="6" height="2.5" rx="1.25" fill="rgba(255,255,255,0.4)"/></svg>
+      </div>
+      <span style="font-size:1.1rem;font-weight:700;color:var(--navy)">StudyEase</span>
+    </div>
+
+    <!-- Progress dots -->
+    <div style="display:flex;gap:7px;margin-bottom:36px">
+      <div id="ob-dot-1" style="height:4px;border-radius:99px;background:var(--blue);flex:1;transition:all .3s"></div>
+      <div id="ob-dot-2" style="height:4px;border-radius:99px;background:var(--border);flex:1;transition:all .3s"></div>
+      <div id="ob-dot-3" style="height:4px;border-radius:99px;background:var(--border);flex:1;transition:all .3s"></div>
+    </div>
+
+    <!-- Steps container (slides) -->
+    <div style="flex:1;overflow:hidden;position:relative">
+
+      <!-- Step 1: Name -->
+      <div id="ob-step-1" style="position:absolute;inset:0;transition:transform .3s cubic-bezier(.4,0,.2,1),opacity .3s;transform:translateX(0);opacity:1">
+        <div style="font-size:1.75rem;font-weight:800;color:var(--navy);margin-bottom:8px;letter-spacing:-.02em">Welcome! Let's set up your profile 👋</div>
+        <div style="font-size:1rem;color:var(--text-mid);margin-bottom:36px;line-height:1.6">First things first — what should we call you?</div>
+        <label style="display:block;font-size:.85rem;font-weight:600;color:var(--navy);margin-bottom:8px">Your name</label>
+        <input id="ob-name" type="text" placeholder="e.g. Iesha" autocomplete="given-name" style="width:100%;padding:14px 18px;border:2px solid var(--border);border-radius:12px;font-family:inherit;font-size:1.05rem;font-weight:500;outline:none;background:white;transition:border-color .15s;color:var(--navy)" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border)'">
+        <button onclick="obNext(1)" style="margin-top:24px;width:100%;padding:15px;background:var(--blue);color:white;border:none;border-radius:12px;font-family:inherit;font-size:1rem;font-weight:700;cursor:pointer;transition:filter .14s" onmouseover="this.style.filter='brightness(1.07)'" onmouseout="this.style.filter='none'">Next →</button>
+      </div>
+
+      <!-- Step 2: Class -->
+      <div id="ob-step-2" style="position:absolute;inset:0;transition:transform .3s cubic-bezier(.4,0,.2,1),opacity .3s;transform:translateX(110%);opacity:0">
+        <div style="font-size:1.75rem;font-weight:800;color:var(--navy);margin-bottom:8px;letter-spacing:-.02em">Which class are you in?</div>
+        <div style="font-size:1rem;color:var(--text-mid);margin-bottom:36px;line-height:1.6">We'll personalise your study plan for you.</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px" id="ob-class-grid">
+          <button onclick="obSelectClass(this,'Class 9')" class="ob-class-btn" style="padding:20px;border:2px solid var(--border);border-radius:12px;background:white;font-family:inherit;font-size:1.05rem;font-weight:700;color:var(--navy);cursor:pointer;transition:all .15s">Class 9</button>
+          <button onclick="obSelectClass(this,'Class 10')" class="ob-class-btn" style="padding:20px;border:2px solid var(--border);border-radius:12px;background:white;font-family:inherit;font-size:1.05rem;font-weight:700;color:var(--navy);cursor:pointer;transition:all .15s">Class 10</button>
+          <button onclick="obSelectClass(this,'Class 11')" class="ob-class-btn" style="padding:20px;border:2px solid var(--border);border-radius:12px;background:white;font-family:inherit;font-size:1.05rem;font-weight:700;color:var(--navy);cursor:pointer;transition:all .15s">Class 11</button>
+          <button onclick="obSelectClass(this,'Class 12')" class="ob-class-btn" style="padding:20px;border:2px solid var(--border);border-radius:12px;background:white;font-family:inherit;font-size:1.05rem;font-weight:700;color:var(--navy);cursor:pointer;transition:all .15s">Class 12</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Photo -->
+      <div id="ob-step-3" style="position:absolute;inset:0;transition:transform .3s cubic-bezier(.4,0,.2,1),opacity .3s;transform:translateX(110%);opacity:0">
+        <div style="font-size:1.75rem;font-weight:800;color:var(--navy);margin-bottom:8px;letter-spacing:-.02em">Add a profile photo</div>
+        <div style="font-size:1rem;color:var(--text-mid);margin-bottom:36px;line-height:1.6">Optional — you can always add one later in Settings.</div>
+        <div style="text-align:center;margin-bottom:24px">
+          <div id="ob-avatar-preview" style="width:100px;height:100px;border-radius:50%;background:var(--blue);color:white;font-size:2.2rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;overflow:hidden;cursor:pointer">?</div>
+          <button onclick="document.getElementById('ob-photo-input').click()" style="padding:10px 22px;border:1.5px solid var(--border);border-radius:9px;background:white;font-family:inherit;font-size:.88rem;font-weight:600;color:var(--navy);cursor:pointer">Upload a photo</button>
+          <input type="file" id="ob-photo-input" accept="image/*" style="display:none">
+        </div>
+        <button onclick="obFinish()" style="width:100%;padding:15px;background:var(--blue);color:white;border:none;border-radius:12px;font-family:inherit;font-size:1rem;font-weight:700;cursor:pointer;transition:filter .14s" onmouseover="this.style.filter='brightness(1.07)'" onmouseout="this.style.filter='none'">Let's go! →</button>
+        <div style="text-align:center;margin-top:14px"><a href="#" onclick="obFinish();return false;" style="font-size:.85rem;color:var(--text-muted);text-decoration:none">Skip for now</a></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <div class="loader" id="loader">
   <div class="loader-inner">
     <div class="loader-mark">
@@ -600,17 +660,12 @@ body {
       </a>
 
       <!-- Progress Overview Card -->
-      <a href="progress.html" class="progress-card" id="progress-card" style="text-decoration:none;display:block;background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;margin-bottom:20px;transition:all .18s;box-shadow:var(--shadow-sm)" onmouseover="this.style.boxShadow='var(--shadow-md)';this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='var(--shadow-sm)';this.style.transform='none'">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-          <div style="display:flex;align-items:center;gap:9px">
-            <div style="width:34px;height:34px;border-radius:9px;background:var(--purple-bg);display:flex;align-items:center;justify-content:center;font-size:1.1rem">📊</div>
-            <div>
-              <div style="font-size:1.05rem;font-weight:700;color:var(--navy)">My Progress</div>
-            </div>
-          </div>
-          <div style="font-size:.78rem;font-weight:600;color:var(--purple);display:flex;align-items:center;gap:4px">View all <svg width="12" height="12" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg></div>
+      <a href="progress.html" style="text-decoration:none;display:flex;align-items:center;justify-content:space-between;background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 24px;margin-bottom:20px;transition:all .18s;box-shadow:var(--shadow-sm)" onmouseover="this.style.boxShadow='var(--shadow-md)';this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='var(--shadow-sm)';this.style.transform='none'">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:38px;height:38px;border-radius:10px;background:var(--purple-bg);display:flex;align-items:center;justify-content:center;font-size:1.2rem">📊</div>
+          <span style="font-size:1.4rem;font-weight:800;color:var(--navy);letter-spacing:-.02em">My Progress</span>
         </div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap" id="progress-subjects"></div>
+        <span style="font-size:.83rem;font-weight:600;color:var(--purple);display:flex;align-items:center;gap:5px">View all <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg></span>
       </a>
       <!-- Mental Health Check-in -->
       <div class="health-card-wrap">
@@ -737,43 +792,19 @@ body {
       currentUserId = session.user.id;
       var user = session.user;
       var name = (user.user_metadata && (user.user_metadata.name || user.user_metadata.full_name)) || user.email.split('@')[0];
-      var initial = name.charAt(0).toUpperCase();
-
-      ['sb-avatar','topbar-avatar'].forEach(function(id){ document.getElementById(id).textContent = initial; });
-      document.getElementById('sb-username').textContent = name;
-      document.getElementById('ap-name').textContent = name;
-      document.getElementById('ap-avatar').textContent = initial;
-      document.getElementById('ap-email').textContent = user.email;
-
+      var fn = name.split(' ')[0];
       var hour = new Date().getHours();
       var greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
-      var fn = name.split(' ')[0];
       document.getElementById('topbar-greeting').textContent = greet + ', ' + fn + '! 👋';
       document.getElementById('welcome-hi').textContent = greet + ', ' + fn + '! 👋';
-
       document.getElementById('topbar-date').textContent = new Date().toLocaleDateString('en-IN', {
         weekday:'long', day:'numeric', month:'long', year:'numeric'
       });
-
+      document.getElementById('ap-email').textContent = user.email;
       document.getElementById('loader').classList.add('gone');
       setTimeout(function(){ document.getElementById('loader').style.display = 'none'; }, 420);
       document.body.style.opacity = '1';
-
-      sb.from('profiles').select('plan, class').eq('id', user.id).single().then(function(res) {
-        if (!res.data) return;
-        var p = res.data;
-        var planName = p.plan === 'achiever' ? 'Achiever Plan' : p.plan === 'scholar' ? 'Scholar Plan' : 'Free Plan';
-        document.getElementById('sb-plan-name').textContent = planName;
-        document.getElementById('sb-userplan').textContent = p.class ? p.class + ' · ' + planName : planName;
-        document.getElementById('welcome-sub').textContent = p.class ? p.class + ' · CBSE · Ready to study smarter today?' : 'Ready to study smarter today?';
-        document.getElementById('ap-plan').textContent = planName;
-        if (p.plan !== 'free') {
-          var btn = document.querySelector('.plan-upgrade-btn');
-          if(btn){btn.textContent = '🌟 ' + planName; btn.style.background = 'var(--emerald)';}
-        }
-      loadProgressCard(session.user.id);
-      }).catch(function(){});
-
+      loadUserProfile(session.user.id, session.user);
     } else if (event === 'INITIAL_SESSION' && !session) {
       window.location.href = 'index.html';
     }
@@ -781,6 +812,200 @@ body {
   document.getElementById('logout-btn').addEventListener('click', async function() {
     await sb.auth.signOut(); window.location.href = 'index.html';
   });
+
+  /* ── Profile loading ── */
+  function loadUserProfile(userId, user) {
+    var name = (user.user_metadata && (user.user_metadata.name || user.user_metadata.full_name)) || user.email.split('@')[0];
+    var initial = name.charAt(0).toUpperCase();
+
+    setAvatarDisplay(initial, null);
+    document.getElementById('sb-username').textContent = name;
+
+    sb.from('profiles').select('plan, class, name, avatar_url, onboarding_done').eq('id', userId).single().then(function(res) {
+      if (!res.data) {
+        showOnboarding(user);
+        return;
+      }
+      var p = res.data;
+
+      if (p.name) {
+        name = p.name;
+        initial = name.charAt(0).toUpperCase();
+        document.getElementById('sb-username').textContent = name;
+      }
+
+      setAvatarDisplay(initial, p.avatar_url);
+
+      var apName = document.getElementById('ap-name');
+      var apAvatar = document.getElementById('ap-avatar');
+      if (apName) apName.textContent = name;
+      if (apAvatar) updateAvatarEl(apAvatar, initial, p.avatar_url);
+
+      var planName = p.plan === 'achiever' ? 'Achiever Plan' : p.plan === 'scholar' ? 'Scholar Plan' : 'Free Plan';
+      document.getElementById('sb-plan-name').textContent = planName;
+      document.getElementById('sb-userplan').textContent = p.class ? p.class + ' · ' + planName : planName;
+      document.getElementById('welcome-sub').textContent = p.class ? p.class + ' · CBSE · Ready to study smarter today?' : 'Ready to study smarter today?';
+
+      var apPlan = document.getElementById('ap-plan');
+      if (apPlan) apPlan.textContent = planName;
+
+      if (p.plan !== 'free') {
+        var btn = document.querySelector('.plan-upgrade-btn');
+        if(btn){btn.textContent = '🌟 ' + planName; btn.style.background = 'var(--emerald)';}
+      }
+
+      if (!p.onboarding_done) {
+        showOnboarding(user, p);
+      }
+    }).catch(function() {
+      showOnboarding(user);
+    });
+  }
+
+  function setAvatarDisplay(initial, avatarUrl) {
+    ['sb-avatar', 'topbar-avatar'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) updateAvatarEl(el, initial, avatarUrl);
+    });
+  }
+
+  function updateAvatarEl(el, initial, avatarUrl) {
+    if (avatarUrl) {
+      el.style.backgroundImage = 'url(' + avatarUrl + ')';
+      el.style.backgroundSize = 'cover';
+      el.style.backgroundPosition = 'center';
+      el.textContent = '';
+    } else {
+      el.style.backgroundImage = '';
+      el.textContent = initial;
+    }
+  }
+
+  /* ── Onboarding ── */
+  var _obUser = null;
+  var _obAvatarB64 = null;
+  var _obClass = null;
+  var _obCurrentStep = 1;
+
+  window.showOnboarding = function(user, profile) {
+    _obUser = user;
+    var name = (profile && profile.name) || (user.user_metadata && (user.user_metadata.name || user.user_metadata.full_name)) || user.email.split('@')[0];
+    var nameInput = document.getElementById('ob-name');
+    if (nameInput && name && !user.user_metadata.name) nameInput.value = '';
+    else if (nameInput && name) nameInput.value = name;
+
+    var preview = document.getElementById('ob-avatar-preview');
+    if (preview) preview.textContent = name.charAt(0).toUpperCase();
+
+    var overlay = document.getElementById('onboarding-overlay');
+    overlay.style.display = 'flex';
+    overlay.style.flexDirection = 'column';
+  };
+
+  window.obNext = function(fromStep) {
+    if (fromStep === 1) {
+      var name = document.getElementById('ob-name').value.trim();
+      if (!name) { document.getElementById('ob-name').focus(); document.getElementById('ob-name').style.borderColor = 'var(--red)'; return; }
+      document.getElementById('ob-name').style.borderColor = 'var(--border)';
+      var preview = document.getElementById('ob-avatar-preview');
+      if (preview && !_obAvatarB64) preview.textContent = name.charAt(0).toUpperCase();
+      obGoToStep(2);
+    }
+  };
+
+  window.obSelectClass = function(btn, cls) {
+    _obClass = cls;
+    document.querySelectorAll('.ob-class-btn').forEach(function(b) {
+      b.style.borderColor = 'var(--border)';
+      b.style.background = 'white';
+      b.style.color = 'var(--navy)';
+    });
+    btn.style.borderColor = 'var(--blue)';
+    btn.style.background = 'var(--blue-light)';
+    btn.style.color = 'var(--blue)';
+    setTimeout(function() { obGoToStep(3); }, 220);
+  };
+
+  function obGoToStep(step) {
+    var prev = document.getElementById('ob-step-' + _obCurrentStep);
+    var next = document.getElementById('ob-step-' + step);
+    if (prev) { prev.style.transform = 'translateX(-110%)'; prev.style.opacity = '0'; }
+    if (next) { next.style.transform = 'translateX(0)'; next.style.opacity = '1'; }
+    for (var i = 1; i <= 3; i++) {
+      var dot = document.getElementById('ob-dot-' + i);
+      if (dot) dot.style.background = i <= step ? 'var(--blue)' : 'var(--border)';
+    }
+    _obCurrentStep = step;
+  }
+
+  window.obFinish = function() {
+    var name = document.getElementById('ob-name').value.trim() || (_obUser && ((_obUser.user_metadata && (_obUser.user_metadata.name || _obUser.user_metadata.full_name)) || _obUser.email.split('@')[0]));
+    var updates = {
+      name: name || '',
+      onboarding_done: true
+    };
+    if (_obClass) updates.class = _obClass;
+    if (_obAvatarB64) updates.avatar_url = _obAvatarB64;
+
+    sb.from('profiles').upsert(Object.assign({ id: currentUserId }, updates)).then(function(res) {
+      if (res.error) console.error('Onboarding save error:', res.error);
+    });
+
+    if (name) {
+      var fn = name.split(' ')[0];
+      var hour = new Date().getHours();
+      var greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+      document.getElementById('topbar-greeting').textContent = greet + ', ' + fn + '! 👋';
+      document.getElementById('welcome-hi').textContent = greet + ', ' + fn + '! 👋';
+      document.getElementById('sb-username').textContent = name;
+      var apName = document.getElementById('ap-name');
+      if (apName) apName.textContent = name;
+      var initial = name.charAt(0).toUpperCase();
+      setAvatarDisplay(initial, _obAvatarB64 || null);
+      var apAvatar = document.getElementById('ap-avatar');
+      if (apAvatar) updateAvatarEl(apAvatar, initial, _obAvatarB64 || null);
+    }
+    if (_obClass) {
+      document.getElementById('welcome-sub').textContent = _obClass + ' · CBSE · Ready to study smarter today?';
+    }
+
+    var overlay = document.getElementById('onboarding-overlay');
+    overlay.style.transition = 'opacity 0.4s';
+    overlay.style.opacity = '0';
+    setTimeout(function() { overlay.style.display = 'none'; overlay.style.opacity = '1'; }, 420);
+  };
+
+  // Photo upload in onboarding
+  (function() {
+    var photoInput = document.getElementById('ob-photo-input');
+    if (!photoInput) return;
+    photoInput.addEventListener('change', function(e) {
+      var file = e.target.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        var img = new Image();
+        img.onload = function() {
+          var canvas = document.createElement('canvas');
+          canvas.width = 200; canvas.height = 200;
+          var ctx = canvas.getContext('2d');
+          var size = Math.min(img.width, img.height);
+          var sx = (img.width - size) / 2, sy = (img.height - size) / 2;
+          ctx.drawImage(img, sx, sy, size, size, 0, 0, 200, 200);
+          _obAvatarB64 = canvas.toDataURL('image/jpeg', 0.85);
+          var preview = document.getElementById('ob-avatar-preview');
+          if (preview) {
+            preview.style.backgroundImage = 'url(' + _obAvatarB64 + ')';
+            preview.style.backgroundSize = 'cover';
+            preview.style.backgroundPosition = 'center';
+            preview.textContent = '';
+          }
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  })();
 
   /* ── Mental health check-in ── */
   var MOOD_TIPS = {
@@ -829,53 +1054,6 @@ body {
       applyMood(mood, true);
     }catch(e){}
   })();
-
-  /* ── Progress card — load from Supabase ── */
-  function loadProgressCard(userId){
-    var subjects=[
-      {key:'ch1_real_numbers',    label:'Real Numbers',  emoji:'🔢', color:'#3B82F6'},
-      {key:'ch2_polynomials',     label:'Polynomials',   emoji:'📐', color:'#8B5CF6'},
-    ];
-    var pending=subjects.length, results={};
-    subjects.forEach(function(s){
-      sb.from('scores')
-        .select('correct,total,pct,early,created_at')
-        .eq('user_id',userId)
-        .eq('chapter',s.key)
-        .order('created_at',{ascending:false})
-        .limit(5)
-        .then(function(r){
-          results[s.key]=r.data||[];
-          pending--;
-          if(pending===0) renderProgressCard(subjects,results);
-        }).catch(function(){
-          results[s.key]=[];
-          pending--;
-          if(pending===0) renderProgressCard(subjects,results);
-        });
-    });
-    /* Also load quiz scores */
-  }
-
-  function renderProgressCard(subjects,results){
-    var totalSessions=0,totalCorrect=0,totalQs=0;
-    var subHtml='';
-    subjects.forEach(function(s){
-      var rows=results[s.key]||[];
-      var sessions=rows.filter(function(r){return !r.early}).length;
-      var avgPct=sessions>0?Math.round(rows.filter(function(r){return !r.early}).reduce(function(a,r){return a+Math.round(r.correct/r.total*100)},0)/sessions):null;
-      totalSessions+=sessions;
-      if(avgPct!==null){totalCorrect+=avgPct;totalQs++;}
-      var col=avgPct===null?'var(--text-muted)':avgPct>=80?'#10B981':avgPct>=60?'#F59E0B':'#EF4444';
-      var badge=avgPct===null?'No sessions yet':sessions+' session'+(sessions!==1?'s':'')+' · avg '+avgPct+'%';
-      subHtml+='<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--off-white);border-radius:9px;border:1px solid var(--border);flex:1;min-width:140px">'
-        +'<span style="font-size:1.1rem">'+s.emoji+'</span>'
-        +'<div style="min-width:0"><div style="font-size:.8rem;font-weight:700;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+s.label+'</div>'
-        +'<div style="font-size:.71rem;color:'+col+';font-weight:600">'+badge+'</div></div></div>';
-    });
-    document.getElementById('progress-subjects').innerHTML=subHtml||'<div style="font-size:.8rem;color:var(--text-muted)">No data yet</div>';
-    var overall=totalQs>0?Math.round(totalCorrect/totalQs):null;
-  }
 
   /* ── Mobile sidebar ── */
   var sidebarEl = document.getElementById('sidebar');

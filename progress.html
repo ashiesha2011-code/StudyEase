@@ -309,9 +309,33 @@ SB.auth.onAuthStateChange(function(ev,sess){
     document.getElementById('loader').classList.add('gone');
     setTimeout(function(){document.getElementById('loader').style.display='none'},420);
     document.body.style.opacity='1';
-    SB.from('profiles').select('plan').eq('id',u.id).single().then(function(r){
-      if(r.data) document.getElementById('sb-userplan').textContent=r.data.plan==='achiever'?'Achiever Plan':r.data.plan==='scholar'?'Scholar Plan':'Free Plan';
-    });
+    SB.from('profiles').select('plan,class,name,avatar_url').eq('id',u.id).single().then(function(r){
+      if (!r.data) return;
+      var displayName = r.data.name || name;
+      var initial = displayName.charAt(0).toUpperCase();
+      if (r.data.avatar_url) {
+        ['sb-avatar','topbar-avatar'].forEach(function(id){
+          var el = document.getElementById(id);
+          if (!el) return;
+          el.style.backgroundImage = 'url(' + r.data.avatar_url + ')';
+          el.style.backgroundSize = 'cover';
+          el.style.backgroundPosition = 'center';
+          el.textContent = '';
+        });
+      } else {
+        ['sb-avatar','topbar-avatar'].forEach(function(id){
+          var el = document.getElementById(id);
+          if (el) el.textContent = initial;
+        });
+      }
+      var snEl = document.getElementById('sb-username');
+      if (snEl) snEl.textContent = displayName;
+      var plan = r.data.plan === 'achiever' ? 'Achiever Plan' : r.data.plan === 'scholar' ? 'Scholar Plan' : 'Free Plan';
+      var planEl = document.getElementById('sb-plan-name');
+      if (planEl) planEl.textContent = plan;
+      var uplanEl = document.getElementById('sb-userplan');
+      if (uplanEl) uplanEl.textContent = r.data.class ? r.data.class + ' · ' + plan : plan;
+    }).catch(function(){});
     loadAllProgress(u.id);
   }
 });
