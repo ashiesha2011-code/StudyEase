@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings — StudyEase</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230A1628'/><text y='22' x='6' font-size='18' font-family='system-ui' font-weight='700' fill='%233B82F6'>S</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&display=swap" rel="stylesheet">
+  <style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy: #0A1628; --navy-mid: #132038;
+  --blue: #3B82F6; --blue-dark: #2563EB; --blue-light: #EFF6FF; --blue-mid: #BFDBFE;
+  --white: #FFFFFF; --off-white: #F4F6F9; --surface: #FAFBFC;
+  --text: #1E293B; --text-mid: #475569; --text-muted: #94A3B8;
+  --border: #E4E8EE; --border-soft: #F0F2F6;
+  --emerald: #10B981; --emerald-bg: #ECFDF5;
+  --amber: #F59E0B; --amber-bg: #FFFBEB;
+  --red: #EF4444; --red-bg: #FEF2F2;
+  --purple: #8B5CF6; --purple-bg: #F5F3FF;
+  --sidebar-w: 224px; --topbar-h: 62px;
+  --radius: 10px; --radius-lg: 14px;
+  --shadow-sm: 0 1px 4px rgba(10,22,40,0.05);
+  --shadow: 0 4px 18px rgba(10,22,40,0.07);
+  --shadow-md: 0 8px 30px rgba(10,22,40,0.10);
+}
+html { -webkit-font-smoothing: antialiased; }
+body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--off-white); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+.layout { display: flex; min-height: 100vh; }
+
+/* Sidebar */
+.sidebar { width: var(--sidebar-w); background: var(--navy); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 200; transition: transform 0.28s cubic-bezier(.4,0,.2,1); }
+.sb-logo { display: flex; align-items: center; gap: 9px; padding: 18px 16px 14px; border-bottom: 1px solid rgba(255,255,255,0.07); flex-shrink: 0; }
+.sb-logo-mark { width: 30px; height: 30px; border-radius: 8px; background: var(--blue); display: flex; align-items: center; justify-content: center; }
+.sb-logo-text { font-weight: 700; font-size: 1rem; color: white; letter-spacing: -0.01em; }
+.sb-nav { flex: 1; padding: 10px 8px; overflow-y: auto; scrollbar-width: none; }
+.sb-nav::-webkit-scrollbar { display: none; }
+.sb-section-label { font-size: 0.63rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.24); padding: 12px 10px 4px; }
+.sb-item { display: flex; align-items: center; gap: 9px; padding: 8px 10px; border-radius: 8px; font-size: 0.85rem; font-weight: 500; color: rgba(255,255,255,0.5); cursor: pointer; text-decoration: none; transition: all 0.14s; margin-bottom: 1px; }
+.sb-item:hover { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.85); }
+.sb-item.active { background: rgba(59,130,246,0.15); color: white; }
+.sb-item.active .sb-icon { color: var(--blue); opacity: 1; }
+.sb-icon { width: 17px; height: 17px; flex-shrink: 0; opacity: 0.55; transition: opacity 0.14s; }
+.sb-item:hover .sb-icon { opacity: 0.85; }
+.sb-badge { margin-left: auto; background: var(--blue); color: white; font-size: 0.58rem; font-weight: 700; padding: 2px 6px; border-radius: 99px; }
+.sb-bottom { flex-shrink: 0; padding: 10px 8px; border-top: 1px solid rgba(255,255,255,0.07); }
+.plan-box { background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.2); border-radius: 8px; padding: 10px 12px; margin-bottom: 10px; }
+.plan-box-label { font-size: 0.64rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--blue); margin-bottom: 3px; }
+.plan-box-name { font-size: 0.85rem; font-weight: 600; color: white; margin-bottom: 8px; }
+.plan-upgrade-btn { display: block; width: 100%; padding: 6px; background: var(--blue); color: white; border: none; border-radius: 6px; font-family: inherit; font-size: 0.76rem; font-weight: 600; cursor: pointer; transition: background 0.14s; }
+.plan-upgrade-btn:hover { background: var(--blue-dark); }
+.sb-user { display: flex; align-items: center; gap: 9px; padding: 4px 2px; }
+.sb-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; color: white; flex-shrink: 0; overflow: hidden; background-size: cover; background-position: center; }
+.sb-user-info { flex: 1; min-width: 0; }
+.sb-user-name { font-size: 0.82rem; font-weight: 600; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sb-user-plan { font-size: 0.7rem; color: rgba(255,255,255,0.35); }
+.sb-logout { width: 26px; height: 26px; border-radius: 6px; background: rgba(255,255,255,0.06); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.35); transition: all 0.14s; flex-shrink: 0; }
+.sb-logout:hover { background: rgba(239,68,68,0.15); color: var(--red); }
+
+/* Main */
+.main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+.topbar { height: var(--topbar-h); background: var(--white); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 28px; position: sticky; top: 0; z-index: 100; }
+.topbar-l { display: flex; align-items: center; gap: 12px; }
+.hamburger { display: none; width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border); background: white; align-items: center; justify-content: center; cursor: pointer; color: var(--navy); flex-direction: column; gap: 4px; padding: 8px; }
+.hamburger span { display: block; width: 16px; height: 1.5px; background: currentColor; border-radius: 2px; }
+.topbar-r { display: flex; align-items: center; gap: 10px; }
+.t-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; color: white; cursor: pointer; overflow: hidden; background-size: cover; background-position: center; }
+.breadcrumb { display: flex; align-items: center; gap: 7px; font-size: 0.87rem; }
+.breadcrumb a { color: var(--text-muted); text-decoration: none; font-weight: 500; transition: color 0.14s; }
+.breadcrumb a:hover { color: var(--navy); }
+.breadcrumb-sep { color: var(--border); }
+.breadcrumb-current { font-weight: 700; color: var(--navy); }
+
+/* Content */
+.content { padding: 30px 36px; flex: 1; }
+
+/* Loader */
+.loader { position: fixed; inset: 0; background: var(--navy); display: flex; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.4s; }
+.loader.gone { opacity: 0; pointer-events: none; }
+.loader-inner { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.loader-mark { width: 48px; height: 48px; border-radius: 13px; background: var(--blue); display: flex; align-items: center; justify-content: center; animation: pulse 1.5s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(.93);opacity:.8} }
+.loader-txt { font-size: 0.82rem; color: rgba(255,255,255,0.35); font-weight: 500; }
+.overlay { display: none; position: fixed; inset: 0; background: rgba(10,22,40,0.5); z-index: 150; }
+
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .overlay.open { display: block; }
+  .main { margin-left: 0; }
+  .hamburger { display: flex; }
+  .content { padding: 18px; }
+}
+  </style>
+</head>
+<body style="opacity:0; transition: opacity 0.35s ease;">
+
+<div class="loader" id="loader">
+  <div class="loader-inner">
+    <div class="loader-mark">
+      <svg width="26" height="26" viewBox="0 0 18 18" fill="none">
+        <rect x="2" y="2" width="6" height="8" rx="1.5" fill="white"/>
+        <rect x="10" y="2" width="6" height="5" rx="1.5" fill="rgba(255,255,255,0.5)"/>
+        <rect x="2" y="12" width="14" height="2.5" rx="1.25" fill="rgba(255,255,255,0.3)"/>
+        <rect x="10" y="9" width="6" height="2.5" rx="1.25" fill="rgba(255,255,255,0.4)"/>
+      </svg>
+    </div>
+    <span class="loader-txt">Loading Settings…</span>
+  </div>
+</div>
+
+<div class="overlay" id="overlay"></div>
+
+<div class="layout">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-mark">
+        <svg width="16" height="16" viewBox="0 0 18 18" fill="none">
+          <rect x="2" y="2" width="6" height="8" rx="1.5" fill="white"/>
+          <rect x="10" y="2" width="6" height="5" rx="1.5" fill="rgba(255,255,255,0.5)"/>
+          <rect x="2" y="12" width="14" height="2.5" rx="1.25" fill="rgba(255,255,255,0.3)"/>
+          <rect x="10" y="9" width="6" height="2.5" rx="1.25" fill="rgba(255,255,255,0.4)"/>
+        </svg>
+      </div>
+      <span class="sb-logo-text">StudyEase</span>
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-section-label">Main</div>
+      <a href="dashboard.html" class="sb-item">
+        <svg class="sb-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M3 4a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 8a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1v-4zm8-8a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V4zm0 8a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"/></svg>
+        Dashboard
+      </a>
+      <a href="progress.html" class="sb-item">
+        <svg class="sb-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zm6-4a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zm6-3a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/></svg>
+        My Progress
+      </a>
+      <a href="ai.html" class="sb-item">
+        <svg class="sb-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"/></svg>
+        AI Companion
+        <span class="sb-badge">Beta</span>
+      </a>
+      <div class="sb-section-label" style="margin-top:8px;">Subjects</div>
+      <a href="physics.html" class="sb-item">
+        <svg class="sb-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/></svg>
+        Physics
+      </a>
+      <a href="chemistry.html" class="sb-item">
+        <svg class="sb-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7 2a1 1 0 00-.707 1.707L7 4.414v3.758a1 1 0 01-.293.707l-4 4C.817 14.769 2.156 18 4.828 18h10.343c2.673 0 4.012-3.231 2.122-5.121l-4-4A1 1 0 0113 8.172V4.414l.707-.707A1 1 0 0013 2H7zm2 6.172V4h2v4.172a3 3 0 00.879 2.12l1.027 1.028a4 4 0 00-2.171.102l-.47.156a4 4 0 01-2.53 0l-.563-.187a1.993 1.993 0 00-.114-.035l1.063-1.063A3 3 0 009 8.172z" clip-rule="evenodd"/></svg>
+        Chemistry
+      </a>
+      <a href="biology.html" class="sb-item">
+        <svg class="sb-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/></svg>
+        Biology
+      </a>
+      <a href="maths.html" class="sb-item">
+        <svg class="sb-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm2 10a1 1 0 10-2 0v3a1 1 0 102 0v-3zm2-3a1 1 0 011 1v5a1 1 0 11-2 0v-5a1 1 0 011-1zm4-1a1 1 0 10-2 0v6a1 1 0 102 0V8z" clip-rule="evenodd"/></svg>
+        Mathematics
+      </a>
+      <a href="breathing.html" class="sb-item">
+        <svg class="sb-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/></svg>
+        Breathing
+      </a>
+      <div class="sb-section-label" style="margin-top:8px;">Account</div>
+      <a href="progress.html" class="sb-item">
+        <svg class="sb-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zm6-4a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zm6-3a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/></svg>
+        Progress
+      </a>
+      <a href="settings.html" class="sb-item active">
+        <svg class="sb-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/></svg>
+        Settings
+      </a>
+    </nav>
+    <div class="sb-bottom">
+      <div class="plan-box">
+        <div class="plan-box-label">Current Plan</div>
+        <div class="plan-box-name" id="sb-plan-name">Free Plan</div>
+        <button class="plan-upgrade-btn" onclick="window.location.href='index.html#pricing'">Upgrade to Achiever ↗</button>
+      </div>
+      <div class="sb-user">
+        <div class="sb-avatar" id="sb-avatar">?</div>
+        <div class="sb-user-info">
+          <div class="sb-user-name" id="sb-username">Loading…</div>
+          <div class="sb-user-plan" id="sb-userplan">Free Plan</div>
+        </div>
+        <button class="sb-logout" id="logout-btn" title="Log out">
+          <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 001 1h7a1 1 0 100-2H4V5h6a1 1 0 100-2H3zm11.707 4.293a1 1 0 010 1.414L12.414 11H17a1 1 0 110 2h-4.586l2.293 2.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <div class="topbar">
+      <div class="topbar-l">
+        <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+        <div class="breadcrumb">
+          <a href="dashboard.html">Dashboard</a>
+          <span class="breadcrumb-sep">›</span>
+          <span class="breadcrumb-current">⚙️ Settings</span>
+        </div>
+      </div>
+      <div class="topbar-r">
+        <div class="t-avatar" id="topbar-avatar">?</div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div style="max-width:680px">
+
+        <h1 style="font-size:1.4rem;font-weight:800;color:var(--navy);margin-bottom:24px;letter-spacing:-.02em">Settings</h1>
+
+        <!-- Account Section -->
+        <div style="background:white;border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:20px;overflow:hidden">
+          <div style="padding:16px 22px;border-bottom:1px solid var(--border-soft)">
+            <div style="font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted)">Account</div>
+          </div>
+
+          <!-- Avatar upload -->
+          <div style="padding:22px;border-bottom:1px solid var(--border-soft);display:flex;align-items:center;gap:18px">
+            <div id="settings-avatar" style="width:80px;height:80px;border-radius:50%;background:var(--blue);color:white;font-size:1.8rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;cursor:pointer">?</div>
+            <div>
+              <div style="font-size:.88rem;font-weight:600;color:var(--navy);margin-bottom:4px">Profile Photo</div>
+              <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:10px">Shown in your topbar and sidebar</div>
+              <button id="upload-photo-btn" style="padding:7px 16px;background:var(--off-white);border:1px solid var(--border);border-radius:8px;font-family:inherit;font-size:.81rem;font-weight:600;color:var(--navy);cursor:pointer">Upload photo</button>
+              <span id="photo-saved" style="display:none;margin-left:10px;font-size:.78rem;color:var(--emerald);font-weight:600">Saved ✓</span>
+              <input type="file" id="photo-input" accept="image/*" style="display:none">
+            </div>
+          </div>
+
+          <!-- Display name -->
+          <div style="padding:20px 22px;border-bottom:1px solid var(--border-soft)">
+            <label style="display:block;font-size:.82rem;font-weight:600;color:var(--navy);margin-bottom:8px">Display Name</label>
+            <div style="display:flex;gap:10px;align-items:center">
+              <input id="settings-name" type="text" placeholder="Your name" style="flex:1;padding:10px 14px;border:1px solid var(--border);border-radius:9px;font-family:inherit;font-size:.88rem;outline:none;transition:border-color .14s" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border)'">
+              <button id="save-name-btn" style="padding:10px 18px;background:var(--blue);color:white;border:none;border-radius:9px;font-family:inherit;font-size:.83rem;font-weight:600;cursor:pointer">Save</button>
+              <span id="name-saved" style="display:none;font-size:.78rem;color:var(--emerald);font-weight:600">Saved ✓</span>
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div style="padding:20px 22px;border-bottom:1px solid var(--border-soft)">
+            <label style="display:block;font-size:.82rem;font-weight:600;color:var(--navy);margin-bottom:8px">Email</label>
+            <input id="settings-email" type="email" disabled style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:9px;font-family:inherit;font-size:.88rem;background:var(--off-white);color:var(--text-muted);cursor:not-allowed">
+          </div>
+
+          <!-- Class -->
+          <div style="padding:20px 22px">
+            <label style="display:block;font-size:.82rem;font-weight:600;color:var(--navy);margin-bottom:8px">Class</label>
+            <div style="display:flex;gap:10px;align-items:center">
+              <select id="settings-class" style="flex:1;padding:10px 14px;border:1px solid var(--border);border-radius:9px;font-family:inherit;font-size:.88rem;outline:none;background:white;cursor:pointer;transition:border-color .14s" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border)'">
+                <option value="">Select class</option>
+                <option value="Class 9">Class 9</option>
+                <option value="Class 10">Class 10</option>
+                <option value="Class 11">Class 11</option>
+                <option value="Class 12">Class 12</option>
+              </select>
+              <button id="save-class-btn" style="padding:10px 18px;background:var(--blue);color:white;border:none;border-radius:9px;font-family:inherit;font-size:.83rem;font-weight:600;cursor:pointer">Save</button>
+              <span id="class-saved" style="display:none;font-size:.78rem;color:var(--emerald);font-weight:600">Saved ✓</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Appearance Section -->
+        <div style="background:white;border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:20px;overflow:hidden">
+          <div style="padding:16px 22px;border-bottom:1px solid var(--border-soft)">
+            <div style="font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted)">Appearance</div>
+          </div>
+          <div style="padding:20px 22px">
+            <div style="font-size:.88rem;font-weight:600;color:var(--navy);margin-bottom:10px">Font Size</div>
+            <div style="display:flex;gap:10px">
+              <button id="font-normal" onclick="setFontSize('normal')" style="flex:1;padding:10px;border:1.5px solid var(--blue);background:var(--blue-light);border-radius:9px;font-family:inherit;font-size:.85rem;font-weight:600;color:var(--blue);cursor:pointer">Normal</button>
+              <button id="font-large" onclick="setFontSize('large')" style="flex:1;padding:10px;border:1.5px solid var(--border);background:white;border-radius:9px;font-family:inherit;font-size:.85rem;font-weight:600;color:var(--text-muted);cursor:pointer">Large</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Subscription Section -->
+        <div style="background:white;border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:20px;overflow:hidden">
+          <div style="padding:16px 22px;border-bottom:1px solid var(--border-soft)">
+            <div style="font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted)">Subscription</div>
+          </div>
+          <div style="padding:22px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+              <div>
+                <div style="font-size:.88rem;font-weight:600;color:var(--navy)">Current Plan</div>
+                <div id="current-plan-label" style="font-size:.78rem;color:var(--text-muted);margin-top:3px">Free Plan</div>
+              </div>
+              <span id="plan-badge" style="font-size:.75rem;font-weight:700;padding:4px 12px;border-radius:99px;background:var(--off-white);color:var(--text-muted);border:1px solid var(--border)">Free</span>
+            </div>
+            <button onclick="alert('Razorpay integration coming soon! Stay tuned for Achiever Plan — ₹99/month.')" style="width:100%;padding:12px;background:linear-gradient(135deg,var(--blue),var(--purple));color:white;border:none;border-radius:10px;font-family:inherit;font-size:.88rem;font-weight:700;cursor:pointer">Upgrade to Achiever — ₹99/month</button>
+          </div>
+        </div>
+
+        <!-- Danger Zone -->
+        <div style="background:white;border:1px solid #FCA5A5;border-radius:var(--radius-lg);overflow:hidden">
+          <div style="padding:16px 22px;border-bottom:1px solid #FEE2E2">
+            <div style="font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--red)">Danger Zone</div>
+          </div>
+          <div style="padding:22px;display:flex;gap:12px;flex-wrap:wrap">
+            <button id="settings-signout" style="flex:1;min-width:120px;padding:10px 18px;background:none;border:1.5px solid var(--border);border-radius:9px;font-family:inherit;font-size:.85rem;font-weight:600;color:var(--text-mid);cursor:pointer">Sign out</button>
+            <button id="settings-delete" style="flex:1;min-width:120px;padding:10px 18px;background:none;border:1.5px solid #FCA5A5;border-radius:9px;font-family:inherit;font-size:.85rem;font-weight:600;color:var(--red);cursor:pointer">Delete account</button>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /content -->
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function() {
+  var SUPABASE_URL  = 'https://xiwrvbtryeesfgeydxnf.supabase.co';
+  var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd3J2YnRyeWVlc2ZnZXlkeG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMTQ0NDAsImV4cCI6MjA5NDU5MDQ0MH0.3Sp9dlc8cNsrzdHAGy74pCqscjL1MFV9ZWMW90QbhqE';
+  var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  var currentUserId = null;
+
+  /* ── Auth ── */
+  sb.auth.onAuthStateChange(function(event, session) {
+    if (event === 'SIGNED_OUT') { window.location.href = 'index.html'; return; }
+    if (session && session.user) {
+      currentUserId = session.user.id;
+      var user = session.user;
+      var name = (user.user_metadata && (user.user_metadata.name || user.user_metadata.full_name)) || user.email.split('@')[0];
+      var initial = name.charAt(0).toUpperCase();
+      document.getElementById('sb-avatar').textContent = initial;
+      document.getElementById('topbar-avatar').textContent = initial;
+      document.getElementById('sb-username').textContent = name;
+      document.getElementById('settings-email').value = user.email;
+      document.getElementById('loader').classList.add('gone');
+      setTimeout(function(){ document.getElementById('loader').style.display = 'none'; }, 420);
+      document.body.style.opacity = '1';
+
+      sb.from('profiles').select('plan, class, display_name, avatar_url').eq('id', user.id).single().then(function(r) {
+        if (!r.data) return;
+        var p = r.data;
+        var planName = p.plan === 'achiever' ? 'Achiever Plan' : p.plan === 'scholar' ? 'Scholar Plan' : 'Free Plan';
+        document.getElementById('sb-plan-name').textContent = planName;
+        document.getElementById('sb-userplan').textContent = p.class ? p.class + ' · ' + planName : planName;
+        document.getElementById('current-plan-label').textContent = planName;
+        document.getElementById('plan-badge').textContent = p.plan === 'achiever' ? 'Achiever' : p.plan === 'scholar' ? 'Scholar' : 'Free';
+        if (p.display_name) {
+          document.getElementById('settings-name').value = p.display_name;
+        } else {
+          document.getElementById('settings-name').value = name;
+        }
+        if (p.class) {
+          document.getElementById('settings-class').value = p.class;
+        }
+        if (p.avatar_url) {
+          var settingsAvatar = document.getElementById('settings-avatar');
+          settingsAvatar.style.backgroundImage = 'url('+p.avatar_url+')';
+          settingsAvatar.style.backgroundSize = 'cover';
+          settingsAvatar.style.backgroundPosition = 'center';
+          settingsAvatar.textContent = '';
+          /* Update topbar and sidebar avatars */
+          var ta = document.getElementById('topbar-avatar');
+          var sa = document.getElementById('sb-avatar');
+          if (ta) { ta.style.backgroundImage = 'url('+p.avatar_url+')'; ta.style.backgroundSize = 'cover'; ta.style.backgroundPosition = 'center'; ta.textContent = ''; }
+          if (sa) { sa.style.backgroundImage = 'url('+p.avatar_url+')'; sa.style.backgroundSize = 'cover'; sa.style.backgroundPosition = 'center'; sa.textContent = ''; }
+        }
+      }).catch(function(){});
+    } else if (event === 'INITIAL_SESSION' && !session) {
+      window.location.href = 'index.html';
+    }
+  });
+
+  document.getElementById('logout-btn').addEventListener('click', async function() {
+    await sb.auth.signOut(); window.location.href = 'index.html';
+  });
+
+  /* ── Save name ── */
+  document.getElementById('save-name-btn').addEventListener('click', function() {
+    var val = document.getElementById('settings-name').value.trim();
+    if (!val || !currentUserId) return;
+    sb.from('profiles').update({display_name: val}).eq('id', currentUserId).then(function(res) {
+      if (res.error) { console.error('Name save error:', res.error); return; }
+      var saved = document.getElementById('name-saved');
+      saved.style.display = 'inline';
+      setTimeout(function(){ saved.style.display = 'none'; }, 2000);
+    });
+  });
+
+  /* ── Save class ── */
+  document.getElementById('save-class-btn').addEventListener('click', function() {
+    var val = document.getElementById('settings-class').value;
+    if (!val || !currentUserId) return;
+    sb.from('profiles').update({class: val}).eq('id', currentUserId).then(function(res) {
+      if (res.error) { console.error('Class save error:', res.error); return; }
+      var saved = document.getElementById('class-saved');
+      saved.style.display = 'inline';
+      setTimeout(function(){ saved.style.display = 'none'; }, 2000);
+    });
+  });
+
+  /* ── Font size ── */
+  window.setFontSize = function(size) {
+    localStorage.setItem('se_fontsize', size);
+    if (size === 'large') {
+      document.documentElement.style.fontSize = '17px';
+    } else {
+      document.documentElement.style.fontSize = '';
+    }
+    var btnNormal = document.getElementById('font-normal');
+    var btnLarge = document.getElementById('font-large');
+    if (size === 'large') {
+      btnNormal.style.cssText = 'flex:1;padding:10px;border:1.5px solid var(--border);background:white;border-radius:9px;font-family:inherit;font-size:.85rem;font-weight:600;color:var(--text-muted);cursor:pointer';
+      btnLarge.style.cssText = 'flex:1;padding:10px;border:1.5px solid var(--blue);background:var(--blue-light);border-radius:9px;font-family:inherit;font-size:.85rem;font-weight:600;color:var(--blue);cursor:pointer';
+    } else {
+      btnNormal.style.cssText = 'flex:1;padding:10px;border:1.5px solid var(--blue);background:var(--blue-light);border-radius:9px;font-family:inherit;font-size:.85rem;font-weight:600;color:var(--blue);cursor:pointer';
+      btnLarge.style.cssText = 'flex:1;padding:10px;border:1.5px solid var(--border);background:white;border-radius:9px;font-family:inherit;font-size:.85rem;font-weight:600;color:var(--text-muted);cursor:pointer';
+    }
+  };
+  /* Apply stored font size on load */
+  (function() {
+    var stored = localStorage.getItem('se_fontsize');
+    if (stored === 'large') {
+      document.documentElement.style.fontSize = '17px';
+      setTimeout(function(){ window.setFontSize('large'); }, 100);
+    }
+  })();
+
+  /* ── Sign out ── */
+  document.getElementById('settings-signout').addEventListener('click', async function() {
+    await sb.auth.signOut(); window.location.href = 'index.html';
+  });
+
+  /* ── Delete account ── */
+  document.getElementById('settings-delete').addEventListener('click', async function() {
+    if (confirm('Are you sure? This will sign you out of your account.')) {
+      await sb.auth.signOut(); window.location.href = 'index.html';
+    }
+  });
+
+  /* ── Photo upload ── */
+  var photoInput = document.getElementById('photo-input');
+  var uploadBtn = document.getElementById('upload-photo-btn');
+  var settingsAvatar = document.getElementById('settings-avatar');
+  var photoSaved = document.getElementById('photo-saved');
+
+  uploadBtn.addEventListener('click', function() { photoInput.click(); });
+  settingsAvatar.addEventListener('click', function() { photoInput.click(); });
+
+  photoInput.addEventListener('change', function(e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(ev) {
+      var img = new Image();
+      img.onload = function() {
+        var canvas = document.createElement('canvas');
+        canvas.width = 200; canvas.height = 200;
+        var ctx = canvas.getContext('2d');
+        var size = Math.min(img.width, img.height);
+        var sx = (img.width - size) / 2, sy = (img.height - size) / 2;
+        ctx.drawImage(img, sx, sy, size, size, 0, 0, 200, 200);
+        var b64 = canvas.toDataURL('image/jpeg', 0.85);
+        settingsAvatar.style.backgroundImage = 'url('+b64+')';
+        settingsAvatar.style.backgroundSize = 'cover';
+        settingsAvatar.style.backgroundPosition = 'center';
+        settingsAvatar.textContent = '';
+        if (currentUserId) {
+          sb.from('profiles').update({avatar_url: b64}).eq('id', currentUserId).then(function(res) {
+            if (res.error) { console.error('Avatar save error:', res.error); return; }
+            photoSaved.style.display = 'inline';
+            setTimeout(function(){ photoSaved.style.display = 'none'; }, 2500);
+            var ta = document.getElementById('topbar-avatar');
+            var sa = document.getElementById('sb-avatar');
+            if (ta) { ta.style.backgroundImage = 'url('+b64+')'; ta.style.backgroundSize = 'cover'; ta.style.backgroundPosition = 'center'; ta.textContent = ''; }
+            if (sa) { sa.style.backgroundImage = 'url('+b64+')'; sa.style.backgroundSize = 'cover'; sa.style.backgroundPosition = 'center'; sa.textContent = ''; }
+          });
+        }
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  /* ── Mobile sidebar ── */
+  var sidebarEl = document.getElementById('sidebar');
+  var overlayEl = document.getElementById('overlay');
+  document.getElementById('hamburger').addEventListener('click', function() {
+    sidebarEl.classList.toggle('open'); overlayEl.classList.toggle('open');
+  });
+  overlayEl.addEventListener('click', function() {
+    sidebarEl.classList.remove('open'); overlayEl.classList.remove('open');
+  });
+})();
+</script>
+</body>
+</html>
