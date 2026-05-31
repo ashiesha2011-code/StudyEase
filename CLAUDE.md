@@ -59,13 +59,14 @@ The `netlify/functions/` directory is legacy — ignore it.
 | `session-player-ch2.html` | Live session player — Ch.2 Polynomials |
 | `breathing.html` | Mindfulness page — breathing + meditation |
 | `quiz.html` | Quiz page |
+| `settings.html` | User settings — account, appearance, subscription |
 
 ## Supabase Schema
 
 All tables have RLS enabled. Users can only access their own rows.
 
 ### `profiles`
-User profiles. Columns: `id`, `plan`, `class`, etc.
+User profiles. Columns: `id`, `plan`, `class`, `name` (text), `avatar_url` (text — base64 JPEG, 200×200), `onboarding_done` (boolean, default false).
 
 ### `scores`
 Quiz/session scores. Columns: `id`, `user_id`, `chapter`, `correct`, `total`, `pct`, `early`, `created_at`.
@@ -103,11 +104,12 @@ Unique constraint: `(user_id, date)` — but only enforced via upsert for mood r
 - Uses `window._sb` (Supabase client) and `window._userId` set on each page
 
 ### video-player.html + video-player-ch2.html
-- Has a built-in AI panel in the page sidebar (shows/hides via controls bar "Ask AI" button)
+- Controls bar has an "Ask AI" button (`c-btn--ai`) that toggles `#vp-popup` via `toggleAI()`
 - **Real API calls** — uses the Supabase Edge Function (NOT hardcoded answers)
-- Also has a floating purple FAB (bottom-right, 52×52px, `#8B5CF6`) that opens the same panel
 - Ch1 prefixes with `[Real Numbers]`, Ch2 prefixes with `[Maths]`
 - Maintains `aiHistory` array (last 20 messages) for conversation context
+- **`#vp-popup` is a direct child of `#player-wrap`** (not body) — this keeps it visible during fullscreen. `position:fixed` escapes `overflow:hidden` and in fullscreen is relative to the fullscreen viewport. Do NOT move it back to body.
+- `handleFsPopup()` is intentionally a no-op — no DOM movement needed.
 
 ### session-player.html + session-player-ch2.html
 - Fullscreen black video player — no sidebar, no topbar
@@ -130,7 +132,27 @@ The old inline AI chat card was removed. Replaced with a large dark banner butto
 - Stressed/Struggling responses include encouragement and breathing link; Great/Okay include a study tip
 
 ### Sidebar
-Links: Dashboard, My Progress, AI Companion, NCERT Notes, Physics, Chemistry, Biology, Mathematics, Practice Questions, Past Papers, Flashcards, **Breathing** (→ breathing.html), Progress, Settings.
+Current links (after session 3 cleanup): Dashboard, My Progress, AI Companion (→ ai.html), Physics, Chemistry, Biology, Mathematics, Breathing (→ breathing.html), Progress, Settings (→ settings.html).
+**Removed links:** Practice Questions, Past Papers, Flashcards, NCERT Notes — do not re-add these to the sidebar. Flashcards are only accessible via the subject page Flashcards tab.
+
+### My Progress card
+Simplified to just "My Progress" title (1.4rem, 800 weight) + "View all →" link. No subject mini-cards, no loading text. The entire progress card links to progress.html.
+
+### Mental Health Check-in card
+- Label changed from "WEEKLY CHECK-IN" to heading "Mental Health Check-in" (label removed)
+- Full width (no max-width constraint)
+- Mood buttons are large and spread out (flex:1, 12px 22px padding, 0.88rem font)
+
+### Notification bell (topbar)
+- `id="notif-btn"` on the bell button
+- `#notif-popup` dropdown: 320px, shows 2 static notifications + "Mark all as read" button
+- Popup positioned via `position:relative` on `.topbar-r`
+- Closes on outside click or Escape key
+
+### Avatar popup (topbar)
+- `#avatar-popup` dropdown: 280px, shows name/email/plan badge + Settings link + Sign out
+- Populated in auth handler and `loadUserProfile()`
+- Closes on outside click or Escape key
 
 ## Mindfulness Page (breathing.html)
 
@@ -183,6 +205,38 @@ General sizing philosophy: slightly larger than typical — bigger padding, bigg
 - The Supabase anon key is hardcoded in every HTML file — intentional for a pure-frontend app with RLS enabled.
 - Anon key: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd3J2YnRyeWVlc2ZnZXlkeG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMTQ0NDAsImV4cCI6MjA5NDU5MDQ0MH0.3Sp9dlc8cNsrzdHAGy74pCqscjL1MFV9ZWMW90QbhqE`
 
+## settings.html
+
+Full settings page with sidebar layout. Sections:
+- **Account:** Profile photo upload (canvas crop to 200×200, base64 saved to `profiles.avatar_url`), display name (saves to `profiles.name`), email (read-only), class dropdown (saves to `profiles.class`)
+- **Appearance:** Font size Normal / Large (localStorage key `se_fontsize`; Large sets `document.documentElement.style.fontSize = '17px'`)
+- **Subscription:** Shows current plan, "Upgrade to Achiever" placeholder button (alert only)
+- **Danger zone:** Sign out + Delete account (both just sign out for now)
+
+## Maths page — Flashcards tab
+
+`maths.html` has tabs: Videos | **Flashcards** | Quiz | Notes (Practice tab was removed).
+- Flashcards tab (`#tab-flashcards`) shows `#flashcards-ch1` or `#flashcards-ch2` based on active chapter
+- Ch3+ shows `#flashcards-coming` ("Flashcards coming soon")
+- Each chapter has 8 flip cards in a 2-column grid (`.fc-grid`)
+- Card flip: click toggles `.flipped` class → CSS `rotateY(180deg)` with `backface-visibility:hidden`
+- `selectChapter()` JS function updates both video sections AND flashcard sections
+
+## Profile persistence
+
+- All pages load `profiles.name` and `profiles.avatar_url` after auth and display them in topbar/sidebar avatars
+- If `avatar_url` exists: set `backgroundImage`, `backgroundSize:cover`, clear `textContent`
+- If not: show initials as before
+- `dashboard.html` has `loadUserProfile()`, `setAvatarDisplay()`, `updateAvatarEl()` helper functions
+
+## Onboarding modal (dashboard.html)
+
+- Shown ONLY when `Date.now() - new Date(user.created_at).getTime() < 120000` (brand new account, within 2 minutes of creation) AND `!onboarding_done`
+- 3 steps: Name → Class (4 pill buttons, auto-advances) → Photo upload (optional)
+- Progress dots at top, slide animation between steps
+- On finish: upserts to `profiles` with `name`, `class`, `avatar_url`, `onboarding_done: true`
+- Network error on profile load: silently fails, does NOT show onboarding
+
 ## Known Gotchas
 
 - **Never use `getSession()` inside event handlers to get the user ID** — it can return null due to timing. Always store `currentUserId` from `onAuthStateChange` and reference it directly.
@@ -190,3 +244,5 @@ General sizing philosophy: slightly larger than typical — bigger padding, bigg
 - **`groupConversations` in ai.html** splits on subject change OR time gap — both conditions. This ensures subject-page chats (Physics, Maths, etc.) always appear as separate sidebar entries.
 - **breathing.html saves to `mood_checkins`**, not a separate table. The `mood` column is nullable for breathing/meditation rows.
 - The `mood_checkins` unique constraint `(user_id, date)` only applies to upserts from the dashboard mood check-in. Breathing/meditation sessions use plain insert (multiple per day is fine).
+- **`#vp-popup` must stay inside `#player-wrap`** — moving it to body breaks fullscreen visibility. `position:fixed` inside a non-transformed element escapes `overflow:hidden` correctly.
+- **Onboarding only triggers for truly new accounts** — check `created_at` age, not just `onboarding_done`. Existing users whose `onboarding_done` is null (column added later) must NOT see the modal.

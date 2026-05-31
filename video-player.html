@@ -459,6 +459,31 @@ video::-webkit-media-controls-enclosure{display:none!important}
         </div>
       </div>
 
+      <!-- AI Popup — inside player-wrap so it stays visible in fullscreen -->
+      <div id="vp-popup">
+        <div id="vp-ph">
+          <div>
+            <div id="vp-ph-title">✨ Ask AI — Real Numbers</div>
+            <div id="vp-ph-sub">Ch. 1 · CBSE Board</div>
+          </div>
+          <button id="vp-close" onclick="document.getElementById('vp-popup').classList.remove('open')">✕</button>
+        </div>
+        <div id="vp-msgs">
+          <div class="vp-row">
+            <div class="vp-av vp-av--ai">SE</div>
+            <div class="vp-bbl vp-bbl--ai">Hi! Ask me anything about Chapter 1 Real Numbers — I'll explain it in CBSE board format. 📐</div>
+          </div>
+        </div>
+        <div class="vp-sugg">
+          <button class="vp-sugg-chip" onclick="sendSugg('What is Euclid\'s Division Lemma?')">Euclid's Lemma</button>
+          <button class="vp-sugg-chip" onclick="sendSugg('HCF × LCM = a × b proof')">HCF × LCM</button>
+          <button class="vp-sugg-chip" onclick="sendSugg('How to prove √2 is irrational?')">√2 irrational</button>
+        </div>
+        <div id="vp-input-row">
+          <input id="vp-inp" type="text" placeholder="Ask anything…"/>
+          <button id="vp-send"><svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/></svg></button>
+        </div>
+      </div>
 
     </div>
   </main>
@@ -634,19 +659,8 @@ window.toggleFullscreen=function(){
 document.addEventListener('fullscreenchange',function(){updateFsIcon();handleFsPopup();});
 document.addEventListener('webkitfullscreenchange',function(){updateFsIcon();handleFsPopup();});
 function handleFsPopup(){
-  var popup=document.getElementById('vp-popup');
-  var pw=document.getElementById('player-wrap');
-  if(document.fullscreenElement||document.webkitFullscreenElement){
-    pw.style.overflow='visible';
-    popup.style.cssText='position:absolute;bottom:60px;right:16px;z-index:2147483647;width:320px;max-height:440px;background:#fff;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,.35);display:flex;flex-direction:column;opacity:0;transform:translateY(14px) scale(.97);pointer-events:none;transition:opacity .2s,transform .2s;overflow:hidden';
-    pw.appendChild(popup);
-    /* re-apply open class if it was open */
-    if(popup.classList.contains('open')){popup.style.opacity='1';popup.style.transform='none';popup.style.pointerEvents='all';}
-  }else{
-    document.body.appendChild(popup);
-    popup.style.cssText='';
-    pw.style.overflow='';
-  }
+  /* Popup is permanently inside player-wrap — position:fixed escapes overflow:hidden
+     and in fullscreen is relative to the fullscreen viewport. Nothing to move. */
 }
 function updateFsIcon(){
   var fsIcon=document.getElementById('fs-icon');
@@ -1159,30 +1173,5 @@ oEl.addEventListener('click',function(){sEl.classList.remove('open');oEl.classLi
 })();
 </script>
 
-<!-- AI Popup -->
-<div id="vp-popup">
-  <div id="vp-ph">
-    <div>
-      <div id="vp-ph-title">✨ Ask AI — Real Numbers</div>
-      <div id="vp-ph-sub">Ch. 1 · CBSE Board</div>
-    </div>
-    <button id="vp-close" onclick="document.getElementById('vp-popup').classList.remove('open')">✕</button>
-  </div>
-  <div id="vp-msgs">
-    <div class="vp-row">
-      <div class="vp-av vp-av--ai">SE</div>
-      <div class="vp-bbl vp-bbl--ai">Hi! Ask me anything about Chapter 1 Real Numbers — I'll explain it in CBSE board format. 📐</div>
-    </div>
-  </div>
-  <div class="vp-sugg">
-    <button class="vp-sugg-chip" onclick="sendSugg('What is Euclid\'s Division Lemma?')">Euclid's Lemma</button>
-    <button class="vp-sugg-chip" onclick="sendSugg('HCF × LCM = a × b proof')">HCF × LCM</button>
-    <button class="vp-sugg-chip" onclick="sendSugg('How to prove √2 is irrational?')">√2 irrational</button>
-  </div>
-  <div id="vp-input-row">
-    <input id="vp-inp" type="text" placeholder="Ask anything…"/>
-    <button id="vp-send"><svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/></svg></button>
-  </div>
-</div>
 </body>
 </html>
