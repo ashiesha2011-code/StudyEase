@@ -143,8 +143,8 @@ video::-webkit-media-controls-enclosure{display:none!important}
 .sub-text{display:inline-block;background:rgba(0,0,0,.8);color:white;font-size:.95rem;font-weight:500;padding:5px 14px;border-radius:6px;line-height:1.5;backdrop-filter:blur(3px)}
 
 /* Ask AI FAB */
-.ask-ai-fab{position:absolute;top:13px;right:13px;display:flex;align-items:center;gap:6px;background:rgba(59,130,246,.88);border:none;border-radius:99px;padding:7px 15px;font-family:inherit;font-size:.81rem;font-weight:700;color:white;cursor:pointer;backdrop-filter:blur(6px);transition:all .17s;z-index:10;box-shadow:0 4px 18px rgba(59,130,246,.3)}
-.ask-ai-fab:hover{background:var(--blue);transform:scale(1.04)}
+.ask-ai-fab{position:absolute;bottom:74px;right:14px;display:flex;align-items:center;gap:7px;background:#8B5CF6;border:none;border-radius:99px;padding:9px 18px;font-family:inherit;font-size:.84rem;font-weight:700;color:white;cursor:pointer;backdrop-filter:blur(6px);transition:all .2s;z-index:50;box-shadow:0 4px 20px rgba(139,92,246,.4)}
+.ask-ai-fab:hover{background:#7C3AED;transform:translateY(-2px);box-shadow:0 6px 24px rgba(139,92,246,.5)}
 .fab-dot{width:7px;height:7px;border-radius:50%;background:#4ADE80;animation:pdot 1.4s infinite}
 
 /* Poll overlay */
@@ -413,6 +413,11 @@ video::-webkit-media-controls-enclosure{display:none!important}
           </video>
           <div class="sub-overlay" id="sub-overlay" style="opacity:0"><span class="sub-text" id="sub-text"></span></div>
         </div>
+        <!-- Ask AI floating button -->
+        <button class="ask-ai-fab" onclick="toggleAI()" id="ask-ai-fab">
+          <svg width="15" height="15" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"/></svg>
+          Ask AI
+        </button>
         <div class="player-controls">
           <div class="progress-row" id="progress-row">
             <div class="progress-bg">
@@ -442,10 +447,6 @@ video::-webkit-media-controls-enclosure{display:none!important}
               <option value="1.5">1.5×</option>
               <option value="2">2×</option>
             </select>
-            <button class="c-btn c-btn--ai" onclick="toggleAI()">
-              <svg width="12" height="12" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"/></svg>
-              Ask AI
-            </button>
             <button class="c-btn" id="fs-btn" onclick="toggleFullscreen()" title="Fullscreen">
               <svg id="fs-icon" width="15" height="15" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 4a1 1 0 011-1h4a1 1 0 010 2H6.414l2.293 2.293a1 1 0 11-1.414 1.414L5 6.414V8a1 1 0 01-2 0V4zm9 1a1 1 0 010-2h4a1 1 0 011 1v4a1 1 0 01-2 0V6.414l-2.293 2.293a1 1 0 11-1.414-1.414L13.586 5H12zm-9 7a1 1 0 012 0v1.586l2.293-2.293a1 1 0 111.414 1.414L6.414 15H8a1 1 0 010 2H4a1 1 0 01-1-1v-4zm13-1a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 010-2h1.586l-2.293-2.293a1 1 0 111.414-1.414L15 13.586V12a1 1 0 011-1z" clip-rule="evenodd"/></svg>
             </button>
