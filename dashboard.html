@@ -334,6 +334,14 @@ body {
   color: #0F766E; text-decoration: none; transition: all 0.15s;
 }
 .breathing-cta:hover { background: rgba(20,184,166,0.1); border-color: #14B8A6; }
+.counsellor-cta {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 9px 16px;
+  background: rgba(139,92,246,0.08); border: 1.5px solid rgba(139,92,246,0.3);
+  border-radius: 99px; font-size: 0.83rem; font-weight: 600;
+  color: #7C3AED; text-decoration: none; transition: all 0.15s;
+}
+.counsellor-cta:hover { background: rgba(139,92,246,0.15); border-color: #8B5CF6; }
 .health-tip strong { color: var(--navy); }
 
 
@@ -685,9 +693,14 @@ body {
             <button class="mood-btn" onclick="selectMood(this,'struggling')">😔 Struggling</button>
           </div>
           <div class="health-tip" id="health-tip"></div>
-          <a href="breathing.html" class="breathing-cta">
-            🧘 Try mindfulness
-          </a>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;">
+            <a href="breathing.html" class="breathing-cta" style="margin-top:0;">
+              🧘 Try mindfulness
+            </a>
+            <a href="ai.html?mode=counsellor" class="counsellor-cta">
+              💜 AI Counsellor
+            </a>
+          </div>
         </div>
       </div>
 

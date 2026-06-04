@@ -109,6 +109,8 @@ body{
 }
 .conv-item:hover .conv-del{display:flex;}
 .conv-del:hover{color:#ef4444;background:rgba(239,68,68,.1);}
+.conv-item--mental{border-left:3px solid #8B5CF6;padding-left:7px;}
+.conv-subj--mental{background:rgba(139,92,246,0.12);color:#7C3AED;}
 
 
 #sb-empty{
@@ -739,12 +741,15 @@ body{
         var g=document.createElement('div');g.className='conv-group-label';g.textContent=label;
         list.appendChild(g);lastLabel=label;
       }
-      var item=document.createElement('div');item.className='conv-item';
+      var isMental=conv.subject==='Mental Health';
+      var item=document.createElement('div');item.className='conv-item'+(isMental?' conv-item--mental':'');
       var titleEl=document.createElement('div');titleEl.className='conv-title';
       titleEl.textContent=conv.title.length>44?conv.title.slice(0,44)+'…':conv.title;
       var row=document.createElement('div');row.className='conv-row';
       if(conv.subject&&conv.subject!=='General'){
-        var subjEl=document.createElement('span');subjEl.className='conv-subj';subjEl.textContent=conv.subject;
+        var subjEl=document.createElement('span');
+        subjEl.className='conv-subj'+(isMental?' conv-subj--mental':'');
+        subjEl.textContent=isMental?'💙 '+conv.subject:conv.subject;
         row.appendChild(subjEl);
       }
       var timeEl=document.createElement('span');timeEl.className='conv-time';
@@ -793,18 +798,28 @@ body{
 
   function restoreFromDashboard(){
     var raw=sessionStorage.getItem('se_dash_conv');
-    if(!raw)return;
-    sessionStorage.removeItem('se_dash_conv');
-    try{
-      var conv=JSON.parse(raw);
-      if(!conv.chatHistory||!conv.chatHistory.length)return;
-      chatHistory=conv.chatHistory;
+    if(raw){
+      sessionStorage.removeItem('se_dash_conv');
+      try{
+        var conv=JSON.parse(raw);
+        if(!conv.chatHistory||!conv.chatHistory.length)return;
+        chatHistory=conv.chatHistory;
+        emptyEl.style.display='none';hasMessages=true;
+        conv.displayMessages.forEach(function(m){
+          if(m.role==='user')addUser(m.text);
+          else addAI(m.text);
+        });
+      }catch(e){}
+      return;
+    }
+    var params=new URLSearchParams(window.location.search);
+    if(params.get('mode')==='counsellor'){
+      window.history.replaceState({},'',window.location.pathname);
+      subject='Mental Health';
+      document.querySelectorAll('.sp').forEach(function(x){x.classList.remove('active');});
       emptyEl.style.display='none';hasMessages=true;
-      conv.displayMessages.forEach(function(m){
-        if(m.role==='user')addUser(m.text);
-        else addAI(m.text);
-      });
-    }catch(e){}
+      addAI("Hi 💙 I’m your StudyEase AI Counsellor — a safe, judgment-free space.\n\nWhether you’re stressed about exams, feeling overwhelmed, or just need someone to listen, I’m here for you. What’s on your mind?");
+    }
   }
 
   function loadHistory(){
