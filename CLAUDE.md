@@ -33,11 +33,17 @@ supabase db query --linked "SELECT ..."
 - Hosting: GitHub Pages at `https://ashiesha2011-code.github.io/StudyEase/`
 
 **AI flow:**
-All AI calls go to `https://xiwrvbtryeesfgeydxnf.supabase.co/functions/v1/ai-chat`. The anon key is sent as `Authorization: Bearer <anon_key>` in every fetch call (JWT verification is NOT disabled — it requires the anon key). The `ANTHROPIC_API_KEY` is stored as a Supabase Edge Function secret.
+All AI calls go to `https://xiwrvbtryeesfgeydxnf.supabase.co/functions/v1/ai-chat`. Every fetch call **must** include `Authorization: Bearer <anon_key>` — JWT verification is NOT disabled; the function rejects requests without this header. The `ANTHROPIC_API_KEY` is stored as a Supabase Edge Function secret.
 
-The Edge Function uses **two different system prompts** depending on the message:
-- Messages starting with `[Physics]`, `[Chemistry]`, `[Biology]`, or `[Maths]` → academic-only CBSE board exam prompt
-- All other messages (general chat) → dual-role prompt: academic help + mental health counselling/emotional support
+The Edge Function (`supabase/functions/ai-chat/index.ts`) routes messages to subject-specific system prompts via `getSystem(message)`:
+
+| Message prefix | System prompt used | Scope |
+|---|---|---|
+| `[Physics]` | `PHYSICS_SYSTEM` | Physics only — redirects off-topic |
+| `[Chemistry]` | `CHEMISTRY_SYSTEM` | Chemistry only — redirects off-topic |
+| `[Biology]` | `BIOLOGY_SYSTEM` | Biology only — redirects off-topic |
+| `[Maths]` / `[Mathematics]` / `[Real Numbers]` | `MATHS_SYSTEM` | All Class 10 Maths chapters |
+| `[Mental Health]` or no recognised prefix | `GENERAL_SYSTEM` | Academic + mental health support |
 
 The `netlify/functions/` directory is legacy — ignore it.
 
@@ -74,6 +80,15 @@ Quiz/session scores. Columns: `id`, `user_id`, `chapter`, `correct`, `total`, `p
 ### `chat_history`
 AI conversation history. Columns: `id` (uuid), `user_id` (uuid FK), `user_message` (text), `ai_reply` (text), `subject` (text), `created_at` (timestamptz).
 
+Subject values saved per page:
+- `ai.html` → dynamic (e.g. `"Physics"`, `"Maths"`, `"Mental Health"`, `"General"`)
+- `physics.html` → `"Physics"`
+- `chemistry.html` → `"Chemistry"`
+- `biology.html` → `"Biology"`
+- `maths.html` → `"Maths"`
+- `video-player.html` / `session-player.html` → `"Maths"`
+- `video-player-ch2.html` / `session-player-ch2.html` → `"Maths"`
+
 ### `mood_checkins`
 Unified mental health + mindfulness table. Columns:
 - `id` (uuid PK)
@@ -89,25 +104,34 @@ Unique constraint: `(user_id, date)` — but only enforced via upsert for mood r
 
 ## AI on Each Page
 
+All pages that call the Edge Function:
+1. Include `Authorization: Bearer <anon_key>` in the fetch headers
+2. Wrap the post-response Supabase insert in `try{...}catch(e){}` and use `.then(null, function(){})` instead of `.catch(function(){})` — calling `.catch()` directly on a `PostgrestFilterBuilder` can throw synchronously in some supabase-js v2 CDN builds
+
 ### ai.html (General AI companion)
 - Full ChatGPT-style interface with left sidebar showing conversation history
 - Conversations grouped by: subject change OR 1-hour time gap (whichever comes first)
-- Subject filter tabs at top — prefixes message with `[Subject]` when selected
+- Subject filter tabs at top — prefixes message with `[Subject]` when selected (General tab = no prefix)
 - History loaded from `chat_history` table on auth
 - Sidebar shows Today / Yesterday / day-of-week groupings with delete buttons
 - View-only mode when clicking past conversations
+- **Privacy button**: shows open-lock SVG in normal mode, closed-lock SVG in private mode; `lock-snap` CSS animation when locking, `unlock-bounce` when unlocking — no external files, pure CSS keyframes
+- **Mental Health Counsellor mode**: open `ai.html?mode=counsellor` to enter counsellor mode — sets `subject='Mental Health'`, removes active tab, auto-shows a welcome bubble. URL param is cleaned with `window.history.replaceState` after reading.
+- **Mental Health sidebar highlight**: conversations with `subject === 'Mental Health'` get class `conv-item--mental` (purple left border) and a `💙 Mental Health` subject chip styled with `.conv-subj--mental`
 
 ### Subject pages (physics / chemistry / biology / maths)
 - Floating "Ask AI" widget (bottom-right FAB button)
 - Prefixes message with `[SubjectName]` before sending to Edge Function
 - Saves to `chat_history` with correct subject field
 - Uses `window._sb` (Supabase client) and `window._userId` set on each page
+- AI is **subject-restricted**: PHYSICS_SYSTEM only answers Physics, etc. Off-topic questions are redirected.
 
 ### video-player.html + video-player-ch2.html
 - Controls bar has an "Ask AI" button (`c-btn--ai`) that toggles `#vp-popup` via `toggleAI()`
 - **Real API calls** — uses the Supabase Edge Function (NOT hardcoded answers)
-- Ch1 prefixes with `[Real Numbers]`, Ch2 prefixes with `[Maths]`
+- Ch1 prefixes with `[Real Numbers]`, Ch2 prefixes with `[Maths]` → both route to `MATHS_SYSTEM` (all chapters)
 - Maintains `aiHistory` array (last 20 messages) for conversation context
+- Saves to `chat_history` with `subject:'Maths'`
 - **`#vp-popup` is a direct child of `#player-wrap`** (not body) — this keeps it visible during fullscreen. `position:fixed` escapes `overflow:hidden` and in fullscreen is relative to the fullscreen viewport. Do NOT move it back to body.
 - `handleFsPopup()` is intentionally a no-op — no DOM movement needed.
 
@@ -115,7 +139,8 @@ Unique constraint: `(user_id, date)` — but only enforced via upsert for mood r
 - Fullscreen black video player — no sidebar, no topbar
 - Floating purple FAB (bottom-right) opens a 340px popup chat panel
 - FAB **automatically hides** when a poll overlay or ready-prompt is showing, reappears after
-- Uses same real API pattern with chapter prefix
+- Uses same real API pattern with chapter prefix (`[Real Numbers]` / `[Maths]`) → `MATHS_SYSTEM`
+- Saves to `chat_history` with `subject:'Maths'` using `window._SB` and `window._sessUid`
 - Poll/ready hiding implemented via classList.add/remove patching on `#ready-prompt` and `#poll-overlay`
 
 ## Dashboard
@@ -123,25 +148,25 @@ Unique constraint: `(user_id, date)` — but only enforced via upsert for mood r
 ### AI CTA button
 The old inline AI chat card was removed. Replaced with a large dark banner button linking directly to `ai.html`.
 
-### Weekly Check-in (mental health)
-- Four mood buttons: Great / Okay / Stressed / Struggling
-- On tap: shows a tailored tip message + always-visible "🧘 Try mindfulness" pill button linking to `breathing.html`
-- Mood saved to **localStorage** (`se_mood` key: `{mood, date}`) AND **Supabase** (`mood_checkins` table, type='mood')
-- `currentUserId` is stored when `onAuthStateChange` fires and used directly for DB saves (do not use `getSession()` inside event handlers — it caused silent failures before)
-- On page load: if today's mood is in localStorage, restores it without re-saving (`skipSave=true`)
-- Stressed/Struggling responses include encouragement and breathing link; Great/Okay include a study tip
-
-### Sidebar
-Current links (after session 3 cleanup): Dashboard, My Progress, AI Companion (→ ai.html), Physics, Chemistry, Biology, Mathematics, Breathing (→ breathing.html), Progress, Settings (→ settings.html).
-**Removed links:** Practice Questions, Past Papers, Flashcards, NCERT Notes — do not re-add these to the sidebar. Flashcards are only accessible via the subject page Flashcards tab.
-
-### My Progress card
-Simplified to just "My Progress" title (1.4rem, 800 weight) + "View all →" link. No subject mini-cards, no loading text. The entire progress card links to progress.html.
-
 ### Mental Health Check-in card
 - Label changed from "WEEKLY CHECK-IN" to heading "Mental Health Check-in" (label removed)
 - Full width (no max-width constraint)
 - Mood buttons are large and spread out (flex:1, 12px 22px padding, 0.88rem font)
+- Four mood buttons: Great / Okay / Stressed / Struggling
+- On tap: shows a tailored tip message + two pill CTAs side-by-side:
+  - **🧘 Try mindfulness** (teal) → `breathing.html`
+  - **💜 AI Counsellor** (purple) → `ai.html?mode=counsellor`
+- Mood saved to **localStorage** (`se_mood` key: `{mood, date}`) AND **Supabase** (`mood_checkins` table, type='mood')
+- `currentUserId` is stored when `onAuthStateChange` fires and used directly for DB saves (do not use `getSession()` inside event handlers — it caused silent failures before)
+- On page load: if today's mood is in localStorage, restores it without re-saving (`skipSave=true`)
+- Stressed/Struggling responses include encouragement and breathing/counsellor links; Great/Okay include a study tip
+
+### Sidebar
+Current links: Dashboard, My Progress, AI Companion (→ ai.html), Physics, Chemistry, Biology, Mathematics, Breathing (→ breathing.html), Progress, Settings (→ settings.html).
+**Removed links:** Practice Questions, Past Papers, Flashcards, NCERT Notes — do not re-add these to the sidebar. Flashcards are only accessible via the subject page Flashcards tab.
+
+### My Progress card
+Simplified to just "My Progress" title (1.4rem, 800 weight) + "View all →" link. No subject mini-cards, no loading text. The entire progress card links to progress.html.
 
 ### Notification bell (topbar)
 - `id="notif-btn"` on the bell button
@@ -197,6 +222,8 @@ Standalone page — **no login required** to use, but saves to DB if logged in.
 
 General sizing philosophy: slightly larger than typical — bigger padding, bigger font sizes, more breathing room. Subject cards use `26px 22px` padding, `2.4rem` emoji, `1.05rem` name.
 
+**ai.html sizing** (updated): header 62px tall, subject pills `6px 16px` padding / `0.86rem`, message text `1rem`, bubbles `13px 18px` padding, input `1rem`, send button `40px`, chat max-width `760px`.
+
 ## Key Deployment Notes
 
 - After pushing to `main`, GitHub Pages redeploys in ~1–2 minutes.
@@ -241,8 +268,11 @@ Full settings page with sidebar layout. Sections:
 
 - **Never use `getSession()` inside event handlers to get the user ID** — it can return null due to timing. Always store `currentUserId` from `onAuthStateChange` and reference it directly.
 - **Supabase upsert errors are NOT thrown** — they're in `res.error`. Always use `.then(function(res){ if(res.error) console.error(...) })` not just `.catch()`.
+- **All Edge Function fetch calls must include the Authorization header** — `'Authorization':'Bearer <anon_key>'`. Without it the function returns `UNAUTHORIZED_NO_AUTH_HEADER` and `d.reply` is undefined, showing "Sorry, something went wrong."
+- **Do NOT call `.catch()` directly on a `PostgrestFilterBuilder`** — it can throw a synchronous TypeError in some supabase-js v2 CDN builds, which propagates to the fetch chain's `.catch` and shows a false "Network error." Always use `.then(null, function(){})` instead and wrap in `try-catch`.
 - **`groupConversations` in ai.html** splits on subject change OR time gap — both conditions. This ensures subject-page chats (Physics, Maths, etc.) always appear as separate sidebar entries.
 - **breathing.html saves to `mood_checkins`**, not a separate table. The `mood` column is nullable for breathing/meditation rows.
 - The `mood_checkins` unique constraint `(user_id, date)` only applies to upserts from the dashboard mood check-in. Breathing/meditation sessions use plain insert (multiple per day is fine).
 - **`#vp-popup` must stay inside `#player-wrap`** — moving it to body breaks fullscreen visibility. `position:fixed` inside a non-transformed element escapes `overflow:hidden` correctly.
 - **Onboarding only triggers for truly new accounts** — check `created_at` age, not just `onboarding_done`. Existing users whose `onboarding_done` is null (column added later) must NOT see the modal.
+- **`ai.html?mode=counsellor` sets `subject='Mental Health'`** — messages are sent with prefix `[Mental Health]` which falls through to `GENERAL_SYSTEM` (correct). The URL param is consumed once via `window.history.replaceState`.
