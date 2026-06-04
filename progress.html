@@ -27,9 +27,9 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--off-white);colo
 
 /* Sidebar */
 .sidebar{width:var(--sidebar-w);background:var(--navy);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:200;transition:transform .28s}
-.sb-logo{display:flex;align-items:center;gap:9px;padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0}
-.sb-logo-mark{width:30px;height:30px;border-radius:8px;background:var(--blue);display:flex;align-items:center;justify-content:center}
-.sb-logo-text{font-weight:700;font-size:1rem;color:white}
+.sb-logo{display:flex;align-items:center;gap:12px;padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0}
+.sb-logo-mark{width:44px;height:44px;border-radius:12px;flex-shrink:0;display:block}
+.sb-logo-text{font-weight:800;font-size:1.25rem;color:white;letter-spacing:-0.03em}
 .sb-nav{flex:1;padding:10px 8px;overflow-y:auto;scrollbar-width:none}
 .sb-nav::-webkit-scrollbar{display:none}
 .sb-lbl{font-size:.63rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.24);padding:12px 10px 4px}
@@ -148,7 +148,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--off-white);colo
   <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
     <div class="sb-logo">
-      <div class="sb-logo-mark"><svg width="16" height="16" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="6" height="8" rx="1.5" fill="white"/><rect x="10" y="2" width="6" height="5" rx="1.5" fill="rgba(255,255,255,0.5)"/><rect x="2" y="12" width="14" height="2.5" rx="1.25" fill="rgba(255,255,255,0.3)"/><rect x="10" y="9" width="6" height="2.5" rx="1.25" fill="rgba(255,255,255,0.4)"/></svg></div>
+      <img src="logo-icon.png" alt="StudyEase" class="sb-logo-mark">
       <span class="sb-logo-text">StudyEase</span>
     </div>
     <nav class="sb-nav">
@@ -180,7 +180,6 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--off-white);colo
     <div class="topbar">
       <div class="topbar-l">
         <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
-        <a href="dashboard.html" style="display:flex;align-items:center;text-decoration:none"><img src="logo.png" alt="StudyEase" style="height:32px;width:auto;display:block"></a>
         <div class="breadcrumb">
           <a href="dashboard.html">Dashboard</a>
           <span class="breadcrumb-sep">›</span>
