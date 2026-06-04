@@ -1121,7 +1121,7 @@ p { color: var(--text-mid); line-height: 1.75; }
 .btn-google:active { background: var(--border-soft); }
 </style>
   <!-- Favicon placeholder -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230A1628'/><text y='22' x='6' font-size='18' font-family='system-ui' font-weight='700' fill='%233B82F6'>S</text></svg>" />
+  <link rel="icon" type="image/png" href="favicon.png" />
 </head>
 <body>
 
@@ -1131,16 +1131,8 @@ p { color: var(--text-mid); line-height: 1.75; }
     <div class="navbar__inner">
 
       <!-- Logo -->
-      <a href="index.html" class="navbar__logo">
-        <div class="navbar__logo-mark">
-          <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="2" y="2" width="6" height="8" rx="1.5" fill="#3B82F6"/>
-            <rect x="10" y="2" width="6" height="5" rx="1.5" fill="rgba(255,255,255,0.4)"/>
-            <rect x="2" y="12" width="14" height="2.5" rx="1.25" fill="rgba(255,255,255,0.2)"/>
-            <rect x="10" y="9" width="6" height="2.5" rx="1.25" fill="rgba(255,255,255,0.35)"/>
-          </svg>
-        </div>
-        StudyEase
+      <a href="index.html" class="navbar__logo" id="nav-logo-link">
+        <img src="logo.png" alt="StudyEase" style="height:34px;width:auto;display:block">
       </a>
 
       <!-- Nav links -->
@@ -2110,6 +2102,7 @@ p { color: var(--text-mid); line-height: 1.75; }
   function updateNavForUser(user) {
     var loginBtn  = document.getElementById('nav-login-btn');
     var signupBtn = document.getElementById('nav-signup-btn');
+    var logoLink  = document.getElementById('nav-logo-link');
     var name = (user.user_metadata && (user.user_metadata.name || user.user_metadata.full_name)) || user.email.split('@')[0];
     loginBtn.textContent = 'Hi, ' + name.split(' ')[0];
     loginBtn.onclick = async function(e) {
@@ -2118,6 +2111,7 @@ p { color: var(--text-mid); line-height: 1.75; }
       window.location.reload();
     };
     if (signupBtn) signupBtn.style.display = 'none';
+    if (logoLink) logoLink.href = 'dashboard.html';
   }
 
   checkSession();

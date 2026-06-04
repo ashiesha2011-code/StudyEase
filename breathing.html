@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Mindfulness — StudyEase</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230A1628'/><text y='22' x='6' font-size='18' font-family='system-ui' font-weight='700' fill='%233B82F6'>S</text></svg>"/>
+  <link rel="icon" type="image/png" href="favicon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
   <style>
@@ -95,6 +95,10 @@ body{background:linear-gradient(145deg,#E8F4FD 0%,#EAF7F0 50%,#F0FDF4 100%);min-
   </style>
 </head>
 <body>
+
+<a href="index.html" id="breath-logo-link" style="position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:10;display:block">
+  <img src="logo.png" alt="StudyEase" style="height:28px;width:auto;display:block">
+</a>
 
 <a href="dashboard.html" class="back-link">
   <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"/></svg>
@@ -220,7 +224,13 @@ try{
   var _SURL='https://xiwrvbtryeesfgeydxnf.supabase.co';
   var _SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd3J2YnRyeWVlc2ZnZXlkeG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMTQ0NDAsImV4cCI6MjA5NDU5MDQ0MH0.3Sp9dlc8cNsrzdHAGy74pCqscjL1MFV9ZWMW90QbhqE';
   _sb=window.supabase?window.supabase.createClient(_SURL,_SKEY):null;
-  if(_sb)_sb.auth.getUser().then(function(r){if(r.data&&r.data.user)_uid=r.data.user.id;});
+  if(_sb)_sb.auth.getUser().then(function(r){
+    if(r.data&&r.data.user){
+      _uid=r.data.user.id;
+      var ll=document.getElementById('breath-logo-link');
+      if(ll)ll.href='dashboard.html';
+    }
+  });
 }catch(e){}
 
 function saveSessionToDB(type,mode,duration){
