@@ -1154,9 +1154,7 @@ function sendAI(q){
       addMsg(reply,'ai');
       aiHistory.push({role:'user',content:q});aiHistory.push({role:'assistant',content:reply});
       if(aiHistory.length>20)aiHistory=aiHistory.slice(-20);
-      if(currentUserId){
-        sb.from('chat_history').insert({user_id:currentUserId,user_message:q,ai_reply:reply,subject:'Maths'}).catch(function(){});
-      }
+      try{if(currentUserId){sb.from('chat_history').insert({user_id:currentUserId,user_message:q,ai_reply:reply,subject:'Maths'}).then(null,function(){});}}catch(e){}
     })
     .catch(function(){var el=document.getElementById('vp-typing');if(el)el.remove();addMsg('Network error — check your connection.','ai');})
     .finally(function(){aiBusy=false;});

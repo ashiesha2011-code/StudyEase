@@ -1227,9 +1227,7 @@ function hide(id){
         addMsg(reply,'ai');
         aiHistory.push({role:'user',content:q});aiHistory.push({role:'assistant',content:reply});
         if(aiHistory.length>20)aiHistory=aiHistory.slice(-20);
-        if(window._SB&&window._sessUid){
-          window._SB.from('chat_history').insert({user_id:window._sessUid,user_message:q,ai_reply:reply,subject:'Maths'}).catch(function(){});
-        }
+        try{if(window._SB&&window._sessUid){window._SB.from('chat_history').insert({user_id:window._sessUid,user_message:q,ai_reply:reply,subject:'Maths'}).then(null,function(){});}}catch(e){}
       })
       .catch(function(){var el=document.getElementById('s-ai-typing');if(el)el.remove();addMsg('Network error — check your connection.','ai');})
       .finally(function(){aiBusy=false;});
