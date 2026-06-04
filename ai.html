@@ -675,7 +675,7 @@ body{
     var msg=subject?'['+subject+'] '+t:t;
     addUser(t);inp.value='';inp.style.height='auto';addTyping();
     fetch('https://xiwrvbtryeesfgeydxnf.supabase.co/functions/v1/ai-chat',{
-      method:'POST',headers:{'Content-Type':'application/json'},
+      method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd3J2YnRyeWVlc2ZnZXlkeG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMTQ0NDAsImV4cCI6MjA5NDU5MDQ0MH0.3Sp9dlc8cNsrzdHAGy74pCqscjL1MFV9ZWMW90QbhqE'},
       body:JSON.stringify({message:msg,history:privacy?[]:chatHistory})
     })
     .then(function(r){return r.json();})

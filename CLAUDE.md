@@ -33,7 +33,7 @@ supabase db query --linked "SELECT ..."
 - Hosting: GitHub Pages at `https://ashiesha2011-code.github.io/StudyEase/`
 
 **AI flow:**
-All AI calls go to `https://xiwrvbtryeesfgeydxnf.supabase.co/functions/v1/ai-chat`. JWT verification is **disabled** in the Supabase dashboard. The `ANTHROPIC_API_KEY` is stored as a Supabase Edge Function secret.
+All AI calls go to `https://xiwrvbtryeesfgeydxnf.supabase.co/functions/v1/ai-chat`. The anon key is sent as `Authorization: Bearer <anon_key>` in every fetch call (JWT verification is NOT disabled — it requires the anon key). The `ANTHROPIC_API_KEY` is stored as a Supabase Edge Function secret.
 
 The Edge Function uses **two different system prompts** depending on the message:
 - Messages starting with `[Physics]`, `[Chemistry]`, `[Biology]`, or `[Maths]` → academic-only CBSE board exam prompt

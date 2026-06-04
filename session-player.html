@@ -1200,7 +1200,7 @@ function hide(id){
     var td=document.createElement('div');td.className='s-ai-row';td.id='s-ai-typing';
     td.innerHTML='<div class="s-ai-av s-ai-av--ai">SE</div><div class="s-ai-bbl s-ai-bbl--ai"><div class="s-ai-typing"><div class="s-ai-dot"></div><div class="s-ai-dot"></div><div class="s-ai-dot"></div></div></div>';
     msgs.appendChild(td);msgs.scrollTop=99999;
-    fetch(AI_FN,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:'[Real Numbers] '+q,history:aiHistory})})
+    fetch(AI_FN,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd3J2YnRyeWVlc2ZnZXlkeG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMTQ0NDAsImV4cCI6MjA5NDU5MDQ0MH0.3Sp9dlc8cNsrzdHAGy74pCqscjL1MFV9ZWMW90QbhqE'},body:JSON.stringify({message:'[Real Numbers] '+q,history:aiHistory})})
       .then(function(r){return r.json();})
       .then(function(data){
         var el=document.getElementById('s-ai-typing');if(el)el.remove();
