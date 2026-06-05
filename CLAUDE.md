@@ -291,7 +291,8 @@ All pages that call the Edge Function:
 - **Removed**: greeting text, search bar — do NOT re-add these
 
 ### Welcome card
-- Shows greeting (`welcome-hi`: "Good afternoon, Iesha! 👋") and one-line subtitle (`welcome-sub`: class + "Ready to study smarter today?")
+- Shows greeting (`welcome-hi`: "Good afternoon, Name! 👋") and one-line subtitle (`welcome-sub`: class + "Ready to study smarter today?")
+- **Name source**: `welcome-hi` is initially set from `user_metadata` in `onAuthStateChange`, then **overwritten** once `loadUserProfile()` receives `p.name` from the `profiles` table. Always use `profiles.name` as the authoritative display name.
 - **No badges** — the AI message counter and streak pill have been removed. Do NOT re-add them.
 
 ### AI CTA card
@@ -337,6 +338,9 @@ Links: Dashboard, My Progress, AI Companion (→ ai.html), Physics, Chemistry, B
 - 3 steps: Name → Class (4 pill buttons, auto-advances) → Photo upload (optional)
 - On finish (`obFinish()`): upserts to `profiles`, then shows the 2-second loading screen
 - Network error on profile load: silently fails, does NOT show onboarding
+- **Class selection — only Class 10 is available**: clicking Class 9 / 11 / 12 highlights the button in amber and shows a `#ob-coming-soon` notice ("🚧 Class X is coming soon! Only Class 10 is available right now."). `_obClass` is NOT set and the modal does NOT advance to step 3. Clicking Class 10 clears the notice and auto-advances after 220ms.
+- **Input sizing**: name input is `padding:16px 20px; font-size:1.15rem` with a subtle box-shadow. Class buttons are `min-height:70px; padding:22px 16px; font-size:1.1rem; border-radius:14px`.
+- **Step overflow**: each step div has `overflow-y:auto` so content is scrollable on small screens — the parent container keeps `overflow:hidden` for the slide transition animation.
 
 ## Mindfulness Page (breathing.html)
 
@@ -468,3 +472,4 @@ var bestPct = scoredRows.length > 0 ? Math.max(...pcts) : null;
 - **`mood_checkins` type column is NOT NULL** — always include `type:'mood'` when saving mood check-ins, `type:'breathing'` or `type:'meditation'` for mindfulness sessions. Omitting it causes insert failures even though the column has a DB default (PostgREST may not honour defaults without explicit values in some cases).
 - **`Math.max.apply(null, [])` returns `-Infinity`** — always guard score calculations with `array.length > 0` before calling `Math.max.apply`. An empty array from filtering (e.g. all sessions left early) will produce `-Infinity%` on screen.
 - **Progress score cards use ALL sessions** — do NOT filter by `!r.early` for avgPct / bestPct. Early-exit sessions still have a valid score and should be included. Only use the `completed` filter for the "X left early" sub-label.
+- **`welcome-hi` name comes from `profiles.name`, not `user_metadata`** — `onAuthStateChange` sets it first using `user_metadata` (instant), then `loadUserProfile()` overwrites it once the DB profile loads. If the welcome greeting shows a wrong/old name, the DB `profiles.name` is the source of truth and will correct it on load. Do NOT remove the overwrite in `loadUserProfile`.

@@ -424,28 +424,29 @@ body {
     <div style="flex:1;overflow:hidden;position:relative">
 
       <!-- Step 1: Name -->
-      <div id="ob-step-1" style="position:absolute;inset:0;transition:transform .3s cubic-bezier(.4,0,.2,1),opacity .3s;transform:translateX(0);opacity:1">
+      <div id="ob-step-1" style="position:absolute;inset:0;overflow-y:auto;transition:transform .3s cubic-bezier(.4,0,.2,1),opacity .3s;transform:translateX(0);opacity:1">
         <div style="font-size:1.75rem;font-weight:800;color:var(--navy);margin-bottom:8px;letter-spacing:-.02em">Welcome! Let's set up your profile 👋</div>
         <div style="font-size:1rem;color:var(--text-mid);margin-bottom:36px;line-height:1.6">First things first — what should we call you?</div>
         <label style="display:block;font-size:.85rem;font-weight:600;color:var(--navy);margin-bottom:8px">Your name</label>
-        <input id="ob-name" type="text" placeholder="e.g. Iesha" autocomplete="given-name" style="width:100%;padding:14px 18px;border:2px solid var(--border);border-radius:12px;font-family:inherit;font-size:1.05rem;font-weight:500;outline:none;background:white;transition:border-color .15s;color:var(--navy)" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border)'">
+        <input id="ob-name" type="text" placeholder="e.g. Iesha" autocomplete="given-name" style="width:100%;padding:16px 20px;border:2px solid var(--border);border-radius:14px;font-family:inherit;font-size:1.15rem;font-weight:500;outline:none;background:white;transition:border-color .15s;color:var(--navy);box-shadow:0 2px 8px rgba(10,22,40,.06)" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border)'">
         <button onclick="obNext(1)" style="margin-top:24px;width:100%;padding:15px;background:var(--blue);color:white;border:none;border-radius:12px;font-family:inherit;font-size:1rem;font-weight:700;cursor:pointer;transition:filter .14s" onmouseover="this.style.filter='brightness(1.07)'" onmouseout="this.style.filter='none'">Next →</button>
       </div>
 
       <!-- Step 2: Class -->
-      <div id="ob-step-2" style="position:absolute;inset:0;transition:transform .3s cubic-bezier(.4,0,.2,1),opacity .3s;transform:translateX(110%);opacity:0">
+      <div id="ob-step-2" style="position:absolute;inset:0;overflow-y:auto;transition:transform .3s cubic-bezier(.4,0,.2,1),opacity .3s;transform:translateX(110%);opacity:0">
         <div style="font-size:1.75rem;font-weight:800;color:var(--navy);margin-bottom:8px;letter-spacing:-.02em">Which class are you in?</div>
         <div style="font-size:1rem;color:var(--text-mid);margin-bottom:36px;line-height:1.6">We'll personalise your study plan for you.</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px" id="ob-class-grid">
-          <button onclick="obSelectClass(this,'Class 9')" class="ob-class-btn" style="padding:20px;border:2px solid var(--border);border-radius:12px;background:white;font-family:inherit;font-size:1.05rem;font-weight:700;color:var(--navy);cursor:pointer;transition:all .15s">Class 9</button>
-          <button onclick="obSelectClass(this,'Class 10')" class="ob-class-btn" style="padding:20px;border:2px solid var(--border);border-radius:12px;background:white;font-family:inherit;font-size:1.05rem;font-weight:700;color:var(--navy);cursor:pointer;transition:all .15s">Class 10</button>
-          <button onclick="obSelectClass(this,'Class 11')" class="ob-class-btn" style="padding:20px;border:2px solid var(--border);border-radius:12px;background:white;font-family:inherit;font-size:1.05rem;font-weight:700;color:var(--navy);cursor:pointer;transition:all .15s">Class 11</button>
-          <button onclick="obSelectClass(this,'Class 12')" class="ob-class-btn" style="padding:20px;border:2px solid var(--border);border-radius:12px;background:white;font-family:inherit;font-size:1.05rem;font-weight:700;color:var(--navy);cursor:pointer;transition:all .15s">Class 12</button>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px" id="ob-class-grid">
+          <button onclick="obSelectClass(this,'Class 9')" class="ob-class-btn" style="padding:22px 16px;border:2px solid var(--border);border-radius:14px;background:white;font-family:inherit;font-size:1.1rem;font-weight:700;color:var(--navy);cursor:pointer;transition:all .15s;min-height:70px">Class 9</button>
+          <button onclick="obSelectClass(this,'Class 10')" class="ob-class-btn" style="padding:22px 16px;border:2px solid var(--border);border-radius:14px;background:white;font-family:inherit;font-size:1.1rem;font-weight:700;color:var(--navy);cursor:pointer;transition:all .15s;min-height:70px">Class 10</button>
+          <button onclick="obSelectClass(this,'Class 11')" class="ob-class-btn" style="padding:22px 16px;border:2px solid var(--border);border-radius:14px;background:white;font-family:inherit;font-size:1.1rem;font-weight:700;color:var(--navy);cursor:pointer;transition:all .15s;min-height:70px">Class 11</button>
+          <button onclick="obSelectClass(this,'Class 12')" class="ob-class-btn" style="padding:22px 16px;border:2px solid var(--border);border-radius:14px;background:white;font-family:inherit;font-size:1.1rem;font-weight:700;color:var(--navy);cursor:pointer;transition:all .15s;min-height:70px">Class 12</button>
         </div>
+        <div id="ob-coming-soon" style="display:none;margin-top:18px;padding:14px 18px;background:#FFF7ED;border:1.5px solid #FCD34D;border-radius:12px;font-size:.92rem;color:#92400E;line-height:1.55;"></div>
       </div>
 
       <!-- Step 3: Photo -->
-      <div id="ob-step-3" style="position:absolute;inset:0;transition:transform .3s cubic-bezier(.4,0,.2,1),opacity .3s;transform:translateX(110%);opacity:0">
+      <div id="ob-step-3" style="position:absolute;inset:0;overflow-y:auto;transition:transform .3s cubic-bezier(.4,0,.2,1),opacity .3s;transform:translateX(110%);opacity:0">
         <div style="font-size:1.75rem;font-weight:800;color:var(--navy);margin-bottom:8px;letter-spacing:-.02em">Add a profile photo</div>
         <div style="font-size:1rem;color:var(--text-mid);margin-bottom:36px;line-height:1.6">Optional — you can always add one later in Settings.</div>
         <div style="text-align:center;margin-bottom:24px">
@@ -830,6 +831,10 @@ body {
         name = p.name;
         initial = name.charAt(0).toUpperCase();
         document.getElementById('sb-username').textContent = name;
+        var pfn = name.split(' ')[0];
+        var phr = new Date().getHours();
+        var pgr = phr < 12 ? 'Good morning' : phr < 17 ? 'Good afternoon' : 'Good evening';
+        document.getElementById('welcome-hi').textContent = pgr + ', ' + pfn + '! 👋';
       }
 
       setAvatarDisplay(initial, p.avatar_url);
@@ -913,15 +918,31 @@ body {
   };
 
   window.obSelectClass = function(btn, cls) {
-    _obClass = cls;
     document.querySelectorAll('.ob-class-btn').forEach(function(b) {
       b.style.borderColor = 'var(--border)';
       b.style.background = 'white';
       b.style.color = 'var(--navy)';
     });
+
+    var notice = document.getElementById('ob-coming-soon');
+
+    if (cls !== 'Class 10') {
+      _obClass = null;
+      btn.style.borderColor = '#FCD34D';
+      btn.style.background = '#FFFBEB';
+      btn.style.color = '#92400E';
+      if (notice) {
+        notice.style.display = 'block';
+        notice.innerHTML = '🚧 <strong>' + cls + '</strong> is coming soon! StudyEase currently supports <strong>Class 10</strong> only. Please select Class 10 to continue.';
+      }
+      return;
+    }
+
+    _obClass = cls;
     btn.style.borderColor = 'var(--blue)';
     btn.style.background = 'var(--blue-light)';
     btn.style.color = 'var(--blue)';
+    if (notice) notice.style.display = 'none';
     setTimeout(function() { obGoToStep(3); }, 220);
   };
 
