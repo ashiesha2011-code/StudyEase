@@ -53,7 +53,7 @@ supabase db query --linked "SELECT ..."
 - Frontend: plain HTML files, all styles and scripts inline per page
 - Auth + DB: Supabase (project ref: `xiwrvbtryeesfgeydxnf`)
 - AI: Claude Haiku (`claude-haiku-4-5-20251001`) via a Supabase Edge Function (`supabase/functions/ai-chat/index.ts`)
-- Hosting: GitHub Pages at `https://ashiesha2011-code.github.io/StudyEase/`
+- Hosting: GitHub Pages at `https://ashiesha2011-code.github.io/StudyEase/` and Vercel at `https://studyease1.vercel.app`
 
 **AI flow:**
 All AI calls go to `https://xiwrvbtryeesfgeydxnf.supabase.co/functions/v1/ai-chat`. Every fetch call **must** include `Authorization: Bearer <anon_key>` — JWT verification is NOT disabled; the function rejects requests without this header. The `ANTHROPIC_API_KEY` is stored as a Supabase Edge Function secret.
@@ -394,7 +394,8 @@ General sizing philosophy: slightly larger than typical — bigger padding, bigg
 
 ## Key Deployment Notes
 
-- After pushing to `main`, GitHub Pages redeploys in ~1–2 minutes.
+- After pushing to `main`, GitHub Pages redeploys in ~1–2 minutes and Vercel redeploys automatically (also ~1–2 minutes).
+- Primary live URL: `https://studyease1.vercel.app` — Vercel deployment. GitHub Pages URL: `https://ashiesha2011-code.github.io/StudyEase/`
 - The `netlify.toml` and `netlify/functions/` directory are legacy — ignore them.
 - To update the Edge Function: edit `supabase/functions/ai-chat/index.ts` and run `supabase functions deploy ai-chat --project-ref xiwrvbtryeesfgeydxnf`
 - The Supabase anon key is hardcoded in every HTML file — intentional for a pure-frontend app with RLS enabled.
