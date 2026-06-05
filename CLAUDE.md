@@ -79,6 +79,8 @@ All image assets live in `images/`. Do NOT put images in the root.
 | `images/StudyEasemain.png` | Main wordmark logo — used in all sidebars and index.html navbar |
 | `images/studyease-fav.png` | Favicon + apple-touch-icon across all pages; also used in splash/loading screens |
 | `images/ailogo.png` | AI companion icon — loader, welcome screen, and chat avatars in ai.html |
+| `images/yoga.png` | Mindfulness icon — breathing.html loading splash, hero header, and sidebar "Mindfulness" icon |
+| `images/mental-health.png` | Mental health icon — used in dashboard Mental Health Check-in card header |
 
 Old root images (`favicon.png`, `logo.png`, `logo-sidebar.png`, `logo-icon.png`, `logo-white.png`) have been deleted.
 
@@ -146,16 +148,22 @@ Subject values saved per page:
 
 ### `mood_checkins`
 Unified mental health + mindfulness table. Columns:
-- `id` (uuid PK)
+- `id` (uuid PK, default `gen_random_uuid()`)
 - `user_id` (uuid FK → auth.users)
 - `mood` (text, nullable) — one of: `great`, `okay`, `stressed`, `struggling` — only set for type='mood'
-- `type` (text, NOT NULL) — one of: `mood`, `breathing`, `meditation`
+- `type` (text, NOT NULL, default `'mood'`) — one of: `mood`, `breathing`, `meditation`
 - `mode` (text, nullable) — breathing mode: `box`, `478`, `simple`; meditation: `guided`
 - `duration` (integer, nullable) — seconds elapsed for breathing/meditation sessions
-- `date` (text) — `new Date().toDateString()` format e.g. "Fri May 30 2026"
-- `created_at` (timestamptz)
+- `date` (text, NOT NULL) — `new Date().toDateString()` format e.g. "Fri May 30 2026"
+- `created_at` (timestamptz, default `now()`)
 
-Unique constraint: `(user_id, date)` — but only enforced via upsert for mood rows. Breathing/meditation rows are inserted fresh each time.
+Unique constraint `mood_checkins_user_date`: `(user_id, date)` — enforced for mood rows. Breathing/meditation rows are plain-inserted (multiple per day is fine).
+
+**RLS policies** (4 explicit policies — do NOT replace with a single ALL policy, it breaks JWT resolution):
+- `insert_own`: FOR INSERT WITH CHECK `((select auth.uid()) = user_id)`
+- `select_own`: FOR SELECT USING `((select auth.uid()) = user_id)`
+- `update_own`: FOR UPDATE USING + WITH CHECK `((select auth.uid()) = user_id)`
+- `delete_own`: FOR DELETE USING `((select auth.uid()) = user_id)`
 
 ## Sidebar Logo (all sidebar pages)
 
@@ -195,6 +203,14 @@ When the auth check finds an existing session, before redirecting to dashboard, 
 - After 2s, fades out (opacity 0, 0.4s) then redirects
 - If NO session: homepage fades in normally — no splash shown
 
+### dashboard.html — entry splash (every fresh session)
+- `#dash-splash`: white full-screen overlay (z-index: 99997), shows `images/studyease-fav.png` at 110px
+- Icon pops in with `@keyframes dspop` (scale 0.5→1, cubic-bezier bounce)
+- After 800ms, overlay slides up off screen (`transform: translateY(-100%)`) over 620ms, then `display:none`
+- Shown **once per browser session** via `sessionStorage.getItem('se_dash_splash')`
+- **Skipped** when `localStorage.getItem('studyease_just_onboarded') === 'true'` (onboarding handles that case)
+- Sets `document.body.style.opacity = '1'` immediately so dashboard loads behind the splash
+
 ### dashboard.html — onboarding loading screen
 After onboarding completes (`obFinish()`):
 - Sets `localStorage.setItem('studyease_just_onboarded', 'true')`
@@ -202,6 +218,11 @@ After onboarding completes (`obFinish()`):
 - `@keyframes favPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}`
 - After 2s fade-out, clears the localStorage flag
 - On any subsequent dashboard page load, if `studyease_just_onboarded === 'true'` is in localStorage, the same screen plays once and clears
+
+### breathing.html — yoga.png loading splash
+- On every page open: white full-screen overlay (`#yoga-splash`) shows `images/yoga.png` (90px) pulsing
+- Text below: "Mindfulness · StudyEase"
+- After 2s, fades out (opacity 0, 0.42s transition), then `display:none`
 
 ## AI on Each Page
 
@@ -288,14 +309,19 @@ Simplified: "My Progress" title + "View all →" link. Entire card links to `pro
 
 ### Mental Health Check-in card
 - Title: "How are you feeling?" (simplified — do NOT change back to longer version)
+- Card header icon: `images/mental-health.png` (22px) inside `.health-icon-wrap` — NOT the 💙 emoji
 - Four mood buttons: 😊 Great / 😐 Okay / 😟 Stressed / 😔 Struggling
 - On tap: shows a tailored tip + two CTAs: **🧘 Try mindfulness** → `breathing.html` and **💜 AI Counsellor** → `ai.html?mode=counsellor`
 - Mood saved to **localStorage** (`se_mood` key: `{mood, date}`) AND **Supabase** (`mood_checkins` table, type='mood')
 - `currentUserId` stored from `onAuthStateChange` — never use `getSession()` inside handlers
 - On page load: if today's mood in localStorage, restores without re-saving (`skipSave=true`)
+- **Mood save uses explicit fetch with user JWT** (not supabase-js client — see Known Gotchas). Inserts first; if any error, patches the existing row for that date.
 
 ### Sidebar
-Links: Dashboard, My Progress, AI Companion (→ ai.html), Physics, Chemistry, Biology, Mathematics, Breathing, Settings.
+Links: Dashboard, My Progress, AI Companion (→ ai.html), Physics, Chemistry, Biology, Mathematics, **Mindfulness** (→ breathing.html), Settings.
+- "Breathing" was renamed to **"Mindfulness"** — do NOT revert to "Breathing"
+- Mindfulness sidebar icon: `<img src="images/yoga.png" class="sb-icon" style="filter:brightness(0) invert(1)"/>` — NOT an SVG
+- All other sidebar icons use `<svg class="sb-icon">` with `fill="currentColor"`
 **Removed:** Practice Questions, Past Papers, Flashcards, NCERT Notes — do not re-add.
 
 ### Notification bell (topbar)
@@ -315,7 +341,15 @@ Links: Dashboard, My Progress, AI Companion (→ ai.html), Physics, Chemistry, B
 ## Mindfulness Page (breathing.html)
 
 Standalone page — **no login required** to use, but saves to DB if logged in.
-Top bar has `images/StudyEasemain.png` logo (white-filtered for dark background).
+
+### Layout (redesigned)
+- **Loading splash**: on every open, white overlay (`#yoga-splash`) with pulsing `images/yoga.png` (90px) for 2s, then fades out
+- **Topbar**: frosted glass bar with `images/StudyEasemain.png` logo (26px, links to dashboard) on the left + session badge on the right. The logo is NOT white-filtered — it's on a light background. `id="back-btn"` on the `<a>` so auth JS can update the href to `dashboard.html` when logged in.
+- **Hero header**: `images/yoga.png` in a 80px glowing teal/purple ring + "Mindfulness" h1 + "BREATHE · FOCUS · RESTORE" subtitle
+- **Content card**: frosted glass card (`rgba(255,255,255,.58)`, backdrop-filter blur, border-radius 26px) wrapping both tabs
+- **Background**: 3-stop gradient `#D1FAE5 → #EDE9FE → #DBEAFE`
+- **Circles**: white text on teal gradient (breathing) or purple gradient (meditation) — NOT dark text on light circle
+- **Start button**: has outer glow ring `box-shadow: 0 0 0 7px rgba(color,.1)` + "Tap to begin" hint label below
 
 ### Two tabs:
 **🫁 Breathing:**
@@ -403,6 +437,10 @@ Full settings page with sidebar layout. Sections:
 - **`#vp-popup` must stay inside `#player-wrap`** — moving it to body breaks fullscreen visibility. `position:fixed` inside a non-transformed element escapes `overflow:hidden` correctly.
 - **Onboarding only triggers for truly new accounts** — check `created_at` age, not just `onboarding_done`. Existing users whose `onboarding_done` is null (column added later) must NOT see the modal.
 - **`ai.html?mode=counsellor` sets `subject='Mental Health'`** — messages are sent with prefix `[Mental Health]` which falls through to `GENERAL_SYSTEM` (correct). The URL param is consumed once via `window.history.replaceState`.
-- **Logo images on dark backgrounds** (session players, video player topbar, breathing.html top logo) use `filter:brightness(0) invert(1)` to render white — the PNG is full-colour so the filter is required.
+- **Logo images on dark backgrounds** (session players, video player topbar) use `filter:brightness(0) invert(1)` to render white. breathing.html topbar logo does NOT use this filter — it's on a light frosted glass bar.
 - **Voice dictation duplication fix** — NEVER read `e.results[0]` in the `onresult` handler. Always iterate from `e.resultIndex` to avoid replaying already-appended results on each subsequent event.
 - **`studyease_just_onboarded` localStorage flag** — set by `obFinish()` in dashboard.html, cleared after the loading screen plays. If you see the loading screen appearing unexpectedly on dashboard load, this flag is still in localStorage.
+- **supabase-js CDN client does NOT reliably attach the user JWT for INSERT/PATCH on `mood_checkins`** — requests return 403 even when the user is logged in. Fix: use `sb.auth.getSession()` to get `access_token` and pass it manually via `fetch` with `Authorization: Bearer <token>` and `apikey: <anon_key>` headers. Do NOT use `sb.from('mood_checkins').insert()` for this table.
+- **mood_checkins RLS must use 4 explicit separate policies** (insert_own, select_own, update_own, delete_own) with `(select auth.uid())` — a single `ALL` policy caused 403s because `auth.uid()` didn't resolve correctly in the CDN supabase-js JWT context.
+- **mood check-in save pattern**: INSERT first → if any error → PATCH `?user_id=eq.X&date=eq.Y`. Never use `.upsert()` with `onConflict` on this table — it returns 400 from PostgREST.
+- **`mood_checkins` type column is NOT NULL** — always include `type:'mood'` when saving mood check-ins, `type:'breathing'` or `type:'meditation'` for mindfulness sessions. Omitting it causes insert failures even though the column has a DB default (PostgREST may not honour defaults without explicit values in some cases).
