@@ -574,18 +574,35 @@ body{
     var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
     var micBtn=document.getElementById('mic-btn');
     if(!SR){micBtn.style.display='none';return;}
-    var recog=new SR();recog.continuous=false;recog.interimResults=false;recog.lang='en-IN';
+    var recog=new SR();
+    recog.continuous=true;
+    recog.interimResults=true;
+    recog.lang='en-IN';
     var listening=false;
+    var silenceTimer=null;
     recog.onresult=function(e){
-      var t=e.results[0][0].transcript;
-      var inp=document.getElementById('inp');
-      inp.value=(inp.value?inp.value+' ':'')+t;
-      inp.dispatchEvent(new Event('input'));
+      clearTimeout(silenceTimer);
+      var newText='';
+      for(var i=e.resultIndex;i<e.results.length;i++){
+        if(e.results[i].isFinal) newText+=e.results[i][0].transcript;
+      }
+      if(newText){
+        var inp=document.getElementById('inp');
+        inp.value=(inp.value?inp.value+' ':'')+newText.trim();
+        inp.dispatchEvent(new Event('input'));
+      }
+      silenceTimer=setTimeout(function(){if(listening)recog.stop();},2000);
     };
-    recog.onend=function(){listening=false;micBtn.classList.remove('listening');};
-    recog.onerror=function(){listening=false;micBtn.classList.remove('listening');};
+    recog.onend=function(){
+      clearTimeout(silenceTimer);
+      listening=false;micBtn.classList.remove('listening');
+    };
+    recog.onerror=function(){
+      clearTimeout(silenceTimer);
+      listening=false;micBtn.classList.remove('listening');
+    };
     micBtn.addEventListener('click',function(){
-      if(listening){recog.stop();}
+      if(listening){clearTimeout(silenceTimer);recog.stop();}
       else{recog.start();listening=true;micBtn.classList.add('listening');}
     });
   })();
