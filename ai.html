@@ -342,8 +342,9 @@ body{
 /* ── Loader ── */
 #loader{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity .3s;}
 #loader.gone{opacity:0;pointer-events:none;}
-.l-mark{width:44px;height:44px;border-radius:12px;background:var(--accent);display:flex;align-items:center;justify-content:center;animation:pulse 1.5s ease-in-out infinite;}
+.l-mark{display:flex;align-items:center;justify-content:center;animation:pulse 1.5s ease-in-out infinite;}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(.91)}}
+@keyframes aiPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.04);opacity:0.85}}
 
 /* ── Mobile ── */
 @media(max-width:767px){
@@ -365,12 +366,7 @@ body{
 
 <div id="loader">
   <div class="l-mark">
-    <svg width="22" height="22" viewBox="0 0 18 18" fill="none">
-      <rect x="2" y="2" width="6" height="8" rx="1.5" fill="white"/>
-      <rect x="10" y="2" width="6" height="5" rx="1.5" fill="rgba(255,255,255,0.5)"/>
-      <rect x="2" y="12" width="14" height="2.5" rx="1.25" fill="rgba(255,255,255,0.3)"/>
-      <rect x="10" y="9" width="6" height="2.5" rx="1.25" fill="rgba(255,255,255,0.4)"/>
-    </svg>
+    <img src="images/ailogo.png" alt="StudyEase AI" style="width:80px;height:80px;object-fit:contain;border-radius:16px"/>
   </div>
 </div>
 
@@ -454,15 +450,10 @@ body{
     <main id="chat-main">
       <div class="chat-inner">
         <div id="empty-state">
-          <div class="e-icon">
-            <svg width="26" height="26" viewBox="0 0 18 18" fill="none">
-              <rect x="2" y="2" width="6" height="8" rx="1.5" fill="white"/>
-              <rect x="10" y="2" width="6" height="5" rx="1.5" fill="rgba(255,255,255,0.5)"/>
-              <rect x="2" y="12" width="14" height="2.5" rx="1.25" fill="rgba(255,255,255,0.3)"/>
-              <rect x="10" y="9" width="6" height="2.5" rx="1.25" fill="rgba(255,255,255,0.4)"/>
-            </svg>
-          </div>
-          <div class="e-title">AI Companion</div>
+          <img src="images/ailogo.png" alt="StudyEase AI"
+            style="width:80px;height:80px;object-fit:contain;border-radius:16px;
+            animation:aiPulse 2s ease-in-out infinite;margin-bottom:16px"/>
+          <div class="e-title" style="font-size:1.1rem;font-weight:700;color:#0A1628;margin-bottom:8px">StudyEase AI</div>
           <div class="e-sub">Your CBSE Class 10 study buddy</div>
           <div class="sug-grid">
             <button class="sc" data-q="Explain this concept in simple language a Class 10 student can understand">💡 Explain simply</button>
@@ -517,6 +508,9 @@ body{
 
   /* ── Auth ── */
   var currentUserId=null;
+  var userInitial='?';
+  var userAvatarUrl=null;
+
   sb.auth.onAuthStateChange(function(ev,session){
     if(ev==='SIGNED_OUT'||(ev==='INITIAL_SESSION'&&!session)){window.location.href='index.html';return;}
     if(session&&session.user){
@@ -524,6 +518,16 @@ body{
       setTimeout(function(){document.getElementById('loader').style.display='none';},320);
       document.body.style.opacity='1';
       currentUserId=session.user.id;
+      var meta=session.user.user_metadata;
+      var name=(meta&&(meta.name||meta.full_name))||session.user.email.split('@')[0];
+      userInitial=name.charAt(0).toUpperCase();
+      sb.from('profiles').select('avatar_url,name').eq('id',currentUserId).single()
+        .then(function(r){
+          if(r.data){
+            if(r.data.avatar_url) userAvatarUrl=r.data.avatar_url;
+            if(r.data.name) userInitial=r.data.name.charAt(0).toUpperCase();
+          }
+        });
       loadHistory();
       restoreFromDashboard();
     }
@@ -667,19 +671,39 @@ body{
     closeSidebar();inp.focus();
   }
 
+  function getUserAvatarEl(){
+    if(userAvatarUrl){
+      var img=document.createElement('img');
+      img.src=userAvatarUrl;
+      img.style.cssText='width:32px;height:32px;object-fit:cover;border-radius:50%;flex-shrink:0;margin-top:2px;';
+      return img;
+    }
+    var div=document.createElement('div');
+    div.style.cssText='width:32px;height:32px;border-radius:50%;background:#3B82F6;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;color:white;flex-shrink:0;margin-top:2px;';
+    div.textContent=userInitial;
+    return div;
+  }
+
+  function getAIAvatarEl(){
+    var img=document.createElement('img');
+    img.src='images/ailogo.png';img.alt='AI';
+    img.style.cssText='width:32px;height:32px;object-fit:cover;border-radius:8px;flex-shrink:0;margin-top:2px;';
+    return img;
+  }
+
   function addUser(text){
     if(!hasMessages){emptyEl.style.display='none';hasMessages=true;}
     var row=document.createElement('div');row.className='mrow mrow--user';
     var content=document.createElement('div');content.className='m-content';
     var bubble=document.createElement('div');bubble.className='m-bubble';
     bubble.innerHTML=esc(text).replace(/\n/g,'<br>');
-    content.appendChild(bubble);row.appendChild(content);msgs.appendChild(row);scrollBottom();
+    content.appendChild(bubble);row.appendChild(content);row.appendChild(getUserAvatarEl());msgs.appendChild(row);scrollBottom();
   }
 
   function addAI(text){
     var clean=stripMd(text);
     var row=document.createElement('div');row.className='mrow';
-    var av=document.createElement('div');av.className='m-av';av.textContent='SE';
+    var av=getAIAvatarEl();
     var content=document.createElement('div');content.className='m-content';
     var textEl=document.createElement('div');textEl.className='m-text';
     textEl.innerHTML=esc(clean).replace(/\n/g,'<br>');
@@ -702,7 +726,7 @@ body{
 
   function addTyping(){
     var row=document.createElement('div');row.className='t-row';row.id='typing-row';
-    var av=document.createElement('div');av.className='m-av';av.textContent='SE';
+    var av=getAIAvatarEl();
     var dots=document.createElement('div');dots.className='t-dots';
     dots.innerHTML='<div class="tdot"></div><div class="tdot"></div><div class="tdot"></div>';
     row.appendChild(av);row.appendChild(dots);msgs.appendChild(row);scrollBottom();
@@ -823,13 +847,12 @@ body{
       var ucontent=document.createElement('div');ucontent.className='m-content';
       var ububble=document.createElement('div');ububble.className='m-bubble';
       ububble.innerHTML=esc(entry.user_message).replace(/\n/g,'<br>');
-      ucontent.appendChild(ububble);urow.appendChild(ucontent);msgs.appendChild(urow);
+      ucontent.appendChild(ububble);urow.appendChild(ucontent);urow.appendChild(getUserAvatarEl());msgs.appendChild(urow);
       var arow=document.createElement('div');arow.className='mrow';
-      var aav=document.createElement('div');aav.className='m-av';aav.textContent='SE';
       var acontent=document.createElement('div');acontent.className='m-content';
       var atxt=document.createElement('div');atxt.className='m-text';
       atxt.innerHTML=esc(stripMd(entry.ai_reply)).replace(/\n/g,'<br>');
-      acontent.appendChild(atxt);arow.appendChild(aav);arow.appendChild(acontent);msgs.appendChild(arow);
+      acontent.appendChild(atxt);arow.appendChild(getAIAvatarEl());arow.appendChild(acontent);msgs.appendChild(arow);
     });
     scrollBottom();closeSidebar();
   }
