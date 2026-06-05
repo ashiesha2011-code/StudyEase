@@ -2,6 +2,29 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Project Stats
+
+**Total lines of code: 14,257** (14,150 across 15 HTML files + 107 in the Supabase Edge Function)
+
+| File | Lines |
+|------|-------|
+| `index.html` | 2,195 |
+| `dashboard.html` | 1,166 |
+| `session-player-ch2.html` | 1,253 |
+| `session-player.html` | 1,239 |
+| `video-player.html` | 1,190 |
+| `video-player-ch2.html` | 1,155 |
+| `maths.html` | 765 |
+| `quiz.html` | 787 |
+| `ai.html` | 930 |
+| `progress.html` | 561 |
+| `physics.html` | 631 |
+| `chemistry.html` | 631 |
+| `biology.html` | 631 |
+| `breathing.html` | 507 |
+| `settings.html` | 509 |
+| `supabase/functions/ai-chat/index.ts` | 107 |
+
 ## Running Locally
 
 No build step — open any HTML file directly or use a simple server:
@@ -47,6 +70,18 @@ The Edge Function (`supabase/functions/ai-chat/index.ts`) routes messages to sub
 
 The `netlify/functions/` directory is legacy — ignore it.
 
+## Images
+
+All image assets live in `images/`. Do NOT put images in the root.
+
+| File | Usage |
+|------|-------|
+| `images/StudyEasemain.png` | Main wordmark logo — used in all sidebars and index.html navbar |
+| `images/studyease-fav.png` | Favicon + apple-touch-icon across all pages; also used in splash/loading screens |
+| `images/ailogo.png` | AI companion icon — loader, welcome screen, and chat avatars in ai.html |
+
+Old root images (`favicon.png`, `logo.png`, `logo-sidebar.png`, `logo-icon.png`, `logo-white.png`) have been deleted.
+
 ## Pages
 
 | File | Purpose |
@@ -66,6 +101,26 @@ The `netlify/functions/` directory is legacy — ignore it.
 | `breathing.html` | Mindfulness page — breathing + meditation |
 | `quiz.html` | Quiz page |
 | `settings.html` | User settings — account, appearance, subscription |
+
+### Browser tab titles (standardised)
+
+| Page | Title |
+|------|-------|
+| `index.html` | `StudyEase — AI-powered CBSE Board Prep` |
+| `dashboard.html` | `Dashboard — StudyEase` |
+| `ai.html` | `AI Companion — StudyEase` |
+| `maths.html` | `Mathematics — StudyEase` |
+| `physics.html` | `Physics — StudyEase` |
+| `chemistry.html` | `Chemistry — StudyEase` |
+| `biology.html` | `Biology — StudyEase` |
+| `progress.html` | `My Progress — StudyEase` |
+| `quiz.html` | `Quiz — StudyEase` |
+| `settings.html` | `Settings — StudyEase` |
+| `breathing.html` | `Mindfulness — StudyEase` |
+| `video-player.html` | `Real Numbers — StudyEase` |
+| `video-player-ch2.html` | `Polynomials — StudyEase` |
+| `session-player.html` | `Session · Real Numbers — StudyEase` |
+| `session-player-ch2.html` | `Session · Polynomials — StudyEase` |
 
 ## Supabase Schema
 
@@ -102,6 +157,52 @@ Unified mental health + mindfulness table. Columns:
 
 Unique constraint: `(user_id, date)` — but only enforced via upsert for mood rows. Breathing/meditation rows are inserted fresh each time.
 
+## Sidebar Logo (all sidebar pages)
+
+Every page with a sidebar has this logo HTML:
+
+```html
+<div class="sb-logo">
+  <a href="#" onclick="handleLogoClick(event)" style="display:block;cursor:pointer">
+    <img src="images/StudyEasemain.png" alt="StudyEase" style="height:32px;width:auto;object-fit:contain;max-width:160px"/>
+  </a>
+</div>
+```
+
+And this global function before `</body>`:
+
+```javascript
+function handleLogoClick(e){
+  e.preventDefault();
+  window.supabase.createClient(
+    'https://xiwrvbtryeesfgeydxnf.supabase.co',
+    '<anon_key>'
+  ).auth.getSession().then(function(r){
+    window.location.href=(r.data&&r.data.session)?'dashboard.html':'index.html';
+  });
+}
+```
+
+The logo click is **smart** — redirects to dashboard if logged in, landing page if not. Pages with sidebars: `dashboard.html`, `maths.html`, `physics.html`, `chemistry.html`, `biology.html`, `progress.html`, `quiz.html`, `settings.html`, `ai.html`, `video-player.html`, `video-player-ch2.html`.
+
+## Splash / Loading Screens
+
+### index.html — branded splash for returning users
+When the auth check finds an existing session, before redirecting to dashboard, a 2-second splash screen is shown:
+- White full-screen overlay (z-index:99999)
+- Pulsing `images/studyease-fav.png` (72px) + `images/StudyEasemain.png` (28px, 70% opacity) below it
+- CSS animation: `@keyframes sp{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}`
+- After 2s, fades out (opacity 0, 0.4s) then redirects
+- If NO session: homepage fades in normally — no splash shown
+
+### dashboard.html — onboarding loading screen
+After onboarding completes (`obFinish()`):
+- Sets `localStorage.setItem('studyease_just_onboarded', 'true')`
+- Shows `showLoadingScreen()`: white overlay with pulsing `images/studyease-fav.png` (64px)
+- `@keyframes favPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}`
+- After 2s fade-out, clears the localStorage flag
+- On any subsequent dashboard page load, if `studyease_just_onboarded === 'true'` is in localStorage, the same screen plays once and clears
+
 ## AI on Each Page
 
 All pages that call the Edge Function:
@@ -119,6 +220,21 @@ All pages that call the Edge Function:
 - **Mental Health Counsellor mode**: open `ai.html?mode=counsellor` to enter counsellor mode — sets `subject='Mental Health'`, removes active tab, auto-shows a welcome bubble. URL param is cleaned with `window.history.replaceState` after reading.
 - **Mental Health sidebar highlight**: conversations with `subject === 'Mental Health'` get class `conv-item--mental` (purple left border) and a `💙 Mental Health` subject chip styled with `.conv-subj--mental`
 
+#### ai.html — Logo / Avatars
+- **Loader** (`#loader .l-mark`): shows `images/ailogo.png` (80px, border-radius:16px, pulsing) while auth check runs
+- **Welcome/empty state** (`#empty-state`): `images/ailogo.png` with `aiPulse` animation (2s), "StudyEase AI" bold title, subtitle below
+- **AI chat bubbles**: `getAIAvatarEl()` returns `<img src="images/ailogo.png" style="border-radius:8px">` (rounded square, NOT circle)
+- **User chat bubbles**: `getUserAvatarEl()` returns profile photo (`profiles.avatar_url`) if set, else initials in blue circle (`border-radius:50%`)
+- `userAvatarUrl` and `userInitial` are set in the auth handler; profile is fetched from `profiles` table on login
+
+#### ai.html — Voice Dictation
+- Uses `SpeechRecognition` / `webkitSpeechRecognition`
+- `continuous=true`, `interimResults=true` — keeps listening through natural pauses
+- Reads only new results from `e.resultIndex` (NOT `e.results[0]`) — prevents duplication
+- Only appends `isFinal` results to the input
+- **Auto-stops after 2 seconds of silence** via `silenceTimer` — timer resets on every new result, fires `recog.stop()` after 2000ms of quiet
+- Clicking the mic button again stops immediately (`clearTimeout(silenceTimer); recog.stop()`)
+
 ### Subject pages (physics / chemistry / biology / maths)
 - Floating "Ask AI" widget (bottom-right FAB button)
 - Prefixes message with `[SubjectName]` before sending to Edge Function
@@ -134,6 +250,7 @@ All pages that call the Edge Function:
 - Saves to `chat_history` with `subject:'Maths'`
 - **`#vp-popup` is a direct child of `#player-wrap`** (not body) — this keeps it visible during fullscreen. `position:fixed` escapes `overflow:hidden` and in fullscreen is relative to the fullscreen viewport. Do NOT move it back to body.
 - `handleFsPopup()` is intentionally a no-op — no DOM movement needed.
+- Topbar logo uses `filter:brightness(0) invert(1)` to appear white on the dark player background
 
 ### session-player.html + session-player-ch2.html
 - Fullscreen black video player — no sidebar, no topbar
@@ -142,6 +259,7 @@ All pages that call the Edge Function:
 - Uses same real API pattern with chapter prefix (`[Real Numbers]` / `[Maths]`) → `MATHS_SYSTEM`
 - Saves to `chat_history` with `subject:'Maths'` using `window._SB` and `window._sessUid`
 - Poll/ready hiding implemented via classList.add/remove patching on `#ready-prompt` and `#poll-overlay`
+- Topbar logo uses `filter:brightness(0) invert(1)` to appear white on the dark session background
 
 ## Dashboard
 
@@ -179,9 +297,17 @@ Simplified to just "My Progress" title (1.4rem, 800 weight) + "View all →" lin
 - Populated in auth handler and `loadUserProfile()`
 - Closes on outside click or Escape key
 
+### Onboarding modal
+- Shown ONLY when `Date.now() - new Date(user.created_at).getTime() < 120000` (brand new account, within 2 minutes of creation) AND `!onboarding_done`
+- 3 steps: Name → Class (4 pill buttons, auto-advances) → Photo upload (optional)
+- Progress dots at top, slide animation between steps
+- On finish (`obFinish()`): upserts to `profiles` with `name`, `class`, `avatar_url`, `onboarding_done: true`, then shows the 2-second loading screen
+- Network error on profile load: silently fails, does NOT show onboarding
+
 ## Mindfulness Page (breathing.html)
 
 Standalone page — **no login required** to use, but saves to DB if logged in.
+Top bar has `images/StudyEasemain.png` logo (white-filtered for dark background).
 
 ### Two tabs:
 **🫁 Breathing:**
@@ -222,7 +348,7 @@ Standalone page — **no login required** to use, but saves to DB if logged in.
 
 General sizing philosophy: slightly larger than typical — bigger padding, bigger font sizes, more breathing room. Subject cards use `26px 22px` padding, `2.4rem` emoji, `1.05rem` name.
 
-**ai.html sizing** (updated): header 62px tall, subject pills `6px 16px` padding / `0.86rem`, message text `1rem`, bubbles `13px 18px` padding, input `1rem`, send button `40px`, chat max-width `760px`.
+**ai.html sizing**: header 62px tall, subject pills `6px 16px` padding / `0.86rem`, message text `1rem`, bubbles `13px 18px` padding, input `1rem`, send button `40px`, chat max-width `760px`.
 
 ## Key Deployment Notes
 
@@ -255,14 +381,7 @@ Full settings page with sidebar layout. Sections:
 - If `avatar_url` exists: set `backgroundImage`, `backgroundSize:cover`, clear `textContent`
 - If not: show initials as before
 - `dashboard.html` has `loadUserProfile()`, `setAvatarDisplay()`, `updateAvatarEl()` helper functions
-
-## Onboarding modal (dashboard.html)
-
-- Shown ONLY when `Date.now() - new Date(user.created_at).getTime() < 120000` (brand new account, within 2 minutes of creation) AND `!onboarding_done`
-- 3 steps: Name → Class (4 pill buttons, auto-advances) → Photo upload (optional)
-- Progress dots at top, slide animation between steps
-- On finish: upserts to `profiles` with `name`, `class`, `avatar_url`, `onboarding_done: true`
-- Network error on profile load: silently fails, does NOT show onboarding
+- `ai.html` fetches `profiles.avatar_url` and `profiles.name` on login and uses them for the user message avatar (`getUserAvatarEl()`)
 
 ## Known Gotchas
 
@@ -276,3 +395,6 @@ Full settings page with sidebar layout. Sections:
 - **`#vp-popup` must stay inside `#player-wrap`** — moving it to body breaks fullscreen visibility. `position:fixed` inside a non-transformed element escapes `overflow:hidden` correctly.
 - **Onboarding only triggers for truly new accounts** — check `created_at` age, not just `onboarding_done`. Existing users whose `onboarding_done` is null (column added later) must NOT see the modal.
 - **`ai.html?mode=counsellor` sets `subject='Mental Health'`** — messages are sent with prefix `[Mental Health]` which falls through to `GENERAL_SYSTEM` (correct). The URL param is consumed once via `window.history.replaceState`.
+- **Logo images on dark backgrounds** (session players, video player topbar, breathing.html top logo) use `filter:brightness(0) invert(1)` to render white — the PNG is full-colour so the filter is required.
+- **Voice dictation duplication fix** — NEVER read `e.results[0]` in the `onresult` handler. Always iterate from `e.resultIndex` to avoid replaying already-appended results on each subsequent event.
+- **`studyease_just_onboarded` localStorage flag** — set by `obFinish()` in dashboard.html, cleared after the loading screen plays. If you see the loading screen appearing unexpectedly on dashboard load, this flag is still in localStorage.
