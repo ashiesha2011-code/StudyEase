@@ -1035,9 +1035,7 @@ body {
         var moodRow = {user_id:currentUserId, mood:mood, type:'mood', date:today};
         sb.from('mood_checkins').insert(moodRow).then(function(res){
           if(res.error){
-            if(res.error.code==='23505'){
-              sb.from('mood_checkins').update({mood:mood}).eq('user_id',currentUserId).eq('date',today).then(null,function(){});
-            } else { console.error('Mood save error:',res.error); }
+            sb.from('mood_checkins').update({mood:mood}).eq('user_id',currentUserId).eq('date',today).then(null,function(){});
           }
         });
       }
