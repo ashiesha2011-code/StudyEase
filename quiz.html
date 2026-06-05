@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Quiz · StudyEase</title>
-  <link rel="icon" type="image/png" href="favicon.png" />
+  <title>Quiz — StudyEase</title>
+  <link rel="icon" href="images/studyease-fav.png" type="image/png"/>
+  <link rel="apple-touch-icon" href="images/studyease-fav.png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
@@ -186,8 +187,9 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--off-white);colo
 <div class="layout">
   <aside class="sidebar" id="sidebar">
     <div class="sb-logo">
-      <img src="logo-sidebar.png" alt="StudyEase" class="sb-logo-mark">
-      <span class="sb-logo-text">StudyEase</span>
+      <a href="#" onclick="handleLogoClick(event)" style="display:block;cursor:pointer">
+        <img src="images/StudyEasemain.png" alt="StudyEase" style="height:32px;width:auto;object-fit:contain;max-width:160px"/>
+      </a>
     </div>
     <nav class="sb-nav">
       <div class="sb-lbl">Main</div>
@@ -769,6 +771,17 @@ document.getElementById('hamburger').addEventListener('click',function(){sEl.cla
 oEl.addEventListener('click',function(){sEl.classList.remove('open');oEl.classList.remove('open')});
 
 })();
+</script>
+<script>
+function handleLogoClick(e){
+  e.preventDefault();
+  window.supabase.createClient(
+    'https://xiwrvbtryeesfgeydxnf.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd3J2YnRyeWVlc2ZnZXlkeG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMTQ0NDAsImV4cCI6MjA5NDU5MDQ0MH0.3Sp9dlc8cNsrzdHAGy74pCqscjL1MFV9ZWMW90QbhqE'
+  ).auth.getSession().then(function(r){
+    window.location.href=(r.data&&r.data.session)?'dashboard.html':'index.html';
+  });
+}
 </script>
 </body>
 </html>

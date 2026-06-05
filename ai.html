@@ -4,7 +4,8 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>AI Companion — StudyEase</title>
-  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="icon" href="images/studyease-fav.png" type="image/png"/>
+  <link rel="apple-touch-icon" href="images/studyease-fav.png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
   <style>
@@ -380,7 +381,11 @@ body{
   <!-- Sidebar -->
   <aside id="sidebar">
     <div id="sb-top">
-      <span id="sb-logo"><img src="logo-sidebar.png" alt="StudyEase"><span id="sb-logo-text">StudyEase</span></span>
+      <div class="sb-logo">
+        <a href="#" onclick="handleLogoClick(event)" style="display:block;cursor:pointer">
+          <img src="images/StudyEasemain.png" alt="StudyEase" style="height:32px;width:auto;object-fit:contain;max-width:160px"/>
+        </a>
+      </div>
       <button id="new-chat-btn">
         <svg width="12" height="12" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>
         New Chat
@@ -869,6 +874,17 @@ body{
       .catch(function(err){console.error('[History error]',err);});
   }
 })();
+</script>
+<script>
+function handleLogoClick(e){
+  e.preventDefault();
+  window.supabase.createClient(
+    'https://xiwrvbtryeesfgeydxnf.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd3J2YnRyeWVlc2ZnZXlkeG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMTQ0NDAsImV4cCI6MjA5NDU5MDQ0MH0.3Sp9dlc8cNsrzdHAGy74pCqscjL1MFV9ZWMW90QbhqE'
+  ).auth.getSession().then(function(r){
+    window.location.href=(r.data&&r.data.session)?'dashboard.html':'index.html';
+  });
+}
 </script>
 </body>
 </html>
