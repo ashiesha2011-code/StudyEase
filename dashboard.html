@@ -640,7 +640,7 @@ body {
       <div class="health-card-wrap">
         <div class="health-card">
           <div class="health-top">
-            <div class="health-icon-wrap">💙</div>
+            <div class="health-icon-wrap"><img src="images/mental-health.png" alt="" style="width:22px;height:22px;object-fit:contain"/></div>
             <div>
               <div class="health-name">Mental Health Check-in</div>
             </div>
@@ -1033,9 +1033,14 @@ body {
       var today = new Date().toDateString();
       localStorage.setItem('se_mood', JSON.stringify({mood:mood, date:today}));
       if(currentUserId) {
-        sb.from('mood_checkins')
-          .upsert({user_id:currentUserId, mood:mood, type:'mood', date:today}, {onConflict:'user_id,date'})
-          .then(function(res){ if(res.error) console.error('Mood save error:', res.error); });
+        var moodRow = {user_id:currentUserId, mood:mood, type:'mood', date:today};
+        sb.from('mood_checkins').insert(moodRow).then(function(res){
+          if(res.error){
+            if(res.error.code==='23505'){
+              sb.from('mood_checkins').update({mood:mood}).eq('user_id',currentUserId).eq('date',today).then(null,function(){});
+            } else { console.error('Mood save error:',res.error); }
+          }
+        });
       }
     }
   }
