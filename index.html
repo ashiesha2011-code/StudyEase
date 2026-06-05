@@ -1779,7 +1779,7 @@ p { color: var(--text-mid); line-height: 1.75; }
 <!-- ═══════════════════════════════════════════════════════ SUPABASE SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-  // Auto-redirect to dashboard if already logged in — with smooth fade
+  // Auto-redirect to dashboard if already logged in — with splash screen
   (function() {
     var url    = 'https://xiwrvbtryeesfgeydxnf.supabase.co';
     var key    = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd3J2YnRyeWVlc2ZnZXlkeG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMTQ0NDAsImV4cCI6MjA5NDU5MDQ0MH0.3Sp9dlc8cNsrzdHAGy74pCqscjL1MFV9ZWMW90QbhqE';
@@ -1789,12 +1789,29 @@ p { color: var(--text-mid); line-height: 1.75; }
     document.documentElement.style.opacity = '0';
     document.documentElement.style.transition = 'opacity 0.4s ease';
 
+    function showSplashScreen(callback){
+      var el = document.createElement('div');
+      el.style.cssText = 'position:fixed;inset:0;background:white;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;';
+      el.innerHTML = '<img src="images/studyease-fav.png" style="width:72px;height:72px;animation:sp 0.8s ease-in-out infinite"/>'
+        + '<img src="images/StudyEasemain.png" style="height:28px;width:auto;opacity:0.7"/>'
+        + '<style>@keyframes sp{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}</style>';
+      document.body.appendChild(el);
+      setTimeout(function(){
+        el.style.transition = 'opacity 0.4s';
+        el.style.opacity = '0';
+        setTimeout(function(){
+          el.remove();
+          if(callback) callback();
+        }, 400);
+      }, 2000);
+    }
+
     client.auth.getSession().then(function(res) {
       if (res.data && res.data.session) {
-        // Smoothly fade out then redirect
-        setTimeout(function() {
+        // Show branded splash screen then redirect
+        showSplashScreen(function(){
           window.location.href = 'dashboard.html';
-        }, 100);
+        });
       } else {
         // No session — fade the homepage in smoothly
         document.documentElement.style.opacity = '1';
