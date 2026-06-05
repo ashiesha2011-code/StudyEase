@@ -1032,11 +1032,17 @@ body {
       var today = new Date().toDateString();
       localStorage.setItem('se_mood', JSON.stringify({mood:mood, date:today}));
       if(currentUserId) {
-        var moodRow = {user_id:currentUserId, mood:mood, type:'mood', date:today};
-        sb.from('mood_checkins').insert(moodRow).then(function(res){
-          if(res.error){
-            sb.from('mood_checkins').update({mood:mood}).eq('user_id',currentUserId).eq('date',today).then(null,function(){});
-          }
+        sb.auth.getSession().then(function(r){
+          if(!r.data||!r.data.session) return;
+          var jwt=r.data.session.access_token;
+          var base=SUPABASE_URL+'/rest/v1/mood_checkins';
+          var headers={'Content-Type':'application/json','Authorization':'Bearer '+jwt,'apikey':SUPABASE_ANON,'Prefer':'return=minimal'};
+          fetch(base,{method:'POST',headers:headers,body:JSON.stringify({user_id:currentUserId,mood:mood,type:'mood',date:today})})
+            .then(function(res){
+              if(!res.ok){
+                fetch(base+'?user_id=eq.'+currentUserId+'&date=eq.'+encodeURIComponent(today),{method:'PATCH',headers:headers,body:JSON.stringify({mood:mood})});
+              }
+            });
         });
       }
     }
