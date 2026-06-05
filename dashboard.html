@@ -892,6 +892,9 @@ body {
   var _obCurrentStep = 1;
 
   window.showOnboarding = function(user, profile) {
+    // Guard: don't re-show if already open (e.g. token refresh fires onAuthStateChange again)
+    var ov = document.getElementById('onboarding-overlay');
+    if (ov && ov.style.display !== 'none') return;
     _obUser = user;
     var name = (profile && profile.name) || (user.user_metadata && (user.user_metadata.name || user.user_metadata.full_name)) || user.email.split('@')[0];
     var nameInput = document.getElementById('ob-name');

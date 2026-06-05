@@ -440,8 +440,34 @@ body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--off-whit
 
   var deleteBtn = document.getElementById('settings-delete');
   if (deleteBtn) deleteBtn.addEventListener('click', async function() {
-    if (confirm('Are you sure? This will sign you out. Your account data will remain — contact support to permanently delete it.')) {
-      await sb.auth.signOut(); window.location.href = 'index.html';
+    if (!confirm('Permanently delete your account? This will erase all your data, progress, and chat history and cannot be undone.')) return;
+    var origText = deleteBtn.textContent;
+    deleteBtn.textContent = 'Deleting…';
+    deleteBtn.disabled = true;
+    try {
+      var sess = await sb.auth.getSession();
+      var token = sess.data && sess.data.session && sess.data.session.access_token;
+      if (!token) { alert('Session expired — please sign in again.'); window.location.href = 'index.html'; return; }
+      var res = await fetch('https://xiwrvbtryeesfgeydxnf.supabase.co/functions/v1/delete-account', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token,
+          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd3J2YnRyeWVlc2ZnZXlkeG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMTQ0NDAsImV4cCI6MjA5NDU5MDQ0MH0.3Sp9dlc8cNsrzdHAGy74pCqscjL1MFV9ZWMW90QbhqE'
+        }
+      });
+      var data = await res.json();
+      if (data.success) {
+        window.location.href = 'index.html';
+      } else {
+        alert('Could not delete account: ' + (data.error || 'Unknown error'));
+        deleteBtn.textContent = origText;
+        deleteBtn.disabled = false;
+      }
+    } catch (err) {
+      alert('Network error — please try again.');
+      deleteBtn.textContent = origText;
+      deleteBtn.disabled = false;
     }
   });
 
