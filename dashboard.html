@@ -218,29 +218,6 @@ body {
 .welcome-text { position: relative; z-index: 1; }
 .welcome-hi { font-size: 1.55rem; font-weight: 800; color: white; margin-bottom: 6px; letter-spacing: -0.02em; }
 .welcome-sub { font-size: 0.9rem; color: rgba(255,255,255,0.5); }
-.welcome-right { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
-.msg-counter {
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.15);
-  border-radius: 99px;
-  padding: 7px 16px;
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: rgba(255,255,255,0.75);
-  display: flex;
-  align-items: center;
-  gap: 7px;
-}
-.msg-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--emerald); }
-.streak-pill {
-  background: rgba(245,158,11,0.15);
-  border: 1px solid rgba(245,158,11,0.25);
-  border-radius: 99px;
-  padding: 6px 14px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--amber);
-}
 
 /* ── AI CTA button ─────────────────────────────────────── */
 .ai-cta-btn {
@@ -377,12 +354,6 @@ body {
 .subject-footer {
   display: flex; align-items: center; justify-content: space-between;
   margin-top: auto;
-}
-.sub-tags { display: flex; gap: 5px; flex-wrap: wrap; }
-.sub-tag {
-  font-size: 0.68rem; font-weight: 600; padding: 3px 8px;
-  border-radius: 99px; background: var(--off-white);
-  border: 1px solid var(--border); color: var(--text-muted);
 }
 .sub-arrow {
   width: 28px; height: 28px; border-radius: 50%;
@@ -632,13 +603,6 @@ body {
           <div class="welcome-hi" id="welcome-hi">Welcome back! 👋</div>
           <div class="welcome-sub" id="welcome-sub">Ready to study smarter today?</div>
         </div>
-        <div class="welcome-right">
-          <div class="msg-counter">
-            <div class="msg-dot"></div>
-            <span id="msgs-left">50</span> AI messages left today
-          </div>
-          <div class="streak-pill">🔥 1 day streak — keep going!</div>
-        </div>
       </div>
 
       <!-- AI CTA -->
@@ -648,7 +612,7 @@ body {
         </div>
         <div class="ai-cta-content">
           <div class="ai-cta-title">Ask AI a Doubt</div>
-          <div class="ai-cta-sub">Instant CBSE answers — explained for your board exam</div>
+          <div class="ai-cta-sub">Get instant answers, explained clearly</div>
         </div>
         <div class="ai-cta-arrow">
           <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
@@ -672,8 +636,8 @@ body {
               <div class="health-name">Mental Health Check-in</div>
             </div>
           </div>
-          <div class="health-title" id="health-title">Tell us honestly — no judgment.</div>
-          <div class="health-sub" id="health-sub">Tap how you're feeling right now.</div>
+          <div class="health-title" id="health-title">How are you feeling?</div>
+          <div class="health-sub" id="health-sub"></div>
           <div class="mood-row" id="mood-row">
             <button class="mood-btn" onclick="selectMood(this,'great')">😊 Great</button>
             <button class="mood-btn" onclick="selectMood(this,'okay')">😐 Okay</button>
@@ -703,14 +667,9 @@ body {
             <div class="subject-emoji">⚡</div>
             <div>
               <div class="subject-name">Physics</div>
-              <div class="subject-chapters">10 chapters · Class 10</div>
+              <div class="subject-chapters">Class 10</div>
             </div>
             <div class="subject-footer">
-              <div class="sub-tags">
-                <span class="sub-tag">Videos</span>
-                <span class="sub-tag">Practice</span>
-                <span class="sub-tag">Notes</span>
-              </div>
               <div class="sub-arrow">
                 <svg width="11" height="11" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
               </div>
@@ -721,14 +680,9 @@ body {
             <div class="subject-emoji">⚗️</div>
             <div>
               <div class="subject-name">Chemistry</div>
-              <div class="subject-chapters">14 chapters · Class 10</div>
+              <div class="subject-chapters">Class 10</div>
             </div>
             <div class="subject-footer">
-              <div class="sub-tags">
-                <span class="sub-tag">Videos</span>
-                <span class="sub-tag">Practice</span>
-                <span class="sub-tag">Notes</span>
-              </div>
               <div class="sub-arrow">
                 <svg width="11" height="11" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
               </div>
@@ -739,14 +693,9 @@ body {
             <div class="subject-emoji">🌿</div>
             <div>
               <div class="subject-name">Biology</div>
-              <div class="subject-chapters">9 chapters · Class 10</div>
+              <div class="subject-chapters">Class 10</div>
             </div>
             <div class="subject-footer">
-              <div class="sub-tags">
-                <span class="sub-tag">Videos</span>
-                <span class="sub-tag">Practice</span>
-                <span class="sub-tag">Notes</span>
-              </div>
               <div class="sub-arrow">
                 <svg width="11" height="11" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
               </div>
@@ -757,14 +706,9 @@ body {
             <div class="subject-emoji">📐</div>
             <div>
               <div class="subject-name">Mathematics</div>
-              <div class="subject-chapters">15 chapters · Class 10</div>
+              <div class="subject-chapters">Class 10</div>
             </div>
             <div class="subject-footer">
-              <div class="sub-tags">
-                <span class="sub-tag">Videos</span>
-                <span class="sub-tag">Practice</span>
-                <span class="sub-tag">Notes</span>
-              </div>
               <div class="sub-arrow">
                 <svg width="11" height="11" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
               </div>
