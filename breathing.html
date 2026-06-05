@@ -9,217 +9,274 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
   <style>
+/* ── Loading splash ── */
+#yoga-splash{position:fixed;inset:0;background:#fff;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:opacity .4s ease}
+#yoga-splash .s-img{width:90px;height:90px;object-fit:contain;animation:yogaPulse 1.6s ease-in-out infinite}
+#yoga-splash .s-txt{font-family:'DM Sans',sans-serif;font-size:1.05rem;font-weight:600;color:#0A1628;opacity:.65;letter-spacing:.03em}
+@keyframes yogaPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+
+/* ── Reset ── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{min-height:100%;font-family:'DM Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-body{background:linear-gradient(145deg,#E8F4FD 0%,#EAF7F0 50%,#F0FDF4 100%);min-height:100vh;display:flex;flex-direction:column;align-items:center;color:#1E293B}
+body{background:linear-gradient(145deg,#D1FAE5 0%,#EDE9FE 50%,#DBEAFE 100%);min-height:100vh;display:flex;flex-direction:column;align-items:center;color:#1E293B}
 
-.back-link{position:fixed;top:20px;left:24px;display:flex;align-items:center;gap:6px;font-size:.84rem;font-weight:600;color:#64748B;text-decoration:none;transition:color .15s;z-index:10}
+/* ── Topbar ── */
+.topbar{position:fixed;top:0;left:0;right:0;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;z-index:20;background:rgba(255,255,255,.55);backdrop-filter:blur(14px);border-bottom:1px solid rgba(20,184,166,.12)}
+.back-link{display:flex;align-items:center;gap:6px;font-size:.84rem;font-weight:600;color:#64748B;text-decoration:none;transition:color .15s}
 .back-link:hover{color:#0A1628}
-.session-badge{position:fixed;top:20px;right:24px;background:rgba(255,255,255,.75);backdrop-filter:blur(8px);border:1px solid rgba(20,184,166,.25);border-radius:99px;padding:6px 14px;font-size:.78rem;font-weight:600;color:#0F766E;z-index:10}
+.session-badge{background:rgba(255,255,255,.9);border:1px solid rgba(20,184,166,.3);border-radius:99px;padding:5px 14px;font-size:.77rem;font-weight:600;color:#0F766E;white-space:nowrap}
 
-/* Page tabs */
-.page-tabs{display:flex;gap:0;background:rgba(255,255,255,.6);backdrop-filter:blur(8px);border:1px solid rgba(20,184,166,.2);border-radius:99px;padding:4px;margin-bottom:28px}
-.page-tab{padding:8px 22px;border-radius:99px;border:none;background:none;font-family:inherit;font-size:.88rem;font-weight:600;color:#64748B;cursor:pointer;transition:all .18s}
-.page-tab.active{background:#14B8A6;color:white;box-shadow:0 2px 10px rgba(20,184,166,.3)}
+/* ── Page wrapper ── */
+.page{flex:1;display:flex;flex-direction:column;align-items:center;padding:76px 20px 52px;width:100%;max-width:540px}
 
-.page{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 24px 40px;width:100%;max-width:520px}
+/* ── Hero header ── */
+.hero{display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:24px;text-align:center}
+.hero-ring{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,rgba(20,184,166,.18),rgba(139,92,246,.14));border:1.5px solid rgba(20,184,166,.25);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 24px rgba(20,184,166,.18),0 0 0 8px rgba(20,184,166,.06)}
+.hero-ring img{width:46px;height:46px;object-fit:contain}
+.hero h1{font-size:1.65rem;font-weight:700;color:#0A1628;letter-spacing:-.02em}
+.hero-sub{font-size:.8rem;font-weight:600;color:#94A3B8;letter-spacing:.1em;text-transform:uppercase}
 
-/* Mode picker */
-.mode-row{display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap;justify-content:center}
-.mode-btn{padding:8px 18px;border-radius:99px;border:1.5px solid rgba(20,184,166,.3);background:rgba(255,255,255,.55);backdrop-filter:blur(6px);font-family:inherit;font-size:.83rem;font-weight:600;color:#475569;cursor:pointer;transition:all .18s}
-.mode-btn:hover{border-color:#14B8A6;color:#0F766E}
-.mode-btn.active{background:#14B8A6;border-color:#14B8A6;color:white}
+/* ── Card ── */
+.card{background:rgba(255,255,255,.58);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.85);border-radius:26px;padding:28px 26px 26px;width:100%;box-shadow:0 8px 40px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04),inset 0 1px 0 rgba(255,255,255,.8)}
 
-/* Circle */
-.circle-wrap{position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:28px}
-.circle-outer{width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(99,210,190,.25) 0%,rgba(147,197,253,.12) 60%,transparent 100%);display:flex;align-items:center;justify-content:center;position:relative}
-.circle-ring{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(20,184,166,.2)}
-.circle-main{width:160px;height:160px;border-radius:50%;background:linear-gradient(135deg,rgba(99,210,190,.55) 0%,rgba(147,197,253,.55) 100%);box-shadow:0 0 40px rgba(99,210,190,.3),0 0 80px rgba(147,197,253,.15);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;transition:transform .1s linear}
-.breath-label{font-size:1.05rem;font-weight:700;color:#0F766E;letter-spacing:.01em;text-align:center;line-height:1.3}
-.breath-count{font-size:2rem;font-weight:700;color:#0F766E;opacity:.85;line-height:1}
-.pulse-ring{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(20,184,166,.15);animation:pulse-out 3s ease-out infinite;pointer-events:none}
-.pulse-ring:nth-child(2){animation-delay:1s}.pulse-ring:nth-child(3){animation-delay:2s}
-@keyframes pulse-out{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.5);opacity:0}}
+/* ── Tabs ── */
+.page-tabs{display:flex;gap:0;background:rgba(241,245,249,.75);border:1px solid rgba(148,163,184,.18);border-radius:99px;padding:4px;margin-bottom:24px}
+.page-tab{flex:1;padding:9px 20px;border-radius:99px;border:none;background:none;font-family:inherit;font-size:.88rem;font-weight:600;color:#64748B;cursor:pointer;transition:all .2s}
+.page-tab.active{background:#14B8A6;color:white;box-shadow:0 2px 12px rgba(20,184,166,.38)}
 
-/* Meditation circle variant */
-.circle-main.med-mode{background:linear-gradient(135deg,rgba(167,139,250,.45) 0%,rgba(196,181,253,.45) 100%);box-shadow:0 0 40px rgba(139,92,246,.2),0 0 80px rgba(167,139,250,.1);animation:med-pulse 8s ease-in-out infinite}
+/* ── Mode buttons ── */
+.mode-row{display:flex;gap:7px;margin-bottom:24px;flex-wrap:wrap;justify-content:center}
+.mode-btn{padding:7px 16px;border-radius:99px;border:1.5px solid rgba(20,184,166,.25);background:rgba(255,255,255,.6);font-family:inherit;font-size:.82rem;font-weight:600;color:#475569;cursor:pointer;transition:all .18s}
+.mode-btn:hover{border-color:#14B8A6;color:#0F766E;background:rgba(20,184,166,.07)}
+.mode-btn.active{background:#14B8A6;border-color:#14B8A6;color:white;box-shadow:0 2px 10px rgba(20,184,166,.32)}
+
+/* ── Circle ── */
+.circle-wrap{position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:22px}
+.circle-outer{width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(99,210,190,.18) 0%,rgba(147,197,253,.07) 60%,transparent 100%);display:flex;align-items:center;justify-content:center;position:relative}
+.circle-ring{position:absolute;inset:0;border-radius:50%;border:1.5px solid rgba(20,184,166,.18)}
+.circle-main{width:164px;height:164px;border-radius:50%;background:linear-gradient(135deg,rgba(20,184,166,.72) 0%,rgba(59,130,246,.65) 100%);box-shadow:0 0 50px rgba(20,184,166,.3),0 0 100px rgba(147,197,253,.12),inset 0 1px 0 rgba(255,255,255,.35);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;transition:transform .1s linear}
+.breath-label{font-size:1rem;font-weight:700;color:white;letter-spacing:.01em;text-align:center;line-height:1.3;text-shadow:0 1px 4px rgba(0,0,0,.18)}
+.breath-count{font-size:2.2rem;font-weight:700;color:white;opacity:.92;line-height:1;text-shadow:0 1px 4px rgba(0,0,0,.18)}
+.pulse-ring{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(20,184,166,.18);animation:pulse-out 3s ease-out infinite;pointer-events:none}
+.pulse-ring:nth-child(2){animation-delay:1s}
+.pulse-ring:nth-child(3){animation-delay:2s}
+@keyframes pulse-out{0%{transform:scale(1);opacity:.75}100%{transform:scale(1.55);opacity:0}}
+
+/* ── Meditation circle variant ── */
+.circle-main.med-mode{background:linear-gradient(135deg,rgba(139,92,246,.72) 0%,rgba(99,102,241,.65) 100%);box-shadow:0 0 50px rgba(139,92,246,.28),0 0 100px rgba(167,139,250,.1),inset 0 1px 0 rgba(255,255,255,.3);animation:med-pulse 8s ease-in-out infinite}
 @keyframes med-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
-.pulse-ring.med-mode{border-color:rgba(139,92,246,.15)}
+.pulse-ring.med-mode{border-color:rgba(139,92,246,.2)}
 
-/* Timer row */
+/* ── Timer row ── */
 .timer-row{display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap;justify-content:center}
-.timer-display{font-size:1.6rem;font-weight:700;color:#0F766E;letter-spacing:-.02em;min-width:80px;text-align:center}
+.timer-display{font-size:1.55rem;font-weight:700;color:#0F766E;letter-spacing:-.02em;min-width:76px;text-align:center}
+.timer-display.med{color:#7C3AED}
 .timer-sep{color:#94A3B8;font-size:.8rem;font-weight:500}
 .duration-btns{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
-.dur-btn{padding:5px 12px;border-radius:99px;border:1.5px solid rgba(20,184,166,.3);background:rgba(255,255,255,.5);font-family:inherit;font-size:.78rem;font-weight:600;color:#475569;cursor:pointer;transition:all .15s}
+.dur-btn{padding:5px 13px;border-radius:99px;border:1.5px solid rgba(20,184,166,.25);background:rgba(255,255,255,.55);font-family:inherit;font-size:.78rem;font-weight:600;color:#475569;cursor:pointer;transition:all .15s}
 .dur-btn:hover{border-color:#14B8A6;color:#0F766E}
-.dur-btn.active{background:#14B8A6;border-color:#14B8A6;color:white}
+.dur-btn.active{background:#14B8A6;border-color:#14B8A6;color:white;box-shadow:0 2px 7px rgba(20,184,166,.28)}
 
-/* Custom time input */
+/* ── Custom input ── */
 .custom-wrap{display:none;align-items:center;gap:6px;margin-top:8px}
 .custom-wrap.show{display:flex}
-.custom-inp{width:64px;padding:5px 10px;border:1.5px solid rgba(20,184,166,.4);border-radius:8px;font-family:inherit;font-size:.85rem;font-weight:600;color:#0F766E;text-align:center;outline:none;background:rgba(255,255,255,.7)}
+.custom-inp{width:64px;padding:5px 10px;border:1.5px solid rgba(20,184,166,.4);border-radius:8px;font-family:inherit;font-size:.85rem;font-weight:600;color:#0F766E;text-align:center;outline:none;background:rgba(255,255,255,.8)}
 .custom-inp:focus{border-color:#14B8A6}
 .custom-set{padding:5px 14px;border-radius:99px;background:#14B8A6;border:none;color:white;font-family:inherit;font-size:.78rem;font-weight:600;cursor:pointer}
 .custom-lbl{font-size:.78rem;color:#64748B;font-weight:500}
 
-/* Start button */
-.start-btn{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#14B8A6,#3B82F6);border:none;cursor:pointer;color:white;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(20,184,166,.35);transition:transform .15s,box-shadow .15s;font-size:1.5rem}
-.start-btn:hover{transform:scale(1.06);box-shadow:0 6px 32px rgba(20,184,166,.45)}
-.start-btn:active{transform:scale(.97)}
-.start-btn.med-mode{background:linear-gradient(135deg,#8B5CF6,#6366F1)}
+/* ── Start button ── */
+.start-wrap{display:flex;flex-direction:column;align-items:center;gap:7px;margin-top:4px}
+.start-btn{width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#14B8A6,#3B82F6);border:none;cursor:pointer;color:white;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(20,184,166,.42),0 0 0 7px rgba(20,184,166,.1);transition:transform .15s,box-shadow .15s}
+.start-btn:hover{transform:scale(1.07);box-shadow:0 6px 32px rgba(20,184,166,.52),0 0 0 9px rgba(20,184,166,.13)}
+.start-btn:active{transform:scale(.96)}
+.start-btn.med-mode{background:linear-gradient(135deg,#8B5CF6,#6366F1);box-shadow:0 4px 24px rgba(139,92,246,.42),0 0 0 7px rgba(139,92,246,.1)}
+.start-btn.med-mode:hover{box-shadow:0 6px 32px rgba(139,92,246,.52),0 0 0 9px rgba(139,92,246,.13)}
+.start-hint{font-size:.74rem;color:#94A3B8;font-weight:500;letter-spacing:.02em}
 
-/* Music toggle */
-.music-row{display:flex;align-items:center;gap:9px;margin-top:16px}
-.music-toggle{display:flex;align-items:center;gap:7px;padding:7px 16px;border-radius:99px;border:1.5px solid rgba(139,92,246,.3);background:rgba(255,255,255,.5);font-family:inherit;font-size:.82rem;font-weight:600;color:#7C3AED;cursor:pointer;transition:all .15s}
-.music-toggle:hover{border-color:#8B5CF6;background:rgba(139,92,246,.08)}
-.music-toggle.on{background:#8B5CF6;border-color:#8B5CF6;color:white}
+/* ── Music toggle ── */
+.music-row{display:flex;align-items:center;gap:9px;margin-top:18px}
+.music-toggle{display:flex;align-items:center;gap:7px;padding:8px 18px;border-radius:99px;border:1.5px solid rgba(139,92,246,.28);background:rgba(255,255,255,.55);font-family:inherit;font-size:.82rem;font-weight:600;color:#7C3AED;cursor:pointer;transition:all .18s}
+.music-toggle:hover{border-color:#8B5CF6;background:rgba(139,92,246,.07)}
+.music-toggle.on{background:linear-gradient(135deg,#8B5CF6,#6366F1);border-color:transparent;color:white;box-shadow:0 3px 14px rgba(139,92,246,.35)}
 .music-dot{width:7px;height:7px;border-radius:50%;background:currentColor;animation:mdot 1s infinite;display:none}
 .music-toggle.on .music-dot{display:block}
 @keyframes mdot{0%,100%{opacity:1}50%{opacity:.3}}
 
-/* Prompt text (meditation) */
-.prompt-text{font-size:1rem;font-weight:500;color:#475569;text-align:center;min-height:1.5em;transition:opacity .6s;max-width:300px;line-height:1.6;margin-top:4px}
+/* ── Prompt & misc ── */
+.prompt-text{font-size:1rem;font-weight:500;color:#475569;text-align:center;min-height:1.5em;transition:opacity .6s;max-width:300px;line-height:1.65;margin:6px 0 8px}
+.cycle-row{margin-top:9px;font-size:.78rem;color:#94A3B8;font-weight:500;text-align:center}
+.mode-desc{text-align:center;font-size:.81rem;color:#64748B;line-height:1.65;max-width:300px;margin-top:10px}
 
-.cycle-row{margin-top:10px;font-size:.78rem;color:#94A3B8;font-weight:500;text-align:center}
-.mode-desc{text-align:center;font-size:.82rem;color:#64748B;line-height:1.6;max-width:320px;margin-top:12px}
-
-/* Section visibility */
+/* ── Section visibility ── */
 .breath-section{display:flex;flex-direction:column;align-items:center;width:100%}
 .med-section{display:none;flex-direction:column;align-items:center;width:100%}
 
 @media(max-width:480px){
-  .circle-outer{width:180px;height:180px}.circle-main{width:130px;height:130px}
-  .breath-count{font-size:1.6rem}.timer-display{font-size:1.3rem}
-  .page-tab{padding:7px 16px;font-size:.82rem}
+  .circle-outer{width:188px;height:188px}.circle-main{width:138px;height:138px}
+  .breath-count{font-size:1.8rem}.timer-display{font-size:1.3rem}
+  .card{padding:22px 16px 20px;border-radius:20px}
+  .hero h1{font-size:1.4rem}.hero-ring{width:68px;height:68px}.hero-ring img{width:38px;height:38px}
 }
   </style>
 </head>
 <body>
 
-<a href="index.html" id="breath-logo-link" style="position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:10;display:block">
-  <img src="images/StudyEasemain.png" alt="StudyEase" style="height:28px;width:auto;object-fit:contain;filter:brightness(0) invert(1)"/>
-</a>
+<!-- Loading splash -->
+<div id="yoga-splash">
+  <img class="s-img" src="images/yoga.png" alt="Mindfulness"/>
+  <div class="s-txt">Mindfulness · StudyEase</div>
+</div>
 
-<a href="dashboard.html" class="back-link">
-  <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"/></svg>
-  Back to StudyEase
-</a>
-
-<div class="session-badge" id="session-badge">0 sessions today</div>
+<!-- Topbar -->
+<div class="topbar">
+  <a href="dashboard.html" id="back-btn" class="back-link">
+    <svg width="15" height="15" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"/></svg>
+    Back to StudyEase
+  </a>
+  <div class="session-badge" id="session-badge">0 sessions today</div>
+</div>
 
 <div class="page">
 
-  <!-- Page tabs -->
-  <div class="page-tabs">
-    <button class="page-tab active" onclick="switchTab('breath',this)">🫁 Breathing</button>
-    <button class="page-tab" onclick="switchTab('med',this)">🧘 Meditation</button>
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-ring">
+      <img src="images/yoga.png" alt="Mindfulness"/>
+    </div>
+    <h1>Mindfulness</h1>
+    <div class="hero-sub">Breathe · Focus · Restore</div>
   </div>
 
-  <!-- ── BREATHING SECTION ── -->
-  <div class="breath-section" id="breath-section">
-    <div class="mode-row">
-      <button class="mode-btn active" data-mode="box" onclick="setBreathMode('box',this)">Box Breathing</button>
-      <button class="mode-btn" data-mode="478" onclick="setBreathMode('478',this)">4-7-8</button>
-      <button class="mode-btn" data-mode="simple" onclick="setBreathMode('simple',this)">Simple Deep Breath</button>
+  <!-- Card -->
+  <div class="card">
+
+    <!-- Tabs -->
+    <div class="page-tabs">
+      <button class="page-tab active" onclick="switchTab('breath',this)">🫁 Breathing</button>
+      <button class="page-tab" onclick="switchTab('med',this)">🧘 Meditation</button>
     </div>
 
-    <div class="circle-wrap">
-      <div class="circle-outer">
-        <div class="pulse-ring"></div>
-        <div class="pulse-ring"></div>
-        <div class="pulse-ring"></div>
-        <div class="circle-ring"></div>
-        <div class="circle-main" id="b-circle">
-          <div class="breath-label" id="b-label">Ready</div>
-          <div class="breath-count" id="b-count">–</div>
+    <!-- ── BREATHING SECTION ── -->
+    <div class="breath-section" id="breath-section">
+      <div class="mode-row">
+        <button class="mode-btn active" data-mode="box" onclick="setBreathMode('box',this)">Box Breathing</button>
+        <button class="mode-btn" data-mode="478" onclick="setBreathMode('478',this)">4-7-8</button>
+        <button class="mode-btn" data-mode="simple" onclick="setBreathMode('simple',this)">Simple Deep Breath</button>
+      </div>
+
+      <div class="circle-wrap">
+        <div class="circle-outer">
+          <div class="pulse-ring"></div>
+          <div class="pulse-ring"></div>
+          <div class="pulse-ring"></div>
+          <div class="circle-ring"></div>
+          <div class="circle-main" id="b-circle">
+            <div class="breath-label" id="b-label">Ready</div>
+            <div class="breath-count" id="b-count">–</div>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="timer-row">
-      <div class="timer-display" id="b-timer">0:00</div>
-      <span class="timer-sep">of</span>
-      <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
-        <div class="duration-btns">
-          <button class="dur-btn active" onclick="setDur('b',120,this)">2 min</button>
-          <button class="dur-btn" onclick="setDur('b',300,this)">5 min</button>
-          <button class="dur-btn" onclick="setDur('b',600,this)">10 min</button>
-          <button class="dur-btn" id="b-custom-btn" onclick="toggleCustom('b')">Custom</button>
-        </div>
-        <div class="custom-wrap" id="b-custom-wrap">
-          <input class="custom-inp" id="b-custom-inp" type="number" min="1" max="60" placeholder="5"/>
-          <span class="custom-lbl">min</span>
-          <button class="custom-set" onclick="applyCustom('b')">Set</button>
-        </div>
-      </div>
-    </div>
-
-    <button class="start-btn" id="b-start" onclick="toggleBreath()">
-      <svg id="b-icon" width="24" height="24" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
-    </button>
-
-    <div class="cycle-row" id="b-cycle"></div>
-    <div class="mode-desc" id="b-desc">Inhale 4s · Hold 4s · Exhale 4s · Hold 4s</div>
-  </div>
-
-  <!-- ── MEDITATION SECTION ── -->
-  <div class="med-section" id="med-section">
-
-    <div class="circle-wrap">
-      <div class="circle-outer">
-        <div class="pulse-ring med-mode"></div>
-        <div class="pulse-ring med-mode"></div>
-        <div class="pulse-ring med-mode"></div>
-        <div class="circle-ring"></div>
-        <div class="circle-main med-mode" id="m-circle">
-          <div class="breath-label" id="m-label" style="color:#7C3AED">Ready</div>
-          <div class="breath-count" id="m-count" style="color:#7C3AED">–</div>
+      <div class="timer-row">
+        <div class="timer-display" id="b-timer">0:00</div>
+        <span class="timer-sep">of</span>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+          <div class="duration-btns">
+            <button class="dur-btn active" onclick="setDur('b',120,this)">2 min</button>
+            <button class="dur-btn" onclick="setDur('b',300,this)">5 min</button>
+            <button class="dur-btn" onclick="setDur('b',600,this)">10 min</button>
+            <button class="dur-btn" id="b-custom-btn" onclick="toggleCustom('b')">Custom</button>
+          </div>
+          <div class="custom-wrap" id="b-custom-wrap">
+            <input class="custom-inp" id="b-custom-inp" type="number" min="1" max="60" placeholder="5"/>
+            <span class="custom-lbl">min</span>
+            <button class="custom-set" onclick="applyCustom('b')">Set</button>
+          </div>
         </div>
       </div>
+
+      <div class="start-wrap">
+        <button class="start-btn" id="b-start" onclick="toggleBreath()">
+          <svg id="b-icon" width="26" height="26" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
+        </button>
+        <span class="start-hint">Tap to begin</span>
+      </div>
+
+      <div class="cycle-row" id="b-cycle"></div>
+      <div class="mode-desc" id="b-desc">Inhale 4s · Hold 4s · Exhale 4s · Hold 4s</div>
     </div>
 
-    <div class="prompt-text" id="m-prompt">Find a comfortable position and close your eyes.</div>
+    <!-- ── MEDITATION SECTION ── -->
+    <div class="med-section" id="med-section">
 
-    <div class="timer-row">
-      <div class="timer-display" id="m-timer" style="color:#7C3AED">0:00</div>
-      <span class="timer-sep">of</span>
-      <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
-        <div class="duration-btns">
-          <button class="dur-btn active" onclick="setDur('m',300,this)">5 min</button>
-          <button class="dur-btn" onclick="setDur('m',600,this)">10 min</button>
-          <button class="dur-btn" onclick="setDur('m',900,this)">15 min</button>
-          <button class="dur-btn" id="m-custom-btn" onclick="toggleCustom('m')">Custom</button>
-        </div>
-        <div class="custom-wrap" id="m-custom-wrap">
-          <input class="custom-inp" id="m-custom-inp" type="number" min="1" max="60" placeholder="10"/>
-          <span class="custom-lbl">min</span>
-          <button class="custom-set" onclick="applyCustom('m')">Set</button>
+      <div class="circle-wrap">
+        <div class="circle-outer">
+          <div class="pulse-ring med-mode"></div>
+          <div class="pulse-ring med-mode"></div>
+          <div class="pulse-ring med-mode"></div>
+          <div class="circle-ring"></div>
+          <div class="circle-main med-mode" id="m-circle">
+            <div class="breath-label" id="m-label">Ready</div>
+            <div class="breath-count" id="m-count">–</div>
+          </div>
         </div>
       </div>
+
+      <div class="prompt-text" id="m-prompt">Find a comfortable position and close your eyes.</div>
+
+      <div class="timer-row">
+        <div class="timer-display med" id="m-timer">0:00</div>
+        <span class="timer-sep">of</span>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+          <div class="duration-btns">
+            <button class="dur-btn active" onclick="setDur('m',300,this)">5 min</button>
+            <button class="dur-btn" onclick="setDur('m',600,this)">10 min</button>
+            <button class="dur-btn" onclick="setDur('m',900,this)">15 min</button>
+            <button class="dur-btn" id="m-custom-btn" onclick="toggleCustom('m')">Custom</button>
+          </div>
+          <div class="custom-wrap" id="m-custom-wrap">
+            <input class="custom-inp" id="m-custom-inp" type="number" min="1" max="60" placeholder="10"/>
+            <span class="custom-lbl">min</span>
+            <button class="custom-set" onclick="applyCustom('m')">Set</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="start-wrap">
+        <button class="start-btn med-mode" id="m-start" onclick="toggleMed()">
+          <svg id="m-icon" width="26" height="26" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
+        </button>
+        <span class="start-hint">Tap to begin</span>
+      </div>
+
+      <div class="music-row">
+        <button class="music-toggle" id="music-toggle" onclick="toggleMusic()">
+          <div class="music-dot"></div>
+          🎵 Ambient music
+        </button>
+      </div>
+
+      <div class="cycle-row" id="m-cycle"></div>
     </div>
 
-    <button class="start-btn med-mode" id="m-start" onclick="toggleMed()">
-      <svg id="m-icon" width="24" height="24" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
-    </button>
-
-    <div class="music-row">
-      <button class="music-toggle" id="music-toggle" onclick="toggleMusic()">
-        <div class="music-dot"></div>
-        🎵 Ambient music
-      </button>
-    </div>
-
-    <div class="cycle-row" id="m-cycle"></div>
-  </div>
-
+  </div><!-- /card -->
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+/* ── Loading splash ── */
+(function(){
+  var splash=document.getElementById('yoga-splash');
+  setTimeout(function(){
+    splash.style.opacity='0';
+    setTimeout(function(){splash.style.display='none';},420);
+  },2000);
+})();
+
 (function(){
 
-/* ── Supabase (optional — saves if user is logged in) ── */
+/* ── Supabase (optional) ── */
 var _sb=null,_uid=null;
 try{
   var _SURL='https://xiwrvbtryeesfgeydxnf.supabase.co';
@@ -228,8 +285,8 @@ try{
   if(_sb)_sb.auth.getUser().then(function(r){
     if(r.data&&r.data.user){
       _uid=r.data.user.id;
-      var ll=document.getElementById('breath-logo-link');
-      if(ll)ll.href='dashboard.html';
+      var bb=document.getElementById('back-btn');
+      if(bb)bb.href='dashboard.html';
     }
   });
 }catch(e){}
@@ -278,15 +335,13 @@ window.setDur=function(pfx,secs,btn){
   document.getElementById(pfx+'-custom-wrap').classList.remove('show');
 };
 
-/* ══════════════════ AUDIO ENGINE ══════════════════ */
+/* ══ AUDIO ENGINE ══ */
 var audioCtx=null;
 function getCtx(){
   if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
   if(audioCtx.state==='suspended')audioCtx.resume();
   return audioCtx;
 }
-
-/* Breathing beeps */
 function playTone(freq,dur,vol,type){
   try{var ctx=getCtx(),o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type=type||'sine';o.frequency.setValueAtTime(freq,ctx.currentTime);g.gain.setValueAtTime(0,ctx.currentTime);g.gain.linearRampToValueAtTime(vol,ctx.currentTime+0.02);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+dur);o.start(ctx.currentTime);o.stop(ctx.currentTime+dur);}catch(e){}
 }
@@ -298,7 +353,6 @@ function chimePhase(phase){
 var BEEP={3:330,2:392,1:523};
 function beepCount(n){if(n>=1&&n<=3)playTone(BEEP[n],.18,.22,'triangle');}
 
-/* Meditation bell */
 function playBell(vol){
   vol=vol||0.28;
   try{
@@ -314,7 +368,6 @@ function playBell(vol){
   }catch(e){}
 }
 
-/* Ambient drone */
 var droneNodes=[];
 var musicOn=false;
 function startDrone(){
@@ -323,7 +376,6 @@ function startDrone(){
     var ctx=getCtx();
     var master=ctx.createGain();master.gain.value=0.001;master.connect(ctx.destination);
     master.gain.linearRampToValueAtTime(1,ctx.currentTime+3);
-    /* Layered detuned pairs for warmth */
     [[110,112],[165,166.5],[220,221.5],[330,330.8]].forEach(function(pair,i){
       pair.forEach(function(freq){
         var o=ctx.createOscillator(),g=ctx.createGain();
@@ -359,12 +411,11 @@ window.toggleMusic=function(){
   else stopDrone();
 };
 
-/* Bell interval during meditation */
 var bellInt=null;
 function startBells(){bellInt=setInterval(function(){if(musicOn)playBell(.18);},30000);}
 function stopBells(){clearInterval(bellInt);bellInt=null;}
 
-/* ══════════════════ BREATHING ══════════════════ */
+/* ══ BREATHING ══ */
 var MODES={
   box:   {phases:['Breathe in','Hold','Breathe out','Hold'],times:[4,4,4,4],desc:'Inhale 4s · Hold 4s · Exhale 4s · Hold 4s'},
   '478': {phases:['Breathe in','Hold','Breathe out'],times:[4,7,8],desc:'Inhale 4s · Hold 7s · Exhale 8s — calms the nervous system'},
@@ -431,7 +482,7 @@ function animBreath(){
   document.getElementById('b-circle').style.transform='scale('+scale+')';
 }
 
-/* ══════════════════ MEDITATION ══════════════════ */
+/* ══ MEDITATION ══ */
 var PROMPTS=[
   'Close your eyes and settle in…',
   'Focus on your breath.',
