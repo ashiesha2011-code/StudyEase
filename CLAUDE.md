@@ -4,18 +4,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Stats
 
-**Total lines of code: 14,257** (14,150 across 15 HTML files + 107 in the Supabase Edge Function)
+**Total lines of code: 14,200** (14,093 across 15 HTML files + 107 in the Supabase Edge Function)
 
 | File | Lines |
 |------|-------|
 | `index.html` | 2,195 |
-| `dashboard.html` | 1,166 |
 | `session-player-ch2.html` | 1,253 |
 | `session-player.html` | 1,239 |
 | `video-player.html` | 1,190 |
 | `video-player-ch2.html` | 1,155 |
-| `maths.html` | 765 |
+| `dashboard.html` | 1,109 |
 | `quiz.html` | 787 |
+| `maths.html` | 765 |
 | `ai.html` | 930 |
 | `progress.html` | 561 |
 | `physics.html` | 631 |
@@ -263,45 +263,53 @@ All pages that call the Edge Function:
 
 ## Dashboard
 
-### AI CTA button
-The old inline AI chat card was removed. Replaced with a large dark banner button linking directly to `ai.html`.
+### Topbar
+- **Left**: hamburger menu button only (mobile)
+- **Centre**: live clock — `HH:MM AM/PM` (bold navy, ticks every second via `setInterval`) + day + full date below it. Uses `position:absolute; left:50%; transform:translateX(-50%)` so it stays truly centred regardless of left/right content
+- **Right**: notification bell + avatar button
+- **Removed**: greeting text, search bar — do NOT re-add these
 
-### Mental Health Check-in card
-- Label changed from "WEEKLY CHECK-IN" to heading "Mental Health Check-in" (label removed)
-- Full width (no max-width constraint)
-- Mood buttons are large and spread out (flex:1, 12px 22px padding, 0.88rem font)
-- Four mood buttons: Great / Okay / Stressed / Struggling
-- On tap: shows a tailored tip message + two pill CTAs side-by-side:
-  - **🧘 Try mindfulness** (teal) → `breathing.html`
-  - **💜 AI Counsellor** (purple) → `ai.html?mode=counsellor`
-- Mood saved to **localStorage** (`se_mood` key: `{mood, date}`) AND **Supabase** (`mood_checkins` table, type='mood')
-- `currentUserId` is stored when `onAuthStateChange` fires and used directly for DB saves (do not use `getSession()` inside event handlers — it caused silent failures before)
-- On page load: if today's mood is in localStorage, restores it without re-saving (`skipSave=true`)
-- Stressed/Struggling responses include encouragement and breathing/counsellor links; Great/Okay include a study tip
+### Welcome card
+- Shows greeting (`welcome-hi`: "Good afternoon, Iesha! 👋") and one-line subtitle (`welcome-sub`: class + "Ready to study smarter today?")
+- **No badges** — the AI message counter and streak pill have been removed. Do NOT re-add them.
 
-### Sidebar
-Current links: Dashboard, My Progress, AI Companion (→ ai.html), Physics, Chemistry, Biology, Mathematics, Breathing (→ breathing.html), Progress, Settings (→ settings.html).
-**Removed links:** Practice Questions, Past Papers, Flashcards, NCERT Notes — do not re-add these to the sidebar. Flashcards are only accessible via the subject page Flashcards tab.
+### AI CTA card
+- Large dark navy banner linking to `ai.html`
+- Icon: `images/ailogo.png` (38px, border-radius:10px) — replaced the old chat bubble SVG
+- Title: "Ask AI a Doubt" · Subtitle: "Get instant answers, explained clearly"
+
+### Subject cards
+- Four cards: Physics ⚡, Chemistry ⚗️, Biology 🌿, Mathematics 📐
+- Each shows: emoji + subject name + "Class 10" subtitle + arrow
+- **No tags** (Videos/Practice/Notes chips removed) — do NOT re-add them
 
 ### My Progress card
-Simplified to just "My Progress" title (1.4rem, 800 weight) + "View all →" link. No subject mini-cards, no loading text. The entire progress card links to progress.html.
+Simplified: "My Progress" title + "View all →" link. Entire card links to `progress.html`.
+
+### Mental Health Check-in card
+- Title: "How are you feeling?" (simplified — do NOT change back to longer version)
+- Four mood buttons: 😊 Great / 😐 Okay / 😟 Stressed / 😔 Struggling
+- On tap: shows a tailored tip + two CTAs: **🧘 Try mindfulness** → `breathing.html` and **💜 AI Counsellor** → `ai.html?mode=counsellor`
+- Mood saved to **localStorage** (`se_mood` key: `{mood, date}`) AND **Supabase** (`mood_checkins` table, type='mood')
+- `currentUserId` stored from `onAuthStateChange` — never use `getSession()` inside handlers
+- On page load: if today's mood in localStorage, restores without re-saving (`skipSave=true`)
+
+### Sidebar
+Links: Dashboard, My Progress, AI Companion (→ ai.html), Physics, Chemistry, Biology, Mathematics, Breathing, Settings.
+**Removed:** Practice Questions, Past Papers, Flashcards, NCERT Notes — do not re-add.
 
 ### Notification bell (topbar)
-- `id="notif-btn"` on the bell button
-- `#notif-popup` dropdown: 320px, shows 2 static notifications + "Mark all as read" button
-- Popup positioned via `position:relative` on `.topbar-r`
-- Closes on outside click or Escape key
+- `id="notif-btn"` · `#notif-popup`: 320px, 2 static notifications + "Mark all as read"
+- Positioned via `position:relative` on `.topbar-r` · closes on outside click or Escape
 
 ### Avatar popup (topbar)
-- `#avatar-popup` dropdown: 280px, shows name/email/plan badge + Settings link + Sign out
-- Populated in auth handler and `loadUserProfile()`
-- Closes on outside click or Escape key
+- `#avatar-popup`: 280px, name/email/plan badge + Settings link + Sign out
+- Populated in auth handler and `loadUserProfile()` · closes on outside click or Escape
 
 ### Onboarding modal
-- Shown ONLY when `Date.now() - new Date(user.created_at).getTime() < 120000` (brand new account, within 2 minutes of creation) AND `!onboarding_done`
+- Shown ONLY when account is < 2 minutes old AND `!onboarding_done`
 - 3 steps: Name → Class (4 pill buttons, auto-advances) → Photo upload (optional)
-- Progress dots at top, slide animation between steps
-- On finish (`obFinish()`): upserts to `profiles` with `name`, `class`, `avatar_url`, `onboarding_done: true`, then shows the 2-second loading screen
+- On finish (`obFinish()`): upserts to `profiles`, then shows the 2-second loading screen
 - Network error on profile load: silently fails, does NOT show onboarding
 
 ## Mindfulness Page (breathing.html)
