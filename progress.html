@@ -374,8 +374,9 @@ function renderOverallStats(rows, quizRows){
   var completed=rows.filter(function(r){return !r.early});
   var totalSessions=rows.length;
   var earlyCount=totalSessions-completed.length;
-  var avgPct=completed.length>0?Math.round(completed.reduce(function(a,r){return a+Math.round(r.correct/r.total*100)},0)/completed.length):null;
-  var bestPct=completed.length>0?Math.max.apply(null,completed.map(function(r){return Math.round(r.correct/r.total*100)})):null;
+  var scoredRows=rows.filter(function(r){return r.total>0});
+  var avgPct=scoredRows.length>0?Math.round(scoredRows.reduce(function(a,r){return a+Math.round(r.correct/r.total*100)},0)/scoredRows.length):null;
+  var bestPct=scoredRows.length>0?Math.max.apply(null,scoredRows.map(function(r){return Math.round(r.correct/r.total*100)})):null;
   var totalQuizzes=quizRows.length;
   var avgQuizPct=totalQuizzes>0?Math.round(quizRows.reduce(function(a,r){return a+r.pct},0)/totalQuizzes):null;
   document.getElementById('stat-sessions').textContent=totalSessions||'0';
