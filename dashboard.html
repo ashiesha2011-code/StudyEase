@@ -1010,7 +1010,7 @@ body {
       localStorage.setItem('se_mood', JSON.stringify({mood:mood, date:today}));
       if(currentUserId) {
         sb.from('mood_checkins')
-          .upsert({user_id:currentUserId, mood:mood, date:today}, {onConflict:'user_id,date'})
+          .upsert({user_id:currentUserId, mood:mood, type:'mood', date:today}, {onConflict:'user_id,date'})
           .then(function(res){ if(res.error) console.error('Mood save error:', res.error); });
       }
     }
