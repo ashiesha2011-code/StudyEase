@@ -408,6 +408,27 @@ Full settings page with sidebar layout. Sections:
 - **Subscription:** Shows current plan, "Upgrade to Achiever" placeholder button (alert only)
 - **Danger zone:** Sign out + Delete account (both just sign out for now)
 
+## Progress Page (progress.html)
+
+### Overall Stats cards (top row)
+- **Total Sessions** — count of all `scores` rows; sub-label shows "X left early" or "All completed"
+- **Average Score** — calculated from `scoredRows` (all sessions where `total > 0`), NOT just completed ones. Formula: `Math.round(sum of pct / scoredRows.length)`
+- **Best Session** — `Math.max.apply(null, scoredRows.map(pct))` — also uses all sessions, not just completed
+- **Quizzes Taken** — count of `quiz_scores` rows; sub shows avg quiz pct
+
+**Key rule**: Score stats (`avgPct`, `bestPct`) include ALL sessions — whether the user left early or not. The `early` flag only affects the "X left early" sub-label, not score calculations. Guard with `r.total > 0` to avoid division-by-zero.
+
+**Do NOT** filter by `!r.early` for score cards — `Math.max.apply(null, [])` on an empty array returns `-Infinity` which renders as "-Infinity%".
+
+### `renderOverallStats` logic
+```js
+var completed = rows.filter(r => !r.early);          // only for early count label
+var earlyCount = totalSessions - completed.length;    // for sub-label
+var scoredRows = rows.filter(r => r.total > 0);       // ALL sessions for scores
+var avgPct = scoredRows.length > 0 ? Math.round(sum / scoredRows.length) : null;
+var bestPct = scoredRows.length > 0 ? Math.max(...pcts) : null;
+```
+
 ## Maths page — Flashcards tab
 
 `maths.html` has tabs: Videos | **Flashcards** | Quiz | Notes (Practice tab was removed).
@@ -444,3 +465,5 @@ Full settings page with sidebar layout. Sections:
 - **mood_checkins RLS must use 4 explicit separate policies** (insert_own, select_own, update_own, delete_own) with `(select auth.uid())` — a single `ALL` policy caused 403s because `auth.uid()` didn't resolve correctly in the CDN supabase-js JWT context.
 - **mood check-in save pattern**: INSERT first → if any error → PATCH `?user_id=eq.X&date=eq.Y`. Never use `.upsert()` with `onConflict` on this table — it returns 400 from PostgREST.
 - **`mood_checkins` type column is NOT NULL** — always include `type:'mood'` when saving mood check-ins, `type:'breathing'` or `type:'meditation'` for mindfulness sessions. Omitting it causes insert failures even though the column has a DB default (PostgREST may not honour defaults without explicit values in some cases).
+- **`Math.max.apply(null, [])` returns `-Infinity`** — always guard score calculations with `array.length > 0` before calling `Math.max.apply`. An empty array from filtering (e.g. all sessions left early) will produce `-Infinity%` on screen.
+- **Progress score cards use ALL sessions** — do NOT filter by `!r.early` for avgPct / bestPct. Early-exit sessions still have a valid score and should be included. Only use the `completed` filter for the "X left early" sub-label.
