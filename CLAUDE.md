@@ -354,7 +354,28 @@ Standalone page — **no login required** to use, but saves to DB if logged in.
 - **Screens 1–4** (mood → intent → music → time): light pastel gradient `linear-gradient(145deg, #f0fdf4 0%, #ede9fe 52%, #eff6ff 100%)` — soft green/purple/blue. Text is dark navy `#0A1628`. Pills, cards, and buttons use white glass styling with dark borders.
 - **Screen 5** (canvas player): `background:#0A0F1E` (explicit dark) — canvas draws its own `#0A0F1E` fill anyway.
 
-Header (`#mf-header`): frosted white glass `rgba(255,255,255,.68)` with `backdrop-filter:blur(16px)` — looks clean on both light (s1–4) and dark (s5) backgrounds.
+Header (`#mf-header`): frosted white glass `rgba(255,255,255,.62)` with `backdrop-filter:blur(20px)` + white top inset highlight — looks clean on both light (s1–4) and dark (s5) backgrounds.
+
+### Glassmorphism recipe (screens 1–4)
+Every interactive element uses the same layered glass formula:
+- `backdrop-filter:blur(Xpx); -webkit-backdrop-filter:blur(Xpx)` — frosted blur
+- `background:rgba(255,255,255,0.45–0.55)` — semi-transparent
+- `border:1.5px solid rgba(255,255,255,0.78–0.85)` — bright white glass border
+- `box-shadow: 0 Ypx Zpx rgba(10,22,40,.07), inset 0 1px 0 rgba(255,255,255,.95)` — depth + top shine
+
+| Element | blur | notes |
+|---|---|---|
+| `#mf-header` | 20px | `inset 0 1px 0 rgba(255,255,255,.95)` top shine |
+| `#mf-back` | 12px | circle back button |
+| `#today-badge` | 10px | purple tint |
+| `.pill` | 14px | `sel` state adds 3px purple outline ring |
+| `.mc` (music cards) | 22px | deepest blur — large surface |
+| `.tb` (time buttons) | 12px | pill shaped |
+| `.sc` (session cards) | 16px | slide-right hover |
+| `.slider-wrap` | 16px | glass card container wraps the slider |
+| `.go-btn` | none | gradient button with `inset 0 1px 0 rgba(255,255,255,.25)` sheen |
+
+Do NOT remove `backdrop-filter` — it is load-bearing for the glass effect.
 
 ### Splash
 - On every open: white full-screen overlay (`#yoga-splash`) with pulsing `images/yoga.png` (90px) for 2s, then fades out → Screen 1 appears
