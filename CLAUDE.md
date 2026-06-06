@@ -49,6 +49,8 @@ supabase db query --linked "SELECT ..."
 
 **Pure HTML/JS, no framework, no bundler.** Every page is a self-contained HTML file with all CSS and JS written inline. There is no shared stylesheet or JS module — each file is independent.
 
+> **breathing.html is the exception to the dark-page rule** — screens 1–4 use a light pastel gradient background; only screen 5 (canvas player) is dark.
+
 **Stack:**
 - Frontend: plain HTML files, all styles and scripts inline per page
 - Auth + DB: Supabase (project ref: `xiwrvbtryeesfgeydxnf`)
@@ -346,7 +348,13 @@ Links: Dashboard, My Progress, AI Companion (→ ai.html), Physics, Chemistry, B
 
 Standalone page — **no login required** to use, but saves to DB if logged in.
 
-**Fully immersive — no navbar, no sidebar.** Full-screen dark background `#0A0F1E`, DM Sans font, white text. Five screens with smooth 0.5s opacity fade transitions.
+**Fully immersive — no navbar, no sidebar.** Five screens with smooth 0.5s opacity fade transitions.
+
+**Background split:**
+- **Screens 1–4** (mood → intent → music → time): light pastel gradient `linear-gradient(145deg, #f0fdf4 0%, #ede9fe 52%, #eff6ff 100%)` — soft green/purple/blue. Text is dark navy `#0A1628`. Pills, cards, and buttons use white glass styling with dark borders.
+- **Screen 5** (canvas player): `background:#0A0F1E` (explicit dark) — canvas draws its own `#0A0F1E` fill anyway.
+
+Header (`#mf-header`): frosted white glass `rgba(255,255,255,.68)` with `backdrop-filter:blur(16px)` — looks clean on both light (s1–4) and dark (s5) backgrounds.
 
 ### Splash
 - On every open: white full-screen overlay (`#yoga-splash`) with pulsing `images/yoga.png` (90px) for 2s, then fades out → Screen 1 appears
