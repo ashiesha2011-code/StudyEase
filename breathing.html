@@ -15,10 +15,14 @@
 @keyframes yogaPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow:hidden;font-family:'DM Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased;background:#0A0F1E;color:#fff}
-.screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;opacity:0;pointer-events:none;transition:opacity .5s ease}
+/* ── Persistent header ── */
+#mf-header{position:fixed;top:0;left:0;right:0;height:56px;z-index:60;display:flex;align-items:center;justify-content:space-between;padding:0 16px;pointer-events:none}
+#mf-back{pointer-events:auto;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:rgba(255,255,255,.7);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;text-decoration:none;flex-shrink:0}
+#mf-back:hover{background:rgba(255,255,255,.16);color:#fff;border-color:rgba(255,255,255,.3)}
+#mf-logo{height:20px;width:auto;filter:brightness(0) invert(1);opacity:.6;flex-shrink:0}
+#today-badge{pointer-events:none;font-size:.73rem;font-weight:600;color:rgba(255,255,255,.5);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.11);border-radius:99px;padding:5px 13px;letter-spacing:.01em;white-space:nowrap;flex-shrink:0}
+.screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:68px 20px 24px;opacity:0;pointer-events:none;transition:opacity .5s ease}
 .screen.active{opacity:1;pointer-events:auto}
-.back-btn{position:absolute;top:22px;left:20px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.65);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;text-decoration:none}
-.back-btn:hover{background:rgba(255,255,255,.14);color:#fff}
 .question{font-size:clamp(1.3rem,4vw,1.85rem);font-weight:600;text-align:center;color:#fff;margin-bottom:38px;line-height:1.35;max-width:460px}
 .pills{display:flex;flex-wrap:wrap;gap:11px;justify-content:center;max-width:480px}
 .pill{padding:12px 26px;border-radius:999px;border:1.5px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:rgba(255,255,255,.78);font-family:inherit;font-size:.94rem;font-weight:500;cursor:pointer;transition:all .22s}
@@ -53,7 +57,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',system-ui,sans-serif
 .sc-name{font-size:.98rem;font-weight:600;color:#fff}
 .sc-dur{font-size:.82rem;color:rgba(255,255,255,.42)}
 .screen-logo{width:42px;height:42px;object-fit:contain;margin-bottom:14px;opacity:.82;filter:drop-shadow(0 0 14px rgba(139,92,246,.55))}
-#s5{padding:0}
+#s5{padding:0;justify-content:flex-start}
 #pcanvas{position:absolute;inset:0;width:100%;height:100%}
 @media(max-width:480px){
   .question{font-size:1.22rem;margin-bottom:26px}
@@ -65,6 +69,15 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',system-ui,sans-serif
 </head>
 <body>
 
+<!-- Persistent header — visible across all screens -->
+<div id="mf-header">
+  <a id="mf-back" href="dashboard.html" title="Back">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  </a>
+  <img id="mf-logo" src="images/StudyEasemain.png" alt="StudyEase"/>
+  <div id="today-badge">0 sessions today</div>
+</div>
+
 <div id="yoga-splash">
   <img class="s-img" src="images/yoga.png" alt="Mindfulness"/>
   <div class="s-txt">Mindfulness · StudyEase</div>
@@ -72,10 +85,6 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',system-ui,sans-serif
 
 <!-- SCREEN 1: MOOD -->
 <div id="s1" class="screen active">
-  <a href="dashboard.html" style="position:absolute;top:20px;left:20px;display:block;line-height:0;opacity:.65;transition:opacity .2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity='.65'">
-    <img src="images/StudyEasemain.png" alt="StudyEase" style="height:22px;width:auto;filter:brightness(0) invert(1)"/>
-  </a>
-  <div id="today-badge" style="position:absolute;top:22px;right:20px;font-size:.76rem;font-weight:600;color:rgba(255,255,255,.5);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.11);border-radius:99px;padding:6px 14px;letter-spacing:.01em">0 sessions today</div>
   <img src="images/yoga.png" class="screen-logo" alt=""/>
   <h2 class="question">How are you feeling right now?</h2>
   <div class="pills" id="mood-pills">
@@ -90,9 +99,6 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',system-ui,sans-serif
 
 <!-- SCREEN 2: INTENT -->
 <div id="s2" class="screen">
-  <button onclick="goTo(1)" style="position:absolute;top:20px;left:20px;background:none;border:none;cursor:pointer;padding:0;line-height:0;opacity:.65;transition:opacity .2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity='.65'">
-    <img src="images/StudyEasemain.png" alt="StudyEase" style="height:22px;width:auto;filter:brightness(0) invert(1)"/>
-  </button>
   <img src="images/yoga.png" class="screen-logo" alt=""/>
   <h2 class="question">What do you need right now?</h2>
   <div class="pills" id="intent-pills">
@@ -107,9 +113,6 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',system-ui,sans-serif
 
 <!-- SCREEN 3: MUSIC CHOICE -->
 <div id="s3" class="screen">
-  <button onclick="goTo(2)" style="position:absolute;top:20px;left:20px;background:none;border:none;cursor:pointer;padding:0;line-height:0;opacity:.65;transition:opacity .2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity='.65'">
-    <img src="images/StudyEasemain.png" alt="StudyEase" style="height:22px;width:auto;filter:brightness(0) invert(1)"/>
-  </button>
   <img src="images/yoga.png" class="screen-logo" alt=""/>
   <h2 class="question">Choose your experience</h2>
   <div class="music-cards">
@@ -133,9 +136,6 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',system-ui,sans-serif
 
 <!-- SCREEN 4: TIME -->
 <div id="s4" class="screen">
-  <button onclick="goTo(3)" style="position:absolute;top:20px;left:20px;background:none;border:none;cursor:pointer;padding:0;line-height:0;opacity:.65;transition:opacity .2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity='.65'">
-    <img src="images/StudyEasemain.png" alt="StudyEase" style="height:22px;width:auto;filter:brightness(0) invert(1)"/>
-  </button>
   <img src="images/yoga.png" class="screen-logo" alt=""/>
   <h2 class="question">How long do you have?</h2>
   <div id="s4-content"></div>
@@ -206,11 +206,33 @@ var GUIDED=[
 
 /* ── Navigation ── */
 var curScreen=1;
+var BACK_SVG='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>';
+
 function goTo(n){
   document.getElementById('s'+curScreen).classList.remove('active');
   document.getElementById('s'+n).classList.add('active');
   curScreen=n;
+  updateHeader(n);
 }
+
+function updateHeader(n){
+  var btn=document.getElementById('mf-back');
+  btn.innerHTML=BACK_SVG;
+  if(n===1){
+    btn.setAttribute('href','dashboard.html');
+    btn.removeAttribute('onclick');
+    btn.onclick=null;
+  } else if(n===5){
+    btn.removeAttribute('href');
+    btn.onclick=function(e){e.preventDefault();endSession();};
+  } else {
+    btn.removeAttribute('href');
+    (function(prev){btn.onclick=function(e){e.preventDefault();goTo(prev);};})(n-1);
+  }
+}
+
+/* init header on page load */
+updateHeader(1);
 
 function selMood(v,btn){
   selMoodVal=v;
@@ -459,6 +481,7 @@ function initPlayer(){
   sessStart=null;pausedMs=0;pauseAt=null;
   breathPhase='in';breathPhaseStart=null;pausedPhaseProgress=0;
   bgMusicOn=false;
+  updateHeader(5);
   if(rafId){cancelAnimationFrame(rafId);rafId=null;}
   resizeCanvas();
   drawIdle();
@@ -510,12 +533,10 @@ function drawFrame(elMs,phase,prog,isPlaying){
   var rem=Math.max(0,sessionDur-elSecs);
   var totalProg=sessionDur>0?Math.min(elSecs/sessionDur,1):0;
 
-  /* StudyEase logo top-left */
-  if(_logoImg.complete&&_logoImg.naturalWidth>0){
-    ctx.save();ctx.globalAlpha=0.5;ctx.filter='brightness(0) invert(1)';
-    ctx.drawImage(_logoImg,18,16,110,22);
-    ctx.filter='none';ctx.globalAlpha=1;ctx.restore();
-  }
+  /* Subtle top gradient so header elements are readable over canvas */
+  var tg=ctx.createLinearGradient(0,0,0,72);
+  tg.addColorStop(0,'rgba(10,15,30,.55)');tg.addColorStop(1,'rgba(10,15,30,0)');
+  ctx.fillStyle=tg;ctx.fillRect(0,0,W,72);
 
   /* Session name */
   ctx.font='500 15px "DM Sans",sans-serif';
@@ -713,6 +734,7 @@ function endSession(){
   /* reset pills */
   document.querySelectorAll('.pill').forEach(function(p){p.classList.remove('sel');});
   goTo(1);
+  updateHeader(1);
 }
 </script>
 </body>
