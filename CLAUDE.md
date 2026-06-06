@@ -17,11 +17,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `quiz.html` | 787 |
 | `maths.html` | 765 |
 | `ai.html` | 930 |
-| `progress.html` | 561 |
+| `progress.html` | 656 |
 | `physics.html` | 631 |
 | `chemistry.html` | 631 |
 | `biology.html` | 631 |
-| `breathing.html` | 507 |
+| `breathing.html` | 719 |
 | `settings.html` | 509 |
 | `supabase/functions/ai-chat/index.ts` | 107 |
 
@@ -346,39 +346,97 @@ Links: Dashboard, My Progress, AI Companion (→ ai.html), Physics, Chemistry, B
 
 Standalone page — **no login required** to use, but saves to DB if logged in.
 
-### Layout (redesigned)
-- **Loading splash**: on every open, white overlay (`#yoga-splash`) with pulsing `images/yoga.png` (90px) for 2s, then fades out
-- **Topbar**: frosted glass bar with `images/StudyEasemain.png` logo (26px, links to dashboard) on the left + session badge on the right. The logo is NOT white-filtered — it's on a light background. `id="back-btn"` on the `<a>` so auth JS can update the href to `dashboard.html` when logged in.
-- **Hero header**: `images/yoga.png` in a 80px glowing teal/purple ring + "Mindfulness" h1 + "BREATHE · FOCUS · RESTORE" subtitle
-- **Content card**: frosted glass card (`rgba(255,255,255,.58)`, backdrop-filter blur, border-radius 26px) wrapping both tabs
-- **Background**: 3-stop gradient `#D1FAE5 → #EDE9FE → #DBEAFE`
-- **Circles**: white text on teal gradient (breathing) or purple gradient (meditation) — NOT dark text on light circle
-- **Start button**: has outer glow ring `box-shadow: 0 0 0 7px rgba(color,.1)` + "Tap to begin" hint label below
+**Fully immersive — no navbar, no sidebar.** Full-screen dark background `#0A0F1E`, DM Sans font, white text. Five screens with smooth 0.5s opacity fade transitions.
 
-### Two tabs:
-**🫁 Breathing:**
-- Three modes: Box Breathing (4-4-4-4), 4-7-8 (4-7-8), Simple Deep Breath (4-4-8)
-- Animated circle scales up/down in sync with each phase
-- Live countdown inside the circle
-- **Audio (Web Audio API — no files):**
-  - 3-2-1 countdown beeps (triangle wave) in last 3 seconds of each phase
-  - Phase-transition chimes: rising two-note for inhale, neutral for hold, falling two-note for exhale
-- Duration: 2 / 5 / 10 min or Custom (1–60 min input)
+### Splash
+- On every open: white full-screen overlay (`#yoga-splash`) with pulsing `images/yoga.png` (90px) for 2s, then fades out → Screen 1 appears
 
-**🧘 Meditation:**
-- Slow pulsing purple orb (CSS animation, no JS)
-- Guided prompts rotate every 20 seconds ("Focus on your breath", "Let your thoughts pass like clouds", etc.)
-- Countdown timer showing time remaining
-- Duration: 5 / 10 / 15 min or Custom
-- **Ambient music toggle (Web Audio API — no files):**
-  - 4 layers of slightly detuned sine wave pairs → warm beating drone sound
-  - Fades in over 3 seconds, fades out over 2 seconds
-  - Bell chimes (3-harmonic, rich tone) at session start, every 30 seconds, and at session end
+### Screen navigation
+| # | Screen | Content |
+|---|--------|---------|
+| 1 | Mood check | "How are you feeling right now?" — 6 pills: Anxious, Stressed, Tired, Okay, Good, Overwhelmed |
+| 2 | Intent | "What do you need right now?" — 6 pills: Focus, Calm, Deep Rest, Morning Energy, Stress Relief, Sleep |
+| 3 | Music choice | "Choose your experience" — 3 large cards (Tibetan Bowl 🎵, Ambient Drift 🌿, Guided Meditation 🧘) |
+| 4 | Time selection | "How long do you have?" — depends on music choice (see below) |
+| 5 | Player | Full-screen canvas — breathing circle, progress ring, play/pause, controls |
 
-### DB saving:
-- Loads Supabase SDK, calls `getUser()` on load to get `_uid`
-- On session stop: inserts row into `mood_checkins` with `type='breathing'` or `'meditation'`, `mode`, `duration` (seconds elapsed)
-- Also tracks session count in localStorage (`se_breath` key: `{date, sessions}`) and shows badge
+Tap a pill → auto-advances after 340ms. Selecting music or a time launches the player.
+
+### Screen 1 — Today's session badge
+- Top-right: pill badge showing `"X sessions today"` (0 on first visit)
+- Tracked in localStorage (`se_breath` key: `{date, sessions}`) — resets each new day
+- Increments on every completed or early-ended session and updates live
+
+### Top-left logo (screens 1–4)
+- `images/StudyEasemain.png` at `top:20px;left:20px`, `height:22px`, `filter:brightness(0) invert(1)`, `opacity:.65`
+- Screen 1: wraps in `<a href="dashboard.html">` — clicking goes to dashboard
+- Screens 2–4: wraps in `<button onclick="goTo(N-1)">` — clicking goes back one screen
+- Do NOT use the `.back-btn` class circle style — these are plain logo links
+
+### Yoga icon (screens 1–4)
+- `images/yoga.png` (`.screen-logo`, 42px) centred above the question text on every screen
+- CSS: `filter:drop-shadow(0 0 14px rgba(139,92,246,.55))`, `opacity:.82`
+
+### Screen 4 — Time selection
+- **Tibetan Bowl / Ambient Drift**: time buttons (5/10/15/20/30 min) + Custom slider (1–60 min). Clicking a preset immediately launches player. Custom shows a range slider + "Begin Session →" button.
+- **Guided Meditation**: 5 fixed session cards (no custom time — voice files are pre-timed):
+  | Session | Duration | File prefix | open | mid | close |
+  |---------|----------|-------------|------|-----|-------|
+  | Focus Flow | 5 min | `focus` | 0s | 140s | 280s |
+  | Exam Calm | 10 min | `exam` | 0s | 290s | 560s |
+  | Deep Rest | 15 min | `rest` | 0s | 440s | 860s |
+  | Morning Energy | 20 min | `morning` | 0s | 590s | 1160s |
+  | Stress Relief | 30 min | `stress` | 0s | 890s | 1760s |
+
+### Screen 5 — Canvas Player
+Full-screen `<canvas id="pcanvas">` drawn with `requestAnimationFrame`. Device pixel ratio (`dpr`) applied via `ctx.setTransform(dpr,0,0,dpr,0,0)` at the start of every frame.
+
+**Canvas layout (all coordinates in CSS pixels):**
+- Top-left: `images/StudyEasemain.png` drawn via `ctx.drawImage`, `filter:brightness(0) invert(1)`, `globalAlpha:0.5`
+- Top-centre: session name (small, muted) + elapsed time (bold)
+- Background progress ring: thin circle at `BASE_R × 1.52` radius, `rgba(255,255,255,.07)`
+- Progress arc: same radius, purple `rgba(139,92,246,.72)`, draws clockwise from top proportional to elapsed/total
+- Breathing circle: radial gradient (lavender → indigo → blue), radius animates between `BASE_R × 0.82` (exhale) and `BASE_R × 1.18` (inhale) using `easeInOutSine`. 4s inhale phase, 4s exhale phase.
+- Circle text: "Breathe In" / "Breathe Out" (or "Well done 🙏" when done)
+- Below circle: `"X:XX remaining"`
+- Play/Pause button: circle at `(W/2, H-105)`, radius 32 — draws pause bars or play triangle. Glows purple when paused.
+- End session text: at `(W/2, H-55)` — tap region `±90px × ±22px`
+- **Music toggle (guided only)**: circle at `(W/2 - 86, H-105)`, radius 20 — draws `♪` icon, teal glow when on
+
+**Canvas click detection** (`onCanvasClick`):
+1. Check music toggle first (guided + active session only) — `dm <= MUSIC_R + 12`
+2. Check play/pause — `dist <= PP_R + 12`
+3. Check end session — `|x-CX| < 90 && |y-STOP_Y| < 22`
+
+### Audio
+
+**Tibetan Bowl** — Web Audio API, 432hz harmonics:
+- Oscillator pairs (with slight detuning) at 432/432.7hz, 864/864.9hz, 1296/1296.8hz, 216/216.4hz
+- Master gain fades in to 0.48 over 3s on start; fades to 0 over 2s on stop
+- Pause/resume via `fadeTibetan(0, 0.5)` / `fadeTibetan(0.48, 1)` — does NOT suspend `aCtx`
+
+**Ambient Drift** — Web Audio API, low drone:
+- Oscillator pairs at 80/80.3hz, 120/120.4hz, 160/160.5hz, 240/240.3hz
+- Master gain fades in to 0.44 over 3s; same pause/resume pattern as Tibetan
+
+**Guided Meditation** — R2 voice files + optional background drone:
+- R2 base URL: `https://pub-a103011de70941ba8ab9e8eaeed0d9cb.r2.dev/`
+- File names: `{prefix}-open.mp3`, `{prefix}-mid.mp3`, `{prefix}-close.mp3`
+- Voice files scheduled via `setTimeout` with `new Audio(url)`, volume 0.92
+- On pause: `clearTimeout` all scheduled timers, `audio.pause()` on any playing elements; on resume: `audio.play()` + reschedule remaining timers from current elapsed time
+- Background drone (`gBgMaster`): **starts at volume 0 — silent by default**. User must tap the `♪` music toggle button to enable it.
+
+**Music toggle (`bgMusicOn`):**
+- `false` by default, reset to `false` in `initPlayer()`
+- `toggleBgMusic()`: flips `bgMusicOn`, fades `gBgMaster` to 0.3 (on) or 0 (off) over 1s
+- On pause: `gBgMaster` always fades to 0 regardless of `bgMusicOn`
+- On resume: `gBgMaster` fades back to 0.3 only if `bgMusicOn === true`
+
+### DB saving
+- `saveSession(type, mode, duration)` inserts into `mood_checkins` with `type='breathing'` or `'meditation'`, `mode` = music choice key, `duration` = elapsed seconds
+- Guard: `duration < 5` → skips DB save (too short to count)
+- Also increments `_stored.sessions` in localStorage and calls `updateBadge()`
+- Called on both natural session end (timer hits 0) AND early `endSession()` (user taps "End session")
 
 ## Brand / Design Tokens
 
@@ -433,6 +491,19 @@ var scoredRows = rows.filter(r => r.total > 0);       // ALL sessions for scores
 var avgPct = scoredRows.length > 0 ? Math.round(sum / scoredRows.length) : null;
 var bestPct = scoredRows.length > 0 ? Math.max(...pcts) : null;
 ```
+
+### Mindfulness & Wellbeing section (progress.html)
+Below the Recent Quizzes table. Fetches `mood_checkins` where `type IN ('breathing','meditation')`.
+
+**4 stat cards:**
+- Total Sessions — `mfRows.length`
+- Total Time — `sum(duration)` formatted as `Xh Ym` or `Ym`
+- Breathing — count + total breathing time as sub-label
+- Meditation — count + total meditation time as sub-label
+
+**Recent Mindfulness table** (up to 15 rows): Date | Type (🫁 Breathing / 🧘 Meditation) | Sound/Mode | Duration
+
+Mode display labels: `tibetan → 🎵 Tibetan Bowl`, `ambient → 🌿 Ambient Drift`, `guided → 🧘 Guided`, session keys (`focus`, `exam`, `rest`, `morning`, `stress`) → their display names.
 
 ## Maths page — Flashcards tab
 
