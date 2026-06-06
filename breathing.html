@@ -1,95 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Mindfulness — StudyEase</title>
-  <link rel="icon" href="images/studyease-fav.png" type="image/png"/>
-  <link rel="apple-touch-icon" href="images/studyease-fav.png"/>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
-  <style>
-#yoga-splash{position:fixed;inset:0;background:#fff;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:opacity .4s ease}
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Mindfulness — StudyEase</title>
+<link rel="icon" href="images/studyease-fav.png" type="image/png"/>
+<link rel="apple-touch-icon" href="images/studyease-fav.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+#yoga-splash{position:fixed;inset:0;background:#fff;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity .42s ease}
 #yoga-splash .s-img{width:90px;height:90px;object-fit:contain;animation:yogaPulse 1.6s ease-in-out infinite}
-#yoga-splash .s-txt{font-family:'DM Sans',sans-serif;font-size:1.05rem;font-weight:600;color:#0A1628;opacity:.65;letter-spacing:.03em}
+#yoga-splash .s-txt{font-family:'DM Sans',sans-serif;font-size:1.02rem;font-weight:600;color:#0A1628;opacity:.6;letter-spacing:.04em}
 @keyframes yogaPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{min-height:100%;font-family:'DM Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-body{background:linear-gradient(145deg,#D1FAE5 0%,#EDE9FE 50%,#DBEAFE 100%);min-height:100vh;display:flex;flex-direction:column;align-items:center;color:#1E293B}
-.topbar{position:fixed;top:0;left:0;right:0;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;z-index:20;background:rgba(255,255,255,.55);backdrop-filter:blur(14px);border-bottom:1px solid rgba(20,184,166,.12)}
-.session-badge{background:rgba(255,255,255,.9);border:1px solid rgba(20,184,166,.3);border-radius:99px;padding:5px 14px;font-size:.77rem;font-weight:600;color:#0F766E;white-space:nowrap}
-.page{flex:1;display:flex;flex-direction:column;align-items:center;padding:76px 20px 52px;width:100%;max-width:540px}
-.hero{display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:24px;text-align:center}
-.hero-ring{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,rgba(20,184,166,.18),rgba(139,92,246,.14));border:1.5px solid rgba(20,184,166,.25);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 24px rgba(20,184,166,.18),0 0 0 8px rgba(20,184,166,.06)}
-.hero-ring img{width:46px;height:46px;object-fit:contain}
-.hero h1{font-size:1.65rem;font-weight:700;color:#0A1628;letter-spacing:-.02em}
-.hero-sub{font-size:.8rem;font-weight:600;color:#94A3B8;letter-spacing:.1em;text-transform:uppercase}
-.card{background:rgba(255,255,255,.58);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.85);border-radius:26px;padding:28px 26px 26px;width:100%;box-shadow:0 8px 40px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04),inset 0 1px 0 rgba(255,255,255,.8)}
-.page-tabs{display:flex;gap:0;background:rgba(241,245,249,.75);border:1px solid rgba(148,163,184,.18);border-radius:99px;padding:4px;margin-bottom:24px}
-.page-tab{flex:1;padding:9px 20px;border-radius:99px;border:none;background:none;font-family:inherit;font-size:.88rem;font-weight:600;color:#64748B;cursor:pointer;transition:all .2s}
-.page-tab.active{background:#14B8A6;color:white;box-shadow:0 2px 12px rgba(20,184,166,.38)}
-.mode-row{display:flex;gap:7px;margin-bottom:24px;flex-wrap:wrap;justify-content:center}
-.mode-btn{padding:7px 16px;border-radius:99px;border:1.5px solid rgba(20,184,166,.25);background:rgba(255,255,255,.6);font-family:inherit;font-size:.82rem;font-weight:600;color:#475569;cursor:pointer;transition:all .18s}
-.mode-btn:hover{border-color:#14B8A6;color:#0F766E;background:rgba(20,184,166,.07)}
-.mode-btn.active{background:#14B8A6;border-color:#14B8A6;color:white;box-shadow:0 2px 10px rgba(20,184,166,.32)}
-.circle-wrap{position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:22px}
-.circle-outer{width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(99,210,190,.18) 0%,rgba(147,197,253,.07) 60%,transparent 100%);display:flex;align-items:center;justify-content:center;position:relative}
-.circle-ring{position:absolute;inset:0;border-radius:50%;border:1.5px solid rgba(20,184,166,.18)}
-.circle-main{width:164px;height:164px;border-radius:50%;background:linear-gradient(135deg,rgba(20,184,166,.72) 0%,rgba(59,130,246,.65) 100%);box-shadow:0 0 50px rgba(20,184,166,.3),0 0 100px rgba(147,197,253,.12),inset 0 1px 0 rgba(255,255,255,.35);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;transition:transform .1s linear}
-.breath-label{font-size:1rem;font-weight:700;color:white;letter-spacing:.01em;text-align:center;line-height:1.3;text-shadow:0 1px 4px rgba(0,0,0,.18)}
-.breath-count{font-size:2.2rem;font-weight:700;color:white;opacity:.92;line-height:1;text-shadow:0 1px 4px rgba(0,0,0,.18)}
-.pulse-ring{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(20,184,166,.18);animation:pulse-out 3s ease-out infinite;pointer-events:none}
-.pulse-ring:nth-child(2){animation-delay:1s}
-.pulse-ring:nth-child(3){animation-delay:2s}
-@keyframes pulse-out{0%{transform:scale(1);opacity:.75}100%{transform:scale(1.55);opacity:0}}
-.circle-main.med-mode{background:linear-gradient(135deg,rgba(139,92,246,.72) 0%,rgba(99,102,241,.65) 100%);box-shadow:0 0 50px rgba(139,92,246,.28),0 0 100px rgba(167,139,250,.1),inset 0 1px 0 rgba(255,255,255,.3);animation:med-pulse 8s ease-in-out infinite}
-@keyframes med-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
-.pulse-ring.med-mode{border-color:rgba(139,92,246,.2)}
-.timer-row{display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap;justify-content:center}
-.timer-display{font-size:1.55rem;font-weight:700;color:#0F766E;letter-spacing:-.02em;min-width:76px;text-align:center}
-.timer-display.med{color:#7C3AED}
-.timer-sep{color:#94A3B8;font-size:.8rem;font-weight:500}
-.duration-btns{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
-.dur-btn{padding:5px 13px;border-radius:99px;border:1.5px solid rgba(20,184,166,.25);background:rgba(255,255,255,.55);font-family:inherit;font-size:.78rem;font-weight:600;color:#475569;cursor:pointer;transition:all .15s}
-.dur-btn:hover{border-color:#14B8A6;color:#0F766E}
-.dur-btn.active{background:#14B8A6;border-color:#14B8A6;color:white;box-shadow:0 2px 7px rgba(20,184,166,.28)}
-.custom-wrap{display:none;align-items:center;gap:6px;margin-top:8px}
-.custom-wrap.show{display:flex}
-.custom-inp{width:64px;padding:5px 10px;border:1.5px solid rgba(20,184,166,.4);border-radius:8px;font-family:inherit;font-size:.85rem;font-weight:600;color:#0F766E;text-align:center;outline:none;background:rgba(255,255,255,.8)}
-.custom-inp:focus{border-color:#14B8A6}
-.custom-set{padding:5px 14px;border-radius:99px;background:#14B8A6;border:none;color:white;font-family:inherit;font-size:.78rem;font-weight:600;cursor:pointer}
-.custom-lbl{font-size:.78rem;color:#64748B;font-weight:500}
-.start-wrap{display:flex;flex-direction:column;align-items:center;gap:7px;margin-top:4px}
-.start-btn{width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#14B8A6,#3B82F6);border:none;cursor:pointer;color:white;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(20,184,166,.42),0 0 0 7px rgba(20,184,166,.1);transition:transform .15s,box-shadow .15s}
-.start-btn:hover{transform:scale(1.07);box-shadow:0 6px 32px rgba(20,184,166,.52),0 0 0 9px rgba(20,184,166,.13)}
-.start-btn:active{transform:scale(.96)}
-.start-btn.med-mode{background:linear-gradient(135deg,#8B5CF6,#6366F1);box-shadow:0 4px 24px rgba(139,92,246,.42),0 0 0 7px rgba(139,92,246,.1)}
-.start-btn.med-mode:hover{box-shadow:0 6px 32px rgba(139,92,246,.52),0 0 0 9px rgba(139,92,246,.13)}
-.start-hint{font-size:.74rem;color:#94A3B8;font-weight:500;letter-spacing:.02em}
-/* Sound selection */
-.sound-section{margin-top:20px;display:flex;flex-direction:column;align-items:center;gap:10px;width:100%}
-.sound-label{font-size:.72rem;font-weight:600;color:#94A3B8;text-transform:uppercase;letter-spacing:.09em}
-.sound-btns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
-.snd-btn{padding:9px 18px;border-radius:99px;border:1.5px solid rgba(139,92,246,.22);background:rgba(255,255,255,.55);font-family:inherit;font-size:.82rem;font-weight:600;color:#7C3AED;cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:6px}
-.snd-btn:hover{border-color:#8B5CF6;background:rgba(139,92,246,.08)}
-.snd-btn.active{background:linear-gradient(135deg,#8B5CF6,#6366F1);border-color:transparent;color:white;box-shadow:0 2px 14px rgba(139,92,246,.38)}
-.snd-dot{width:6px;height:6px;border-radius:50%;background:currentColor;animation:sdot .9s infinite;display:none}
-.snd-btn.active .snd-dot{display:inline-block}
-@keyframes sdot{0%,100%{opacity:1}50%{opacity:.25}}
-.guided-note{font-size:.74rem;color:#8B5CF6;font-weight:500;text-align:center;line-height:1.55;max-width:280px}
-.prompt-text{font-size:1rem;font-weight:500;color:#475569;text-align:center;min-height:1.5em;transition:opacity .6s;max-width:300px;line-height:1.65;margin:6px 0 8px}
-.cycle-row{margin-top:9px;font-size:.78rem;color:#94A3B8;font-weight:500;text-align:center}
-.mode-desc{text-align:center;font-size:.81rem;color:#64748B;line-height:1.65;max-width:300px;margin-top:10px}
-.breath-section{display:flex;flex-direction:column;align-items:center;width:100%}
-.med-section{display:none;flex-direction:column;align-items:center;width:100%}
+html,body{height:100%;overflow:hidden;font-family:'DM Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased;background:#0A0F1E;color:#fff}
+.screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;opacity:0;pointer-events:none;transition:opacity .5s ease}
+.screen.active{opacity:1;pointer-events:auto}
+.back-btn{position:absolute;top:22px;left:20px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.65);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;text-decoration:none}
+.back-btn:hover{background:rgba(255,255,255,.14);color:#fff}
+.question{font-size:clamp(1.3rem,4vw,1.85rem);font-weight:600;text-align:center;color:#fff;margin-bottom:38px;line-height:1.35;max-width:460px}
+.pills{display:flex;flex-wrap:wrap;gap:11px;justify-content:center;max-width:480px}
+.pill{padding:12px 26px;border-radius:999px;border:1.5px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:rgba(255,255,255,.78);font-family:inherit;font-size:.94rem;font-weight:500;cursor:pointer;transition:all .22s}
+.pill:hover{border-color:rgba(255,255,255,.38);background:rgba(255,255,255,.1);color:#fff;box-shadow:0 0 22px rgba(255,255,255,.06)}
+.pill.sel{border-color:#8B5CF6;background:rgba(139,92,246,.22);color:#fff;box-shadow:0 0 28px rgba(139,92,246,.38)}
+.music-cards{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;max-width:580px}
+.mc{width:165px;min-height:172px;border-radius:22px;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:26px 16px;cursor:pointer;transition:all .26s;text-align:center}
+.mc:hover{transform:translateY(-4px)}
+.mc.purple{border-color:rgba(139,92,246,.32)}
+.mc.purple:hover{background:rgba(139,92,246,.13);box-shadow:0 8px 40px rgba(139,92,246,.26);border-color:#8B5CF6}
+.mc.teal{border-color:rgba(20,184,166,.32)}
+.mc.teal:hover{background:rgba(20,184,166,.1);box-shadow:0 8px 40px rgba(20,184,166,.2);border-color:#14B8A6}
+.mc.blue{border-color:rgba(59,130,246,.32)}
+.mc.blue:hover{background:rgba(59,130,246,.1);box-shadow:0 8px 40px rgba(59,130,246,.2);border-color:#3B82F6}
+.mc-emoji{font-size:2.1rem}
+.mc-name{font-size:.97rem;font-weight:600;color:#fff}
+.mc-sub{font-size:.72rem;color:rgba(255,255,255,.42);line-height:1.45}
+.time-btns{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:380px}
+.tb{padding:11px 22px;border-radius:999px;border:1.5px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:rgba(255,255,255,.78);font-family:inherit;font-size:.92rem;font-weight:500;cursor:pointer;transition:all .2s}
+.tb:hover,.tb.sel{border-color:#8B5CF6;background:rgba(139,92,246,.2);color:#fff;box-shadow:0 0 22px rgba(139,92,246,.32)}
+.slider-wrap{display:none;flex-direction:column;align-items:center;gap:10px;margin-top:18px}
+.slider-wrap.show{display:flex}
+.tslider{width:220px;-webkit-appearance:none;appearance:none;height:4px;border-radius:4px;background:rgba(139,92,246,.38);outline:none;cursor:pointer}
+.tslider::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:#8B5CF6;cursor:pointer;box-shadow:0 0 10px rgba(139,92,246,.55)}
+.slider-val{font-size:1.05rem;font-weight:600;color:rgba(255,255,255,.9)}
+.slider-lbl{font-size:.76rem;color:rgba(255,255,255,.38)}
+.go-btn{margin-top:26px;padding:14px 50px;border-radius:999px;border:none;background:linear-gradient(135deg,#8B5CF6,#6366F1);color:#fff;font-family:inherit;font-size:1rem;font-weight:600;cursor:pointer;box-shadow:0 4px 24px rgba(139,92,246,.44);transition:all .2s}
+.go-btn:hover{transform:translateY(-2px);box-shadow:0 6px 32px rgba(139,92,246,.54)}
+.sc-list{display:flex;flex-direction:column;gap:11px;width:100%;max-width:360px}
+.sc{padding:17px 22px;border-radius:16px;border:1.5px solid rgba(59,130,246,.2);background:rgba(59,130,246,.07);display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:all .2s}
+.sc:hover{border-color:#3B82F6;background:rgba(59,130,246,.15);box-shadow:0 0 24px rgba(59,130,246,.2);transform:translateX(4px)}
+.sc-name{font-size:.98rem;font-weight:600;color:#fff}
+.sc-dur{font-size:.82rem;color:rgba(255,255,255,.42)}
+#s5{padding:0}
+#pcanvas{position:absolute;inset:0;width:100%;height:100%}
 @media(max-width:480px){
-  .circle-outer{width:188px;height:188px}.circle-main{width:138px;height:138px}
-  .breath-count{font-size:1.8rem}.timer-display{font-size:1.3rem}
-  .card{padding:22px 16px 20px;border-radius:20px}
-  .hero h1{font-size:1.4rem}.hero-ring{width:68px;height:68px}.hero-ring img{width:38px;height:38px}
-  .snd-btn{padding:8px 14px;font-size:.78rem}
+  .question{font-size:1.22rem;margin-bottom:26px}
+  .mc{width:128px;min-height:140px;padding:18px 10px}
+  .mc-emoji{font-size:1.75rem}
+  .pill{padding:10px 18px;font-size:.87rem}
 }
-  </style>
+</style>
 </head>
 <body>
 
@@ -98,495 +69,585 @@ body{background:linear-gradient(145deg,#D1FAE5 0%,#EDE9FE 50%,#DBEAFE 100%);min-
   <div class="s-txt">Mindfulness · StudyEase</div>
 </div>
 
-<div class="topbar">
-  <a href="dashboard.html" id="back-btn" style="display:block;line-height:0">
-    <img src="images/StudyEasemain.png" alt="StudyEase" style="height:26px;width:auto;object-fit:contain"/>
+<!-- SCREEN 1: MOOD -->
+<div id="s1" class="screen active">
+  <a href="dashboard.html" class="back-btn" title="Dashboard">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
   </a>
-  <div class="session-badge" id="session-badge">0 sessions today</div>
+  <h2 class="question">How are you feeling right now?</h2>
+  <div class="pills" id="mood-pills">
+    <button class="pill" onclick="selMood('Anxious',this)">Anxious</button>
+    <button class="pill" onclick="selMood('Stressed',this)">Stressed</button>
+    <button class="pill" onclick="selMood('Tired',this)">Tired</button>
+    <button class="pill" onclick="selMood('Okay',this)">Okay</button>
+    <button class="pill" onclick="selMood('Good',this)">Good</button>
+    <button class="pill" onclick="selMood('Overwhelmed',this)">Overwhelmed</button>
+  </div>
 </div>
 
-<div class="page">
-  <div class="hero">
-    <div class="hero-ring"><img src="images/yoga.png" alt="Mindfulness"/></div>
-    <h1>Mindfulness</h1>
-    <div class="hero-sub">Breathe · Focus · Restore</div>
+<!-- SCREEN 2: INTENT -->
+<div id="s2" class="screen">
+  <button class="back-btn" onclick="goTo(1)">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <h2 class="question">What do you need right now?</h2>
+  <div class="pills" id="intent-pills">
+    <button class="pill" onclick="selIntent('Focus',this)">Focus</button>
+    <button class="pill" onclick="selIntent('Calm',this)">Calm</button>
+    <button class="pill" onclick="selIntent('Deep Rest',this)">Deep Rest</button>
+    <button class="pill" onclick="selIntent('Morning Energy',this)">Morning Energy</button>
+    <button class="pill" onclick="selIntent('Stress Relief',this)">Stress Relief</button>
+    <button class="pill" onclick="selIntent('Sleep',this)">Sleep</button>
   </div>
+</div>
 
-  <div class="card">
-    <div class="page-tabs">
-      <button class="page-tab active" onclick="switchTab('breath',this)">🫁 Breathing</button>
-      <button class="page-tab" onclick="switchTab('med',this)">🧘 Meditation</button>
+<!-- SCREEN 3: MUSIC CHOICE -->
+<div id="s3" class="screen">
+  <button class="back-btn" onclick="goTo(2)">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <h2 class="question">Choose your experience</h2>
+  <div class="music-cards">
+    <div class="mc purple" onclick="selMusic('tibetan')">
+      <div class="mc-emoji">🎵</div>
+      <div class="mc-name">Tibetan Bowl</div>
+      <div class="mc-sub">432hz resonance · Deeply calming</div>
     </div>
-
-    <!-- BREATHING -->
-    <div class="breath-section" id="breath-section">
-      <div class="mode-row">
-        <button class="mode-btn active" onclick="setBreathMode('box',this)">Box Breathing</button>
-        <button class="mode-btn" onclick="setBreathMode('478',this)">4-7-8</button>
-        <button class="mode-btn" onclick="setBreathMode('simple',this)">Simple Deep Breath</button>
-      </div>
-      <div class="circle-wrap">
-        <div class="circle-outer">
-          <div class="pulse-ring"></div><div class="pulse-ring"></div><div class="pulse-ring"></div>
-          <div class="circle-ring"></div>
-          <div class="circle-main" id="b-circle">
-            <div class="breath-label" id="b-label">Ready</div>
-            <div class="breath-count" id="b-count">–</div>
-          </div>
-        </div>
-      </div>
-      <div class="timer-row">
-        <div class="timer-display" id="b-timer">0:00</div>
-        <span class="timer-sep">of</span>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
-          <div class="duration-btns">
-            <button class="dur-btn active" onclick="setDur('b',120,this)">2 min</button>
-            <button class="dur-btn" onclick="setDur('b',300,this)">5 min</button>
-            <button class="dur-btn" onclick="setDur('b',600,this)">10 min</button>
-            <button class="dur-btn" id="b-custom-btn" onclick="toggleCustom('b')">Custom</button>
-          </div>
-          <div class="custom-wrap" id="b-custom-wrap">
-            <input class="custom-inp" id="b-custom-inp" type="number" min="1" max="60" placeholder="5"/>
-            <span class="custom-lbl">min</span>
-            <button class="custom-set" onclick="applyCustom('b')">Set</button>
-          </div>
-        </div>
-      </div>
-      <div class="start-wrap">
-        <button class="start-btn" id="b-start" onclick="toggleBreath()">
-          <svg id="b-icon" width="26" height="26" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
-        </button>
-        <span class="start-hint">Tap to begin</span>
-      </div>
-      <div class="cycle-row" id="b-cycle"></div>
-      <div class="mode-desc" id="b-desc">Inhale 4s · Hold 4s · Exhale 4s · Hold 4s</div>
+    <div class="mc teal" onclick="selMusic('ambient')">
+      <div class="mc-emoji">🌿</div>
+      <div class="mc-name">Ambient Drift</div>
+      <div class="mc-sub">Layered drone tones · Soft and warm</div>
     </div>
-
-    <!-- MEDITATION -->
-    <div class="med-section" id="med-section">
-      <div class="circle-wrap">
-        <div class="circle-outer">
-          <div class="pulse-ring med-mode"></div><div class="pulse-ring med-mode"></div><div class="pulse-ring med-mode"></div>
-          <div class="circle-ring"></div>
-          <div class="circle-main med-mode" id="m-circle">
-            <div class="breath-label" id="m-label">Ready</div>
-            <div class="breath-count" id="m-count">–</div>
-          </div>
-        </div>
-      </div>
-      <div class="prompt-text" id="m-prompt">Find a comfortable position and close your eyes.</div>
-      <div class="timer-row">
-        <div class="timer-display med" id="m-timer">0:00</div>
-        <span class="timer-sep">of</span>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
-          <div class="duration-btns">
-            <button class="dur-btn active" onclick="setDur('m',300,this)">5 min</button>
-            <button class="dur-btn" onclick="setDur('m',600,this)">10 min</button>
-            <button class="dur-btn" onclick="setDur('m',900,this)">15 min</button>
-            <button class="dur-btn" id="m-custom-btn" onclick="toggleCustom('m')">Custom</button>
-          </div>
-          <div class="custom-wrap" id="m-custom-wrap">
-            <input class="custom-inp" id="m-custom-inp" type="number" min="1" max="120" placeholder="10"/>
-            <span class="custom-lbl">min</span>
-            <button class="custom-set" onclick="applyCustom('m')">Set</button>
-          </div>
-        </div>
-      </div>
-      <div class="start-wrap">
-        <button class="start-btn med-mode" id="m-start" onclick="toggleMed()">
-          <svg id="m-icon" width="26" height="26" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
-        </button>
-        <span class="start-hint">Tap to begin</span>
-      </div>
-
-      <!-- Sound options -->
-      <div class="sound-section">
-        <div class="sound-label">Sound</div>
-        <div class="sound-btns">
-          <button class="snd-btn" data-snd="tibetan" onclick="selectSound('tibetan',this)">
-            <div class="snd-dot"></div>🎵 Tibetan Bowls
-          </button>
-          <button class="snd-btn" data-snd="rain" onclick="selectSound('rain',this)">
-            <div class="snd-dot"></div>🌧️ Rain
-          </button>
-          <button class="snd-btn" data-snd="guided" onclick="selectSound('guided',this)">
-            <div class="snd-dot"></div>🗣️ Guided
-          </button>
-        </div>
-        <div class="guided-note" id="guided-note" style="display:none">Voice guidance will play through your speakers.<br>Works for any duration — 5 min to 2 hours.</div>
-      </div>
-
-      <div class="cycle-row" id="m-cycle"></div>
+    <div class="mc blue" onclick="selMusic('guided')">
+      <div class="mc-emoji">🧘</div>
+      <div class="mc-name">Guided Meditation</div>
+      <div class="mc-sub">Voice guidance · Five curated sessions</div>
     </div>
   </div>
+</div>
+
+<!-- SCREEN 4: TIME -->
+<div id="s4" class="screen">
+  <button class="back-btn" onclick="goTo(3)">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <h2 class="question">How long do you have?</h2>
+  <div id="s4-content"></div>
+</div>
+
+<!-- SCREEN 5: PLAYER (canvas) -->
+<div id="s5" class="screen">
+  <canvas id="pcanvas"></canvas>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+'use strict';
+
+/* ── Splash ── */
 (function(){
-  var splash=document.getElementById('yoga-splash');
-  setTimeout(function(){splash.style.opacity='0';setTimeout(function(){splash.style.display='none';},420);},2000);
+  var sp=document.getElementById('yoga-splash');
+  setTimeout(function(){
+    sp.style.opacity='0';
+    setTimeout(function(){sp.style.display='none';},440);
+  },2000);
 })();
 
-(function(){
+/* ── Supabase ── */
 var _sb=null,_uid=null;
 try{
-  _sb=window.supabase?window.supabase.createClient('https://xiwrvbtryeesfgeydxnf.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd3J2YnRyeWVlc2ZnZXlkeG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMTQ0NDAsImV4cCI6MjA5NDU5MDQ0MH0.3Sp9dlc8cNsrzdHAGy74pCqscjL1MFV9ZWMW90QbhqE'):null;
-  if(_sb)_sb.auth.getUser().then(function(r){
-    if(r.data&&r.data.user){_uid=r.data.user.id;var bb=document.getElementById('back-btn');if(bb)bb.href='dashboard.html';}
-  });
+  _sb=window.supabase?window.supabase.createClient(
+    'https://xiwrvbtryeesfgeydxnf.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd3J2YnRyeWVlc2ZnZXlkeG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMTQ0NDAsImV4cCI6MjA5NDU5MDQ0MH0.3Sp9dlc8cNsrzdHAGy74pCqscjL1MFV9ZWMW90QbhqE'
+  ):null;
+  if(_sb)_sb.auth.getUser().then(function(r){if(r.data&&r.data.user)_uid=r.data.user.id;});
 }catch(e){}
 
-function saveSessionToDB(type,mode,duration){
-  if(!_sb||!_uid)return;
+function saveSession(type,mode,duration){
+  if(!_sb||!_uid||duration<5)return;
   _sb.from('mood_checkins').insert({user_id:_uid,type:type,mode:mode,duration:duration,date:new Date().toDateString()})
-    .then(function(r){if(r.error)console.error('Mindfulness save:',r.error);});
+    .then(null,function(){});
 }
 
-var TODAY=new Date().toDateString();
-var stored=JSON.parse(localStorage.getItem('se_breath')||'{}');
-if(stored.date!==TODAY)stored={date:TODAY,sessions:0};
-function updateBadge(){var s=stored.sessions||0;document.getElementById('session-badge').textContent=s===0?'0 sessions today':s+' session'+(s!==1?'s':'')+' today';}
-updateBadge();
+/* ── State ── */
+var selMoodVal='',selIntentVal='',selMusicVal='',sessionDur=0,sessionLabel='',guidedKey='';
+var R2='https://pub-a103011de70941ba8ab9e8eaeed0d9cb.r2.dev/';
 
-window.switchTab=function(tab,btn){
-  document.querySelectorAll('.page-tab').forEach(function(b){b.classList.remove('active');});
-  btn.classList.add('active');
-  document.getElementById('breath-section').style.display=tab==='breath'?'flex':'none';
-  document.getElementById('med-section').style.display=tab==='med'?'flex':'none';
-};
+var GUIDED=[
+  {key:'focus',  name:'Focus Flow',     dur:300,  prefix:'focus',   t:{open:0,mid:140,close:280}},
+  {key:'exam',   name:'Exam Calm',      dur:600,  prefix:'exam',    t:{open:0,mid:290,close:560}},
+  {key:'rest',   name:'Deep Rest',      dur:900,  prefix:'rest',    t:{open:0,mid:440,close:860}},
+  {key:'morning',name:'Morning Energy', dur:1200, prefix:'morning', t:{open:0,mid:590,close:1160}},
+  {key:'stress', name:'Stress Relief',  dur:1800, prefix:'stress',  t:{open:0,mid:890,close:1760}},
+];
 
-window.toggleCustom=function(pfx){
-  var w=document.getElementById(pfx+'-custom-wrap');
-  var on=w.classList.toggle('show');
-  document.getElementById(pfx+'-custom-btn').classList.toggle('active',on);
-};
-window.applyCustom=function(pfx){
-  var max=pfx==='b'?60:120;
-  var v=parseInt(document.getElementById(pfx+'-custom-inp').value)||0;
-  if(v<1||v>max)return;
-  if(pfx==='b')bTarget=v*60;else mTarget=v*60;
-  document.querySelectorAll(pfx==='b'?'.breath-section .dur-btn':'.med-section .dur-btn').forEach(function(b){b.classList.remove('active');});
-  document.getElementById(pfx+'-custom-btn').classList.add('active');
-  document.getElementById(pfx+'-custom-wrap').classList.remove('show');
-};
-window.setDur=function(pfx,secs,btn){
-  if(pfx==='b')bTarget=secs;else mTarget=secs;
-  document.querySelectorAll(pfx==='b'?'.breath-section .dur-btn':'.med-section .dur-btn').forEach(function(b){b.classList.remove('active');});
-  btn.classList.add('active');
-  document.getElementById(pfx+'-custom-wrap').classList.remove('show');
-};
+/* ── Navigation ── */
+var curScreen=1;
+function goTo(n){
+  document.getElementById('s'+curScreen).classList.remove('active');
+  document.getElementById('s'+n).classList.add('active');
+  curScreen=n;
+}
+
+function selMood(v,btn){
+  selMoodVal=v;
+  document.querySelectorAll('#mood-pills .pill').forEach(function(b){b.classList.remove('sel');});
+  btn.classList.add('sel');
+  setTimeout(function(){goTo(2);},340);
+}
+function selIntent(v,btn){
+  selIntentVal=v;
+  document.querySelectorAll('#intent-pills .pill').forEach(function(b){b.classList.remove('sel');});
+  btn.classList.add('sel');
+  setTimeout(function(){goTo(3);},340);
+}
+function selMusic(type){
+  selMusicVal=type;
+  buildS4(type);
+  goTo(4);
+}
+
+/* ── Screen 4 ── */
+var s4TimeSecs=0;
+function buildS4(type){
+  var c=document.getElementById('s4-content');
+  if(type==='guided'){
+    var h='<div class="sc-list">';
+    GUIDED.forEach(function(s){
+      h+='<div class="sc" onclick="launchGuided(\''+s.key+'\')"><span class="sc-name">'+s.name+'</span><span class="sc-dur">'+Math.round(s.dur/60)+' min</span></div>';
+    });
+    c.innerHTML=h+'</div>';
+  } else {
+    c.innerHTML='<div class="time-btns" id="tbtns">'+
+      '<button class="tb" onclick="pickTime(300,this)">5 min</button>'+
+      '<button class="tb" onclick="pickTime(600,this)">10 min</button>'+
+      '<button class="tb" onclick="pickTime(900,this)">15 min</button>'+
+      '<button class="tb" onclick="pickTime(1200,this)">20 min</button>'+
+      '<button class="tb" onclick="pickTime(1800,this)">30 min</button>'+
+      '<button class="tb" id="cust-tb" onclick="toggleSlider()">Custom</button>'+
+      '</div>'+
+      '<div class="slider-wrap" id="sw">'+
+        '<div class="slider-val" id="sv">10 min</div>'+
+        '<input type="range" class="tslider" id="tsl" min="1" max="60" value="10" oninput="sliderInput(this.value)"/>'+
+        '<div class="slider-lbl">Drag to set duration</div>'+
+      '</div>'+
+      '<button class="go-btn" id="go-btn" style="display:none" onclick="launchInstrumental()">Begin Session →</button>';
+    s4TimeSecs=0;
+  }
+}
+function pickTime(s,btn){
+  s4TimeSecs=s;
+  document.querySelectorAll('#tbtns .tb').forEach(function(b){b.classList.remove('sel');});
+  btn.classList.add('sel');
+  document.getElementById('sw').classList.remove('show');
+  document.getElementById('go-btn').style.display='block';
+}
+function toggleSlider(){
+  var sw=document.getElementById('sw');
+  var on=sw.classList.toggle('show');
+  document.querySelectorAll('#tbtns .tb').forEach(function(b){b.classList.remove('sel');});
+  if(on){document.getElementById('cust-tb').classList.add('sel');s4TimeSecs=parseInt(document.getElementById('tsl').value)*60;document.getElementById('go-btn').style.display='block';}
+}
+function sliderInput(v){
+  document.getElementById('sv').textContent=v+' min';
+  s4TimeSecs=parseInt(v)*60;
+}
+function launchInstrumental(){
+  if(!s4TimeSecs)return;
+  sessionLabel=selMusicVal==='tibetan'?'Tibetan Bowl':'Ambient Drift';
+  sessionDur=s4TimeSecs;
+  goTo(5);
+  initPlayer();
+}
+function launchGuided(key){
+  var s=GUIDED.find(function(x){return x.key===key;});
+  if(!s)return;
+  guidedKey=key;sessionLabel=s.name;sessionDur=s.dur;
+  goTo(5);
+  initPlayer();
+}
 
 /* ══ AUDIO ENGINE ══ */
-var audioCtx=null;
-function getCtx(){
-  if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
-  if(audioCtx.state==='suspended')audioCtx.resume();
-  return audioCtx;
-}
-function playTone(freq,dur,vol,type){
-  try{
-    var ctx=getCtx(),o=ctx.createOscillator(),g=ctx.createGain();
-    o.connect(g);g.connect(ctx.destination);
-    o.type=type||'sine';o.frequency.setValueAtTime(freq,ctx.currentTime);
-    g.gain.setValueAtTime(0,ctx.currentTime);
-    g.gain.linearRampToValueAtTime(vol,ctx.currentTime+0.02);
-    g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+dur);
-    o.start(ctx.currentTime);o.stop(ctx.currentTime+dur);
-  }catch(e){}
-}
-function chimePhase(phase){
-  if(phase==='Breathe in'){playTone(523,.35,.18);setTimeout(function(){playTone(659,.3,.14);},120);}
-  else if(phase==='Hold'){playTone(440,.3,.12);}
-  else{playTone(494,.35,.16);setTimeout(function(){playTone(392,.4,.12);},140);}
+var aCtx=null;
+function getACtx(){
+  if(!aCtx)aCtx=new(window.AudioContext||window.webkitAudioContext)();
+  if(aCtx.state==='suspended')aCtx.resume();
+  return aCtx;
 }
 
-/* ── Tibetan Bowls drone ── */
-var droneNodes=[];
-function startDrone(){
-  if(droneNodes.length)return;
+/* Tibetan Bowl — 432hz harmonics */
+var tibNodes=[],tibMaster=null;
+function startTibetan(){
+  if(tibMaster)return;
   try{
-    var ctx=getCtx();
-    var master=ctx.createGain();master.gain.value=0.001;master.connect(ctx.destination);
-    master.gain.linearRampToValueAtTime(1,ctx.currentTime+3);
-    [[110,112],[165,166.5],[220,221.5],[330,330.8]].forEach(function(pair,i){
-      pair.forEach(function(freq){
+    var ctx=getACtx();
+    tibMaster=ctx.createGain();tibMaster.gain.value=0.001;tibMaster.connect(ctx.destination);
+    tibMaster.gain.linearRampToValueAtTime(0.48,ctx.currentTime+3);
+    [[432,432.7,0.26],[864,864.9,0.14],[1296,1296.8,0.08],[216,216.4,0.11]].forEach(function(p){
+      [p[0],p[1]].forEach(function(f){
         var o=ctx.createOscillator(),g=ctx.createGain();
-        o.type='sine';o.frequency.value=freq;
-        g.gain.value=[.055,.04,.03,.018][i];
-        o.connect(g);g.connect(master);o.start();
-        droneNodes.push(o);
+        o.type='sine';o.frequency.value=f;g.gain.value=p[2];
+        o.connect(g);g.connect(tibMaster);o.start();tibNodes.push(o);
       });
     });
-    droneNodes.push(master);
   }catch(e){}
 }
-function stopDrone(){
-  if(!droneNodes.length)return;
-  try{
-    var ctx=getCtx(),master=droneNodes[droneNodes.length-1];
-    master.gain.setValueAtTime(master.gain.value,ctx.currentTime);
-    master.gain.linearRampToValueAtTime(0,ctx.currentTime+2);
-    var nodes=droneNodes.slice();droneNodes=[];
-    setTimeout(function(){nodes.forEach(function(n){try{n.stop&&n.stop();}catch(e){}});},2200);
-  }catch(e){droneNodes=[];}
+function fadeTibetan(target,dur){
+  if(!tibMaster||!aCtx)return;
+  tibMaster.gain.setValueAtTime(tibMaster.gain.value,aCtx.currentTime);
+  tibMaster.gain.linearRampToValueAtTime(target,aCtx.currentTime+dur);
+}
+function stopTibetan(){
+  if(!tibMaster)return;
+  fadeTibetan(0,2);
+  var ns=tibNodes.slice(),m=tibMaster;tibNodes=[];tibMaster=null;
+  setTimeout(function(){ns.forEach(function(n){try{n.stop();}catch(e){}});try{m.disconnect();}catch(e){}},2400);
 }
 
-/* ── Rain ambient ── */
-var rainSrc=null,rainMaster=null;
-function startRain(){
-  if(rainSrc)return;
+/* Ambient Drift — low drone */
+var ambNodes=[],ambMaster=null;
+function startAmbient(){
+  if(ambMaster)return;
   try{
-    var ctx=getCtx();
-    var bufLen=ctx.sampleRate*3;
-    var buf=ctx.createBuffer(2,bufLen,ctx.sampleRate);
-    for(var ch=0;ch<2;ch++){var d=buf.getChannelData(ch);for(var i=0;i<bufLen;i++)d[i]=Math.random()*2-1;}
-    rainSrc=ctx.createBufferSource();
-    rainSrc.buffer=buf;rainSrc.loop=true;
-    var hp=ctx.createBiquadFilter();hp.type='highpass';hp.frequency.value=120;
-    var lp=ctx.createBiquadFilter();lp.type='lowpass';lp.frequency.value=1400;lp.Q.value=0.7;
-    var mid=ctx.createBiquadFilter();mid.type='peaking';mid.frequency.value=2800;mid.gain.value=-7;mid.Q.value=1.2;
-    rainMaster=ctx.createGain();rainMaster.gain.value=0.001;rainMaster.connect(ctx.destination);
-    rainSrc.connect(hp);hp.connect(lp);lp.connect(mid);mid.connect(rainMaster);
-    rainSrc.start();
-    rainMaster.gain.linearRampToValueAtTime(0.22,ctx.currentTime+3);
+    var ctx=getACtx();
+    ambMaster=ctx.createGain();ambMaster.gain.value=0.001;ambMaster.connect(ctx.destination);
+    ambMaster.gain.linearRampToValueAtTime(0.44,ctx.currentTime+3);
+    [[80,80.3,0.2],[120,120.4,0.16],[160,160.5,0.11],[240,240.3,0.07]].forEach(function(p){
+      [p[0],p[1]].forEach(function(f){
+        var o=ctx.createOscillator(),g=ctx.createGain();
+        o.type='sine';o.frequency.value=f;g.gain.value=p[2];
+        o.connect(g);g.connect(ambMaster);o.start();ambNodes.push(o);
+      });
+    });
   }catch(e){}
 }
-function stopRain(){
-  if(!rainSrc||!rainMaster)return;
+function fadeAmbient(target,dur){
+  if(!ambMaster||!aCtx)return;
+  ambMaster.gain.setValueAtTime(ambMaster.gain.value,aCtx.currentTime);
+  ambMaster.gain.linearRampToValueAtTime(target,aCtx.currentTime+dur);
+}
+function stopAmbient(){
+  if(!ambMaster)return;
+  fadeAmbient(0,2);
+  var ns=ambNodes.slice(),m=ambMaster;ambNodes=[];ambMaster=null;
+  setTimeout(function(){ns.forEach(function(n){try{n.stop();}catch(e){}});try{m.disconnect();}catch(e){}},2400);
+}
+
+/* Guided — R2 voice files + soft bg drone */
+var gTimers=[],gAudios=[],gBgMaster=null,gBgNodes=[];
+function startGuidedBg(){
+  if(gBgMaster)return;
   try{
-    var ctx=getCtx();
-    rainMaster.gain.setValueAtTime(rainMaster.gain.value,ctx.currentTime);
-    rainMaster.gain.linearRampToValueAtTime(0,ctx.currentTime+2);
-    var src=rainSrc;rainSrc=null;rainMaster=null;
-    setTimeout(function(){try{src.stop();}catch(e){}},2200);
-  }catch(e){rainSrc=null;rainMaster=null;}
+    var ctx=getACtx();
+    gBgMaster=ctx.createGain();gBgMaster.gain.value=0.001;gBgMaster.connect(ctx.destination);
+    gBgMaster.gain.linearRampToValueAtTime(0.11,ctx.currentTime+3);
+    [[80,80.3],[120,120.4]].forEach(function(pair){
+      pair.forEach(function(f){
+        var o=ctx.createOscillator(),g=ctx.createGain();
+        o.type='sine';o.frequency.value=f;g.gain.value=0.18;
+        o.connect(g);g.connect(gBgMaster);o.start();gBgNodes.push(o);
+      });
+    });
+  }catch(e){}
+}
+function scheduleGuided(key,elapsedSecs){
+  clearGTimers();
+  var sess=GUIDED.find(function(s){return s.key===key;});
+  if(!sess)return;
+  var pfx=sess.prefix,tm=sess.t;
+  ['open','mid','close'].forEach(function(part){
+    var trigger=tm[part],rem=trigger-elapsedSecs;
+    if(rem>-10){
+      var delay=Math.max(0,rem)*1000;
+      var id=setTimeout(function(){
+        var a=new Audio(R2+pfx+'-'+part+'.mp3');
+        a.volume=0.92;a.play().catch(function(){});gAudios.push(a);
+      },delay);
+      gTimers.push(id);
+    }
+  });
+}
+function clearGTimers(){gTimers.forEach(function(t){clearTimeout(t);});gTimers=[];}
+function pauseGuidedAudio(){
+  clearGTimers();
+  gAudios.forEach(function(a){try{a.pause();}catch(e){}});
+  if(gBgMaster&&aCtx){gBgMaster.gain.setValueAtTime(gBgMaster.gain.value,aCtx.currentTime);gBgMaster.gain.linearRampToValueAtTime(0,aCtx.currentTime+0.5);}
+}
+function resumeGuidedAudio(elapsedSecs){
+  gAudios.forEach(function(a){try{a.play().catch(function(){});}catch(e){}});
+  if(gBgMaster&&aCtx){gBgMaster.gain.setValueAtTime(0,aCtx.currentTime);gBgMaster.gain.linearRampToValueAtTime(0.11,aCtx.currentTime+1);if(aCtx.state==='suspended')aCtx.resume();}
+  scheduleGuided(guidedKey,elapsedSecs);
+}
+function stopGuidedAudio(){
+  clearGTimers();
+  gAudios.forEach(function(a){try{a.pause();a.src='';}catch(e){}});gAudios=[];
+  if(gBgMaster&&aCtx){gBgMaster.gain.linearRampToValueAtTime(0,aCtx.currentTime+2);}
+  var ns=gBgNodes.slice(),m=gBgMaster;gBgNodes=[];gBgMaster=null;
+  setTimeout(function(){ns.forEach(function(n){try{n.stop();}catch(e){}});try{m&&m.disconnect();}catch(e){}},2400);
 }
 
-/* ── Guided Meditation (TTS) ── */
-var guidedTimers=[];
-var G={
-  open:'Welcome to your meditation session. Find a comfortable position, close your eyes, and take a slow, deep breath in... and slowly out. Allow your body to settle completely.',
-  early:[
-    'Bring your full attention to your breathing. Notice the natural rhythm of each inhale... and exhale.',
-    'Let any thoughts that arise simply float away, like clouds passing through a clear sky. You do not need to hold onto them.'
-  ],
-  mid:[
-    'Feel the ground beneath you, supporting you completely. You are safe here.',
-    'With each exhale, release any tension in your shoulders... your jaw... your hands.',
-    'Notice the stillness around you. You are here, in this moment, and that is enough.',
-    'If your mind begins to wander, gently guide it back to your breath. There is no judgment here.',
-    'You are doing wonderfully. Simply breathe, and be.',
-    'Feel a wave of peace moving through your body, from the top of your head to the tips of your toes.',
-    'Rest in this moment. There is nowhere else to be, and nothing else to do right now.',
-    'Notice the space between your thoughts. That quiet space is always there, waiting for you.',
-    'Each breath is an anchor, connecting you to this present moment.',
-    'Allow yourself to be exactly as you are, right now. That is more than enough.'
-  ],
-  preEnd:'Begin to gently bring your awareness back to the room around you. Notice any sounds, and the feeling of the surface beneath you.',
-  nearEnd:'Take one final deep, cleansing breath in... hold it gently... and slowly release. Feel gratitude for this time you have given yourself today.',
-  close:'Gently wiggle your fingers and toes. When you are ready, slowly open your eyes. Well done. Carry this calm with you through your day.'
-};
-
-function scheduledSpeak(text,delaySec){
-  var t=setTimeout(function(){
-    if(!window.speechSynthesis)return;
-    var u=new SpeechSynthesisUtterance(text);
-    u.rate=0.82;u.pitch=0.92;u.volume=0.88;
-    window.speechSynthesis.speak(u);
-  },delaySec*1000);
-  guidedTimers.push(t);
+function startAudio(){
+  getACtx();
+  if(selMusicVal==='tibetan')startTibetan();
+  else if(selMusicVal==='ambient')startAmbient();
+  else{startGuidedBg();scheduleGuided(guidedKey,0);}
+}
+function pauseAudio(){
+  if(selMusicVal==='tibetan')fadeTibetan(0,0.5);
+  else if(selMusicVal==='ambient')fadeAmbient(0,0.5);
+  else pauseGuidedAudio();
+  if(aCtx&&aCtx.state==='running')aCtx.suspend();
+}
+function resumeAudio(elapsedSecs){
+  if(aCtx&&aCtx.state==='suspended')aCtx.resume();
+  if(selMusicVal==='tibetan')fadeTibetan(0.48,1);
+  else if(selMusicVal==='ambient')fadeAmbient(0.44,1);
+  else resumeGuidedAudio(elapsedSecs);
+}
+function stopAudio(){
+  if(selMusicVal==='tibetan')stopTibetan();
+  else if(selMusicVal==='ambient')stopAmbient();
+  else stopGuidedAudio();
 }
 
-function scheduleGuided(totalSecs){
-  cancelGuided();
-  var t=totalSecs;
-  scheduledSpeak(G.open,2);
-  if(t>80) scheduledSpeak(G.early[0],50);
-  if(t>130) scheduledSpeak(G.early[1],95);
-  /* Distribute middle prompts across available window */
-  var midStart=120,midEnd=Math.max(midStart+25,t-120);
-  if(midEnd>midStart){
-    var win=midEnd-midStart;
-    var num=Math.min(G.mid.length,Math.max(1,Math.floor(win/30)));
-    var gap=win/(num+1);
-    for(var i=0;i<num;i++) scheduledSpeak(G.mid[i],midStart+gap*(i+1));
+/* ══ CANVAS PLAYER ══ */
+var canvas,ctx,dpr=window.devicePixelRatio||1;
+var playing=false,sessEnded=false;
+var sessStart=null,pausedMs=0,pauseAt=null;
+var breathPhase='in',breathPhaseStart=null,pausedPhaseProgress=0;
+var BREATH=4000; // ms per phase
+var rafId=null;
+var W,H,CX,CY,BASE_R,PP_X,PP_Y,PP_R,STOP_Y;
+
+function initPlayer(){
+  canvas=document.getElementById('pcanvas');
+  ctx=canvas.getContext('2d');
+  playing=false;sessEnded=false;
+  sessStart=null;pausedMs=0;pauseAt=null;
+  breathPhase='in';breathPhaseStart=null;pausedPhaseProgress=0;
+  if(rafId){cancelAnimationFrame(rafId);rafId=null;}
+  resizeCanvas();
+  drawIdle();
+  canvas.addEventListener('click',onCanvasClick);
+  canvas.addEventListener('touchend',function(e){
+    e.preventDefault();
+    var t=e.changedTouches[0];
+    onCanvasClick({clientX:t.clientX,clientY:t.clientY});
+  },{passive:false});
+  window.addEventListener('resize',onResize);
+}
+
+function onResize(){resizeCanvas();if(sessStart||sessEnded)return;drawIdle();}
+
+function resizeCanvas(){
+  W=window.innerWidth;H=window.innerHeight;
+  canvas.width=W*dpr;canvas.height=H*dpr;
+  canvas.style.width=W+'px';canvas.style.height=H+'px';
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  CX=W/2;
+  var topH=100,botH=170;
+  CY=topH+(H-topH-botH)/2;
+  BASE_R=Math.min(Math.min(W*0.34,H*0.28),168);
+  PP_X=W/2;PP_Y=H-105;PP_R=32;STOP_Y=H-55;
+}
+
+function getElapsedMs(){
+  if(!sessStart)return 0;
+  var now=performance.now();
+  var p=pausedMs+(pauseAt?now-pauseAt:0);
+  return now-sessStart-p;
+}
+
+function ease(t){return -(Math.cos(Math.PI*t)-1)/2;}
+
+function getR(phase,prog){
+  var mn=BASE_R*0.82,mx=BASE_R*1.18,t=ease(prog);
+  return phase==='in'?mn+(mx-mn)*t:mx-(mx-mn)*t;
+}
+
+function fmt(s){var m=Math.floor(s/60),sc=s%60;return m+':'+(sc<10?'0':'')+sc;}
+
+function drawFrame(elMs,phase,prog,isPlaying){
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.fillStyle='#0A0F1E';ctx.fillRect(0,0,W,H);
+
+  var elSecs=Math.floor(elMs/1000);
+  var rem=Math.max(0,sessionDur-elSecs);
+  var totalProg=sessionDur>0?Math.min(elSecs/sessionDur,1):0;
+
+  /* Session name */
+  ctx.font='500 15px "DM Sans",sans-serif';
+  ctx.fillStyle='rgba(255,255,255,.38)';
+  ctx.textAlign='center';ctx.textBaseline='alphabetic';
+  ctx.fillText(sessionLabel,CX,46);
+
+  /* Elapsed */
+  ctx.font='700 21px "DM Sans",sans-serif';
+  ctx.fillStyle='rgba(255,255,255,.72)';
+  ctx.fillText(fmt(elSecs),CX,74);
+
+  /* Background ring */
+  ctx.beginPath();ctx.arc(CX,CY,BASE_R*1.52,0,Math.PI*2);
+  ctx.strokeStyle='rgba(255,255,255,.07)';ctx.lineWidth=4;ctx.stroke();
+
+  /* Progress ring */
+  if(totalProg>0){
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(CX,CY,BASE_R*1.52,-Math.PI/2,-Math.PI/2+totalProg*Math.PI*2);
+    ctx.strokeStyle='rgba(139,92,246,.72)';ctx.lineWidth=5;ctx.lineCap='round';ctx.stroke();
+    ctx.restore();
   }
-  if(t>=180) scheduledSpeak(G.preEnd,t-110);
-  if(t>=50)  scheduledSpeak(G.nearEnd,t-35);
+
+  /* Glow */
+  var cr=getR(phase,prog);
+  ctx.save();
+  ctx.shadowBlur=80;ctx.shadowColor='rgba(139,92,246,.5)';
+  var grd=ctx.createRadialGradient(CX,CY,0,CX,CY,cr);
+  grd.addColorStop(0,'rgba(196,181,253,.92)');
+  grd.addColorStop(0.5,'rgba(99,102,241,.8)');
+  grd.addColorStop(1,'rgba(59,130,246,.35)');
+  ctx.beginPath();ctx.arc(CX,CY,cr,0,Math.PI*2);
+  ctx.fillStyle=grd;ctx.fill();
+  ctx.shadowBlur=0;ctx.restore();
+
+  /* Circle text */
+  var label=sessEnded?'Well done 🙏':(phase==='in'?'Breathe In':'Breathe Out');
+  ctx.font='600 '+Math.round(Math.max(13,BASE_R*0.18))+'px "DM Sans",sans-serif';
+  ctx.fillStyle='rgba(255,255,255,.95)';
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText(label,CX,CY);
+  ctx.textBaseline='alphabetic';
+
+  /* Remaining */
+  ctx.font='500 14px "DM Sans",sans-serif';
+  ctx.fillStyle='rgba(255,255,255,.35)';
+  ctx.textAlign='center';
+  ctx.fillText(fmt(rem)+' remaining',CX,CY+BASE_R*1.55+22);
+
+  /* Play/Pause button */
+  ctx.save();
+  if(!isPlaying&&!sessEnded){ctx.shadowBlur=24;ctx.shadowColor='rgba(139,92,246,.55)';}
+  ctx.beginPath();ctx.arc(PP_X,PP_Y,PP_R,0,Math.PI*2);
+  ctx.fillStyle=isPlaying?'rgba(255,255,255,.13)':'rgba(139,92,246,.32)';ctx.fill();
+  ctx.strokeStyle=isPlaying?'rgba(255,255,255,.28)':'rgba(139,92,246,.7)';
+  ctx.lineWidth=1.5;ctx.stroke();
+  ctx.shadowBlur=0;ctx.restore();
+
+  ctx.fillStyle='rgba(255,255,255,.92)';
+  if(isPlaying){
+    var bw=5,bh=16,g=5;
+    ctx.fillRect(PP_X-g-bw,PP_Y-bh/2,bw,bh);
+    ctx.fillRect(PP_X+g,PP_Y-bh/2,bw,bh);
+  } else if(!sessEnded){
+    ctx.beginPath();ctx.moveTo(PP_X-8,PP_Y-12);ctx.lineTo(PP_X-8,PP_Y+12);ctx.lineTo(PP_X+14,PP_Y);
+    ctx.closePath();ctx.fill();
+  } else {
+    /* Replay icon */
+    ctx.font='18px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('↩',PP_X,PP_Y);
+    ctx.textBaseline='alphabetic';
+  }
+
+  /* End session / return home text */
+  ctx.font='400 13px "DM Sans",sans-serif';
+  ctx.fillStyle='rgba(255,255,255,.3)';
+  ctx.textAlign='center';
+  ctx.fillText(sessEnded?'Tap to return home':'End session',CX,STOP_Y);
 }
 
-function cancelGuided(){
-  guidedTimers.forEach(function(t){clearTimeout(t);});
-  guidedTimers=[];
-  if(window.speechSynthesis)window.speechSynthesis.cancel();
+function drawIdle(){
+  drawFrame(0,'in',0,false);
 }
 
-function speakClose(){
-  if(!window.speechSynthesis)return;
-  window.speechSynthesis.cancel();
-  var u=new SpeechSynthesisUtterance(G.close);
-  u.rate=0.82;u.pitch=0.92;u.volume=0.88;
-  window.speechSynthesis.speak(u);
+function onCanvasClick(e){
+  var rect=canvas.getBoundingClientRect();
+  var x=e.clientX-rect.left,y=e.clientY-rect.top;
+  var dx=x-PP_X,dy=y-PP_Y;
+  if(Math.sqrt(dx*dx+dy*dy)<=PP_R+12){
+    if(sessEnded){endSession();return;}
+    togglePP();return;
+  }
+  if(Math.abs(x-CX)<90&&Math.abs(y-STOP_Y)<22){endSession();}
 }
 
-/* ── Sound selection ── */
-var currentSound=null;
-window.selectSound=function(name,btn){
-  if(currentSound===name){
-    stopAllSound();currentSound=null;
-    document.querySelectorAll('.snd-btn').forEach(function(b){b.classList.remove('active');});
-    document.getElementById('guided-note').style.display='none';
+function togglePP(){
+  if(!sessStart){beginSession();}
+  else if(playing){pauseSession();}
+  else{resumeSession();}
+}
+
+function beginSession(){
+  playing=true;sessEnded=false;
+  sessStart=performance.now();
+  breathPhaseStart=performance.now();
+  breathPhase='in';
+  getACtx();startAudio();
+  rafId=requestAnimationFrame(loop);
+}
+
+function pauseSession(){
+  var now=performance.now();
+  playing=false;pauseAt=now;
+  if(rafId){cancelAnimationFrame(rafId);rafId=null;}
+  pauseAudio();
+  var prog=breathPhaseStart?Math.min((now-breathPhaseStart)/BREATH,1):0;
+  drawFrame(now-sessStart-pausedMs,breathPhase,prog,false);
+}
+
+function resumeSession(){
+  var now=performance.now();
+  if(pauseAt){
+    var plen=now-pauseAt;
+    pausedMs+=plen;
+    breathPhaseStart+=plen;
+    pauseAt=null;
+  }
+  playing=true;
+  resumeAudio(Math.floor(getElapsedMs()/1000));
+  rafId=requestAnimationFrame(loop);
+}
+
+function loop(ts){
+  if(!playing)return;
+  var elMs=getElapsedMs();
+  var elSecs=Math.floor(elMs/1000);
+
+  /* Advance breath phase */
+  var phaseEl=ts-breathPhaseStart;
+  if(phaseEl>=BREATH){
+    breathPhase=breathPhase==='in'?'out':'in';
+    breathPhaseStart=ts;
+    phaseEl=0;
+  }
+  var prog=Math.min(phaseEl/BREATH,1);
+
+  if(elSecs>=sessionDur){
+    sessEnded=true;playing=false;
+    stopAudio();
+    drawFrame(sessionDur*1000,breathPhase,prog,false);
+    saveSession(selMusicVal==='guided'?'meditation':'breathing',selMusicVal,elSecs);
     return;
   }
-  stopAllSound();currentSound=name;
-  document.querySelectorAll('.snd-btn').forEach(function(b){b.classList.remove('active');});
-  btn.classList.add('active');
-  document.getElementById('guided-note').style.display=name==='guided'?'block':'none';
-  if(medRunning)startCurrentSound();
-};
 
-function startCurrentSound(){
-  if(!currentSound)return;
-  getCtx();
-  if(currentSound==='tibetan') startDrone();
-  else if(currentSound==='rain') startRain();
-  else if(currentSound==='guided') scheduleGuided(mTarget-mElapsed);
+  drawFrame(elMs,breathPhase,prog,true);
+  rafId=requestAnimationFrame(loop);
 }
 
-function stopAllSound(){
-  stopDrone();
-  stopRain();
-  cancelGuided();
+function endSession(){
+  playing=false;
+  if(rafId){cancelAnimationFrame(rafId);rafId=null;}
+  stopAudio();
+  var elSecs=Math.floor(getElapsedMs()/1000);
+  saveSession(selMusicVal==='guided'?'meditation':'breathing',selMusicVal,elSecs);
+  /* cleanup */
+  canvas.removeEventListener('click',onCanvasClick);
+  window.removeEventListener('resize',onResize);
+  sessStart=null;pausedMs=0;pauseAt=null;sessEnded=false;
+  /* reset pills */
+  document.querySelectorAll('.pill').forEach(function(p){p.classList.remove('sel');});
+  goTo(1);
 }
-
-/* ══ BREATHING ══ */
-var MODES={
-  box:   {phases:['Breathe in','Hold','Breathe out','Hold'],times:[4,4,4,4],desc:'Inhale 4s · Hold 4s · Exhale 4s · Hold 4s'},
-  '478': {phases:['Breathe in','Hold','Breathe out'],times:[4,7,8],desc:'Inhale 4s · Hold 7s · Exhale 8s — calms the nervous system'},
-  simple:{phases:['Breathe in','Hold','Breathe out'],times:[4,4,8],desc:'Inhale 4s · Hold 4s · Exhale 8s — slow and steady'},
-};
-var bMode='box',bTarget=120,bRunning=false,bElapsed=0,bPhaseTime=0,bPhaseIdx=0,bCycles=0,bInt=null;
-var MAX_S=1.22,MIN_S=0.82;
-
-window.setBreathMode=function(m,btn){
-  if(bRunning)return;
-  bMode=m;
-  document.querySelectorAll('.breath-section .mode-btn').forEach(function(b){b.classList.remove('active');});
-  btn.classList.add('active');
-  document.getElementById('b-desc').textContent=MODES[m].desc;
-  document.getElementById('b-label').textContent='Ready';
-  document.getElementById('b-count').textContent='–';
-  document.getElementById('b-circle').style.transform='scale(1)';
-};
-window.toggleBreath=function(){bRunning?stopBreath():startBreath();};
-
-function startBreath(){
-  bRunning=true;bElapsed=0;bPhaseTime=0;bPhaseIdx=0;bCycles=0;
-  document.getElementById('b-icon').innerHTML='<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>';
-  renderBreathPhase();
-  bInt=setInterval(bTick,1000);
-}
-function stopBreath(){
-  bRunning=false;clearInterval(bInt);
-  saved('breathing',bMode);
-  document.getElementById('b-icon').innerHTML='<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/>';
-  document.getElementById('b-label').textContent='Done';
-  document.getElementById('b-count').textContent='';
-  document.getElementById('b-circle').style.transform='scale(1)';
-  document.getElementById('b-cycle').textContent=bCycles?'Completed '+bCycles+' cycle'+(bCycles!==1?'s':''):'';
-}
-function bTick(){
-  bElapsed++;bPhaseTime++;
-  var m=MODES[bMode],dur=m.times[bPhaseIdx],rem=dur-bPhaseTime;
-  document.getElementById('b-count').textContent=rem>0?rem:'';
-  document.getElementById('b-timer').textContent=fmtTime(bElapsed);
-  animBreath();
-  if(bPhaseTime>=dur){
-    bPhaseIdx=(bPhaseIdx+1)%m.phases.length;
-    if(bPhaseIdx===0)bCycles++;
-    bPhaseTime=0;renderBreathPhase();
-  }
-  if(bElapsed>=bTarget)stopBreath();
-}
-function renderBreathPhase(){
-  var m=MODES[bMode],label=m.phases[bPhaseIdx],dur=m.times[bPhaseIdx];
-  document.getElementById('b-label').textContent=label;
-  document.getElementById('b-count').textContent=dur;
-  document.getElementById('b-cycle').textContent=bCycles?'Cycle '+bCycles:'';
-  animBreath();chimePhase(label);
-}
-function animBreath(){
-  var m=MODES[bMode],phase=m.phases[bPhaseIdx],dur=m.times[bPhaseIdx],pct=bPhaseTime/dur,scale;
-  if(phase==='Breathe in')scale=MIN_S+(MAX_S-MIN_S)*pct;
-  else if(phase==='Breathe out')scale=MAX_S-(MAX_S-MIN_S)*pct;
-  else if(phase==='Hold'&&bPhaseIdx===1)scale=MAX_S;
-  else scale=MIN_S;
-  document.getElementById('b-circle').style.transform='scale('+scale+')';
-}
-
-/* ══ MEDITATION ══ */
-var PROMPTS=[
-  'Close your eyes and settle in…','Focus on your breath.',
-  'Notice each inhale and exhale.','Let your thoughts pass like clouds.',
-  'Return gently to the present moment.','Feel the ground beneath you.',
-  'You are safe. You are calm.','Release any tension you\'re holding.',
-  'There is nowhere else to be right now.','Each breath is a fresh start.',
-  'Notice the stillness around you.','You are doing wonderfully.',
-];
-var mTarget=300,medRunning=false,mElapsed=0,mInt=null,mPromptIdx=0,mPromptInt=null;
-
-window.toggleMed=function(){medRunning?stopMed():startMed();};
-
-function startMed(){
-  medRunning=true;mElapsed=0;mPromptIdx=0;
-  document.getElementById('m-icon').innerHTML='<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>';
-  document.getElementById('m-label').textContent='Breathe';
-  document.getElementById('m-count').textContent='';
-  showPrompt(PROMPTS[0]);
-  startCurrentSound();
-  mInt=setInterval(mTick,1000);
-  mPromptInt=setInterval(function(){
-    mPromptIdx=(mPromptIdx+1)%PROMPTS.length;
-    showPrompt(PROMPTS[mPromptIdx]);
-  },20000);
-}
-function stopMed(){
-  medRunning=false;clearInterval(mInt);clearInterval(mPromptInt);
-  var wasGuided=currentSound==='guided';
-  stopAllSound();
-  if(wasGuided)speakClose();
-  saved('meditation',currentSound||'silent');
-  document.getElementById('m-icon').innerHTML='<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/>';
-  showPrompt('Session complete. Well done. 🙏');
-  document.getElementById('m-label').textContent='Done';
-  document.getElementById('m-count').textContent='';
-  document.getElementById('m-cycle').textContent='';
-}
-function mTick(){
-  mElapsed++;
-  document.getElementById('m-timer').textContent=fmtTime(mElapsed);
-  var rem=mTarget-mElapsed;
-  document.getElementById('m-count').textContent=rem>0?fmtTime(rem):'';
-  if(mElapsed>=mTarget)stopMed();
-}
-function showPrompt(text){
-  var el=document.getElementById('m-prompt');
-  el.style.opacity=0;
-  setTimeout(function(){el.textContent=text;el.style.opacity=1;},300);
-}
-
-function saved(type,mode){
-  stored.sessions=(stored.sessions||0)+1;
-  localStorage.setItem('se_breath',JSON.stringify(stored));
-  updateBadge();
-  saveSessionToDB(type,mode,type==='breathing'?bElapsed:mElapsed);
-}
-function fmtTime(s){var m=Math.floor(s/60),sec=s%60;return m+':'+(sec<10?'0':'')+sec;}
-
-document.getElementById('b-desc').textContent=MODES.box.desc;
-document.getElementById('med-section').style.display='none';
-})();
 </script>
 </body>
 </html>
