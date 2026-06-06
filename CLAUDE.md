@@ -21,7 +21,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `physics.html` | 631 |
 | `chemistry.html` | 631 |
 | `biology.html` | 631 |
-| `breathing.html` | 719 |
+| `breathing.html` | 747 |
 | `settings.html` | 509 |
 | `supabase/functions/ai-chat/index.ts` | 107 |
 
@@ -367,11 +367,18 @@ Tap a pill → auto-advances after 340ms. Selecting music or a time launches the
 - Tracked in localStorage (`se_breath` key: `{date, sessions}`) — resets each new day
 - Increments on every completed or early-ended session and updates live
 
-### Top-left logo (screens 1–4)
-- `images/StudyEasemain.png` at `top:20px;left:20px`, `height:22px`, `filter:brightness(0) invert(1)`, `opacity:.65`
-- Screen 1: wraps in `<a href="dashboard.html">` — clicking goes to dashboard
-- Screens 2–4: wraps in `<button onclick="goTo(N-1)">` — clicking goes back one screen
-- Do NOT use the `.back-btn` class circle style — these are plain logo links
+### Persistent header (`#mf-header`) — all screens including canvas
+Fixed bar `height:56px; z-index:60` across the full page. Three elements:
+
+| Position | Element | Details |
+|---|---|---|
+| Left | `#mf-back` (circle button, 36px) | S1 → `dashboard.html` · S2/3/4 → `goTo(n-1)` · S5 → `endSession()` |
+| Center | `#mf-logo` (StudyEasemain.png, 26px) | **No color filter** — shows original brand colors · clicks `logoNav()` → dashboard if `_uid` set, else `index.html` |
+| Right | `#today-badge` | "X sessions today" — visible on all screens |
+
+`updateHeader(n)` is called inside `goTo()`, `initPlayer()`, and `endSession()` to wire the correct back action.
+
+**Logo**: do NOT apply `filter:brightness(0) invert(1)` — the user wants the original colored logo. `opacity:.92`.
 
 ### Yoga icon (screens 1–4)
 - `images/yoga.png` (`.screen-logo`, 42px) centred above the question text on every screen
@@ -393,7 +400,7 @@ Full-screen `<canvas id="pcanvas">` drawn with `requestAnimationFrame`. Device p
 
 **Canvas layout (all coordinates in CSS pixels):**
 - Top-left: `images/StudyEasemain.png` drawn via `ctx.drawImage`, `filter:brightness(0) invert(1)`, `globalAlpha:0.5`
-- Top-centre: session name (small, muted) + elapsed time (bold)
+- Top-centre: session name at y:76, elapsed time at y:100 (pushed below the 56px fixed header — do NOT set these below y:56)
 - Background progress ring: thin circle at `BASE_R × 1.52` radius, `rgba(255,255,255,.07)`
 - Progress arc: same radius, purple `rgba(139,92,246,.72)`, draws clockwise from top proportional to elapsed/total
 - Breathing circle: radial gradient (lavender → indigo → blue), radius animates between `BASE_R × 0.82` (exhale) and `BASE_R × 1.18` (inhale) using `easeInOutSine`. 4s inhale phase, 4s exhale phase.
@@ -419,18 +426,18 @@ Full-screen `<canvas id="pcanvas">` drawn with `requestAnimationFrame`. Device p
 - Oscillator pairs at 80/80.3hz, 120/120.4hz, 160/160.5hz, 240/240.3hz
 - Master gain fades in to 0.44 over 3s; same pause/resume pattern as Tibetan
 
-**Guided Meditation** — R2 voice files + optional background drone:
+**Guided Meditation** — R2 voice files + optional Tibetan Bowl background:
 - R2 base URL: `https://pub-a103011de70941ba8ab9e8eaeed0d9cb.r2.dev/`
 - File names: `{prefix}-open.mp3`, `{prefix}-mid.mp3`, `{prefix}-close.mp3`
 - Voice files scheduled via `setTimeout` with `new Audio(url)`, volume 0.92
 - On pause: `clearTimeout` all scheduled timers, `audio.pause()` on any playing elements; on resume: `audio.play()` + reschedule remaining timers from current elapsed time
-- Background drone (`gBgMaster`): **starts at volume 0 — silent by default**. User must tap the `♪` music toggle button to enable it.
+- Background music (`gBgMaster`): **Tibetan Bowl harmonics** (432/432.7, 864/864.9, 1296/1296.8, 216/216.4 hz) — identical engine to standalone Tibetan Bowl mode. **Starts at volume 0 — silent by default.** User taps the `♪` music toggle to enable it.
 
 **Music toggle (`bgMusicOn`):**
 - `false` by default, reset to `false` in `initPlayer()`
-- `toggleBgMusic()`: flips `bgMusicOn`, fades `gBgMaster` to 0.3 (on) or 0 (off) over 1s
+- `toggleBgMusic()`: flips `bgMusicOn`, fades `gBgMaster` to **0.62** (on) or 0 (off) over 1s — loud enough to be clearly audible under the voice
 - On pause: `gBgMaster` always fades to 0 regardless of `bgMusicOn`
-- On resume: `gBgMaster` fades back to 0.3 only if `bgMusicOn === true`
+- On resume: `gBgMaster` fades back to 0.62 only if `bgMusicOn === true`
 
 ### DB saving
 - `saveSession(type, mode, duration)` inserts into `mood_checkins` with `type='breathing'` or `'meditation'`, `mode` = music choice key, `duration` = elapsed seconds

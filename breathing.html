@@ -19,7 +19,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',system-ui,sans-serif
 #mf-header{position:fixed;top:0;left:0;right:0;height:56px;z-index:60;display:flex;align-items:center;justify-content:space-between;padding:0 16px;pointer-events:none}
 #mf-back{pointer-events:auto;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:rgba(255,255,255,.7);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;text-decoration:none;flex-shrink:0}
 #mf-back:hover{background:rgba(255,255,255,.16);color:#fff;border-color:rgba(255,255,255,.3)}
-#mf-logo{height:20px;width:auto;filter:brightness(0) invert(1);opacity:.6;flex-shrink:0}
+#mf-logo{height:26px;width:auto;opacity:.92;flex-shrink:0;display:block}
 #today-badge{pointer-events:none;font-size:.73rem;font-weight:600;color:rgba(255,255,255,.5);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.11);border-radius:99px;padding:5px 13px;letter-spacing:.01em;white-space:nowrap;flex-shrink:0}
 .screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:68px 20px 24px;opacity:0;pointer-events:none;transition:opacity .5s ease}
 .screen.active{opacity:1;pointer-events:auto}
@@ -391,11 +391,11 @@ function startGuidedBg(){
   try{
     var ctx=getACtx();
     gBgMaster=ctx.createGain();gBgMaster.gain.value=0;gBgMaster.connect(ctx.destination);
-    /* volume stays 0 until user toggles music on */
-    [[80,80.3],[120,120.4]].forEach(function(pair){
-      pair.forEach(function(f){
+    /* Tibetan Bowl harmonics — same as standalone Tibetan mode */
+    [[432,432.7,0.28],[864,864.9,0.16],[1296,1296.8,0.09],[216,216.4,0.12]].forEach(function(p){
+      [p[0],p[1]].forEach(function(f){
         var o=ctx.createOscillator(),g=ctx.createGain();
-        o.type='sine';o.frequency.value=f;g.gain.value=0.18;
+        o.type='sine';o.frequency.value=f;g.gain.value=p[2];
         o.connect(g);g.connect(gBgMaster);o.start();gBgNodes.push(o);
       });
     });
@@ -426,7 +426,7 @@ function pauseGuidedAudio(){
 }
 function resumeGuidedAudio(elapsedSecs){
   gAudios.forEach(function(a){try{a.play().catch(function(){});}catch(e){}});
-  if(gBgMaster&&aCtx&&bgMusicOn){gBgMaster.gain.setValueAtTime(0,aCtx.currentTime);gBgMaster.gain.linearRampToValueAtTime(0.3,aCtx.currentTime+1);if(aCtx.state==='suspended')aCtx.resume();}
+  if(gBgMaster&&aCtx&&bgMusicOn){gBgMaster.gain.setValueAtTime(0,aCtx.currentTime);gBgMaster.gain.linearRampToValueAtTime(0.62,aCtx.currentTime+1);if(aCtx.state==='suspended')aCtx.resume();}
   scheduleGuided(guidedKey,elapsedSecs);
 }
 function stopGuidedAudio(){
@@ -467,7 +467,7 @@ function toggleBgMusic(){
   bgMusicOn=!bgMusicOn;
   if(gBgMaster&&aCtx){
     gBgMaster.gain.setValueAtTime(gBgMaster.gain.value,aCtx.currentTime);
-    gBgMaster.gain.linearRampToValueAtTime(bgMusicOn?0.3:0,aCtx.currentTime+1);
+    gBgMaster.gain.linearRampToValueAtTime(bgMusicOn?0.62:0,aCtx.currentTime+1);
   }
 }
 
@@ -508,7 +508,7 @@ function resizeCanvas(){
   canvas.style.width=W+'px';canvas.style.height=H+'px';
   ctx.setTransform(dpr,0,0,dpr,0,0);
   CX=W/2;
-  var topH=100,botH=170;
+  var topH=118,botH=170;
   CY=topH+(H-topH-botH)/2;
   BASE_R=Math.min(Math.min(W*0.34,H*0.28),168);
   PP_X=W/2;PP_Y=H-105;PP_R=32;STOP_Y=H-55;
@@ -545,15 +545,15 @@ function drawFrame(elMs,phase,prog,isPlaying){
   ctx.fillStyle=tg;ctx.fillRect(0,0,W,72);
 
   /* Session name */
-  ctx.font='500 15px "DM Sans",sans-serif';
+  ctx.font='500 14px "DM Sans",sans-serif';
   ctx.fillStyle='rgba(255,255,255,.38)';
   ctx.textAlign='center';ctx.textBaseline='alphabetic';
-  ctx.fillText(sessionLabel,CX,46);
+  ctx.fillText(sessionLabel,CX,76);
 
   /* Elapsed */
-  ctx.font='700 21px "DM Sans",sans-serif';
+  ctx.font='700 20px "DM Sans",sans-serif';
   ctx.fillStyle='rgba(255,255,255,.72)';
-  ctx.fillText(fmt(elSecs),CX,74);
+  ctx.fillText(fmt(elSecs),CX,100);
 
   /* Background ring */
   ctx.beginPath();ctx.arc(CX,CY,BASE_R*1.52,0,Math.PI*2);
