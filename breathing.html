@@ -52,6 +52,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',system-ui,sans-serif
 .sc:hover{border-color:#3B82F6;background:rgba(59,130,246,.15);box-shadow:0 0 24px rgba(59,130,246,.2);transform:translateX(4px)}
 .sc-name{font-size:.98rem;font-weight:600;color:#fff}
 .sc-dur{font-size:.82rem;color:rgba(255,255,255,.42)}
+.screen-logo{width:42px;height:42px;object-fit:contain;margin-bottom:14px;opacity:.82;filter:drop-shadow(0 0 14px rgba(139,92,246,.55))}
 #s5{padding:0}
 #pcanvas{position:absolute;inset:0;width:100%;height:100%}
 @media(max-width:480px){
@@ -71,10 +72,11 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',system-ui,sans-serif
 
 <!-- SCREEN 1: MOOD -->
 <div id="s1" class="screen active">
-  <a href="dashboard.html" class="back-btn" title="Dashboard">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  <a href="dashboard.html" style="position:absolute;top:20px;left:20px;display:block;line-height:0;opacity:.65;transition:opacity .2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity='.65'">
+    <img src="images/StudyEasemain.png" alt="StudyEase" style="height:22px;width:auto;filter:brightness(0) invert(1)"/>
   </a>
   <div id="today-badge" style="position:absolute;top:22px;right:20px;font-size:.76rem;font-weight:600;color:rgba(255,255,255,.5);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.11);border-radius:99px;padding:6px 14px;letter-spacing:.01em">0 sessions today</div>
+  <img src="images/yoga.png" class="screen-logo" alt=""/>
   <h2 class="question">How are you feeling right now?</h2>
   <div class="pills" id="mood-pills">
     <button class="pill" onclick="selMood('Anxious',this)">Anxious</button>
@@ -88,9 +90,10 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',system-ui,sans-serif
 
 <!-- SCREEN 2: INTENT -->
 <div id="s2" class="screen">
-  <button class="back-btn" onclick="goTo(1)">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  <button onclick="goTo(1)" style="position:absolute;top:20px;left:20px;background:none;border:none;cursor:pointer;padding:0;line-height:0;opacity:.65;transition:opacity .2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity='.65'">
+    <img src="images/StudyEasemain.png" alt="StudyEase" style="height:22px;width:auto;filter:brightness(0) invert(1)"/>
   </button>
+  <img src="images/yoga.png" class="screen-logo" alt=""/>
   <h2 class="question">What do you need right now?</h2>
   <div class="pills" id="intent-pills">
     <button class="pill" onclick="selIntent('Focus',this)">Focus</button>
@@ -104,9 +107,10 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',system-ui,sans-serif
 
 <!-- SCREEN 3: MUSIC CHOICE -->
 <div id="s3" class="screen">
-  <button class="back-btn" onclick="goTo(2)">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  <button onclick="goTo(2)" style="position:absolute;top:20px;left:20px;background:none;border:none;cursor:pointer;padding:0;line-height:0;opacity:.65;transition:opacity .2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity='.65'">
+    <img src="images/StudyEasemain.png" alt="StudyEase" style="height:22px;width:auto;filter:brightness(0) invert(1)"/>
   </button>
+  <img src="images/yoga.png" class="screen-logo" alt=""/>
   <h2 class="question">Choose your experience</h2>
   <div class="music-cards">
     <div class="mc purple" onclick="selMusic('tibetan')">
@@ -129,9 +133,10 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',system-ui,sans-serif
 
 <!-- SCREEN 4: TIME -->
 <div id="s4" class="screen">
-  <button class="back-btn" onclick="goTo(3)">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  <button onclick="goTo(3)" style="position:absolute;top:20px;left:20px;background:none;border:none;cursor:pointer;padding:0;line-height:0;opacity:.65;transition:opacity .2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity='.65'">
+    <img src="images/StudyEasemain.png" alt="StudyEase" style="height:22px;width:auto;filter:brightness(0) invert(1)"/>
   </button>
+  <img src="images/yoga.png" class="screen-logo" alt=""/>
   <h2 class="question">How long do you have?</h2>
   <div id="s4-content"></div>
 </div>
@@ -183,6 +188,9 @@ function saveSession(type,mode,duration){
   _sb.from('mood_checkins').insert({user_id:_uid,type:type,mode:mode,duration:duration,date:new Date().toDateString()})
     .then(null,function(){});
 }
+
+/* ── Preload logo for canvas ── */
+var _logoImg=new Image();_logoImg.src='images/StudyEasemain.png';
 
 /* ── State ── */
 var selMoodVal='',selIntentVal='',selMusicVal='',sessionDur=0,sessionLabel='',guidedKey='';
@@ -354,8 +362,8 @@ function startGuidedBg(){
   if(gBgMaster)return;
   try{
     var ctx=getACtx();
-    gBgMaster=ctx.createGain();gBgMaster.gain.value=0.001;gBgMaster.connect(ctx.destination);
-    gBgMaster.gain.linearRampToValueAtTime(0.11,ctx.currentTime+3);
+    gBgMaster=ctx.createGain();gBgMaster.gain.value=0;gBgMaster.connect(ctx.destination);
+    /* volume stays 0 until user toggles music on */
     [[80,80.3],[120,120.4]].forEach(function(pair){
       pair.forEach(function(f){
         var o=ctx.createOscillator(),g=ctx.createGain();
@@ -390,7 +398,7 @@ function pauseGuidedAudio(){
 }
 function resumeGuidedAudio(elapsedSecs){
   gAudios.forEach(function(a){try{a.play().catch(function(){});}catch(e){}});
-  if(gBgMaster&&aCtx){gBgMaster.gain.setValueAtTime(0,aCtx.currentTime);gBgMaster.gain.linearRampToValueAtTime(0.11,aCtx.currentTime+1);if(aCtx.state==='suspended')aCtx.resume();}
+  if(gBgMaster&&aCtx&&bgMusicOn){gBgMaster.gain.setValueAtTime(0,aCtx.currentTime);gBgMaster.gain.linearRampToValueAtTime(0.3,aCtx.currentTime+1);if(aCtx.state==='suspended')aCtx.resume();}
   scheduleGuided(guidedKey,elapsedSecs);
 }
 function stopGuidedAudio(){
@@ -425,6 +433,16 @@ function stopAudio(){
   else stopGuidedAudio();
 }
 
+/* ── Bg music toggle (guided only) ── */
+var bgMusicOn=false;
+function toggleBgMusic(){
+  bgMusicOn=!bgMusicOn;
+  if(gBgMaster&&aCtx){
+    gBgMaster.gain.setValueAtTime(gBgMaster.gain.value,aCtx.currentTime);
+    gBgMaster.gain.linearRampToValueAtTime(bgMusicOn?0.3:0,aCtx.currentTime+1);
+  }
+}
+
 /* ══ CANVAS PLAYER ══ */
 var canvas,ctx,dpr=window.devicePixelRatio||1;
 var playing=false,sessEnded=false;
@@ -432,7 +450,7 @@ var sessStart=null,pausedMs=0,pauseAt=null;
 var breathPhase='in',breathPhaseStart=null,pausedPhaseProgress=0;
 var BREATH=4000; // ms per phase
 var rafId=null;
-var W,H,CX,CY,BASE_R,PP_X,PP_Y,PP_R,STOP_Y;
+var W,H,CX,CY,BASE_R,PP_X,PP_Y,PP_R,STOP_Y,MUSIC_X,MUSIC_Y,MUSIC_R;
 
 function initPlayer(){
   canvas=document.getElementById('pcanvas');
@@ -440,6 +458,7 @@ function initPlayer(){
   playing=false;sessEnded=false;
   sessStart=null;pausedMs=0;pauseAt=null;
   breathPhase='in';breathPhaseStart=null;pausedPhaseProgress=0;
+  bgMusicOn=false;
   if(rafId){cancelAnimationFrame(rafId);rafId=null;}
   resizeCanvas();
   drawIdle();
@@ -464,6 +483,7 @@ function resizeCanvas(){
   CY=topH+(H-topH-botH)/2;
   BASE_R=Math.min(Math.min(W*0.34,H*0.28),168);
   PP_X=W/2;PP_Y=H-105;PP_R=32;STOP_Y=H-55;
+  MUSIC_R=20;MUSIC_X=W/2-86;MUSIC_Y=PP_Y;
 }
 
 function getElapsedMs(){
@@ -489,6 +509,13 @@ function drawFrame(elMs,phase,prog,isPlaying){
   var elSecs=Math.floor(elMs/1000);
   var rem=Math.max(0,sessionDur-elSecs);
   var totalProg=sessionDur>0?Math.min(elSecs/sessionDur,1):0;
+
+  /* StudyEase logo top-left */
+  if(_logoImg.complete&&_logoImg.naturalWidth>0){
+    ctx.save();ctx.globalAlpha=0.5;ctx.filter='brightness(0) invert(1)';
+    ctx.drawImage(_logoImg,18,16,110,22);
+    ctx.filter='none';ctx.globalAlpha=1;ctx.restore();
+  }
 
   /* Session name */
   ctx.font='500 15px "DM Sans",sans-serif';
@@ -569,6 +596,25 @@ function drawFrame(elMs,phase,prog,isPlaying){
   ctx.fillStyle='rgba(255,255,255,.3)';
   ctx.textAlign='center';
   ctx.fillText(sessEnded?'Tap to return home':'End session',CX,STOP_Y);
+
+  /* Music toggle (guided only) */
+  if(selMusicVal==='guided'&&!sessEnded){
+    ctx.save();
+    ctx.shadowBlur=bgMusicOn?16:0;ctx.shadowColor='rgba(20,184,166,.6)';
+    ctx.beginPath();ctx.arc(MUSIC_X,MUSIC_Y,MUSIC_R,0,Math.PI*2);
+    ctx.fillStyle=bgMusicOn?'rgba(20,184,166,.28)':'rgba(255,255,255,.07)';ctx.fill();
+    ctx.strokeStyle=bgMusicOn?'rgba(20,184,166,.8)':'rgba(255,255,255,.2)';ctx.lineWidth=1.5;ctx.stroke();
+    ctx.shadowBlur=0;ctx.restore();
+    ctx.font='15px sans-serif';
+    ctx.fillStyle=bgMusicOn?'rgba(20,184,166,1)':'rgba(255,255,255,.42)';
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('♪',MUSIC_X,MUSIC_Y);
+    ctx.textBaseline='alphabetic';
+    ctx.font='400 10px "DM Sans",sans-serif';
+    ctx.fillStyle=bgMusicOn?'rgba(20,184,166,.7)':'rgba(255,255,255,.22)';
+    ctx.textAlign='center';
+    ctx.fillText(bgMusicOn?'music on':'music',MUSIC_X,MUSIC_Y+MUSIC_R+13);
+  }
 }
 
 function drawIdle(){
@@ -578,6 +624,11 @@ function drawIdle(){
 function onCanvasClick(e){
   var rect=canvas.getBoundingClientRect();
   var x=e.clientX-rect.left,y=e.clientY-rect.top;
+  /* Music toggle (guided, active session) */
+  if(selMusicVal==='guided'&&!sessEnded&&sessStart){
+    var dm=Math.sqrt((x-MUSIC_X)*(x-MUSIC_X)+(y-MUSIC_Y)*(y-MUSIC_Y));
+    if(dm<=MUSIC_R+12){toggleBgMusic();return;}
+  }
   var dx=x-PP_X,dy=y-PP_Y;
   if(Math.sqrt(dx*dx+dy*dy)<=PP_R+12){
     if(sessEnded){endSession();return;}
