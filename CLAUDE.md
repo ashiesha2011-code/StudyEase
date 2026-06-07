@@ -4,16 +4,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Stats
 
-**Total lines of code: 14,200** (14,093 across 15 HTML files + 107 in the Supabase Edge Function)
+**Total lines of code: ~14,700** (17 HTML files + 107 in the Supabase Edge Function)
 
 | File | Lines |
 |------|-------|
-| `index.html` | 2,195 |
+| `index.html` | ~2,190 |
 | `session-player-ch2.html` | 1,253 |
 | `session-player.html` | 1,239 |
 | `video-player.html` | 1,190 |
 | `video-player-ch2.html` | 1,155 |
-| `dashboard.html` | 1,109 |
+| `dashboard.html` | ~1,115 |
+| `terms.html` | ~330 |
+| `privacy.html` | ~370 |
 | `quiz.html` | 787 |
 | `maths.html` | 765 |
 | `ai.html` | 930 |
@@ -21,7 +23,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `physics.html` | 631 |
 | `chemistry.html` | 631 |
 | `biology.html` | 631 |
-| `breathing.html` | 747 |
+| `breathing.html` | ~760 |
 | `settings.html` | 509 |
 | `supabase/functions/ai-chat/index.ts` | 107 |
 
@@ -105,6 +107,8 @@ Old root images (`favicon.png`, `logo.png`, `logo-sidebar.png`, `logo-icon.png`,
 | `breathing.html` | Mindfulness page — breathing + meditation |
 | `quiz.html` | Quiz page |
 | `settings.html` | User settings — account, appearance, subscription |
+| `terms.html` | Terms of Service — works logged in (sidebar) and logged out (guest header) |
+| `privacy.html` | Privacy Policy — works logged in (sidebar) and logged out (guest header) |
 
 ### Browser tab titles (standardised)
 
@@ -121,6 +125,8 @@ Old root images (`favicon.png`, `logo.png`, `logo-sidebar.png`, `logo-icon.png`,
 | `quiz.html` | `Quiz — StudyEase` |
 | `settings.html` | `Settings — StudyEase` |
 | `breathing.html` | `Mindfulness — StudyEase` |
+| `terms.html` | `Terms of Service — StudyEase` |
+| `privacy.html` | `Privacy Policy — StudyEase` |
 | `video-player.html` | `Real Numbers — StudyEase` |
 | `video-player-ch2.html` | `Polynomials — StudyEase` |
 | `session-player.html` | `Session · Real Numbers — StudyEase` |
@@ -340,7 +346,8 @@ Links: Dashboard, My Progress, AI Companion (→ ai.html), Physics, Chemistry, B
 - 3 steps: Name → Class (4 pill buttons, auto-advances) → Photo upload (optional)
 - On finish (`obFinish()`): upserts to `profiles`, then shows the 2-second loading screen
 - Network error on profile load: silently fails, does NOT show onboarding
-- **Class selection — only Class 10 is available**: clicking Class 9 / 11 / 12 highlights the button in amber and shows a `#ob-coming-soon` notice ("🚧 Class X is coming soon! Only Class 10 is available right now."). `_obClass` is NOT set and the modal does NOT advance to step 3. Clicking Class 10 clears the notice and auto-advances after 220ms.
+- **Class selection — 9 options, only Class 10 available**: Class 6, 7, 8, 9, 10, 11 (Science), 11 (Commerce), 12 (Science), 12 (Commerce). Clicking any class other than Class 10 highlights in amber and shows `#ob-coming-soon` notice. `_obClass` is NOT set and the modal does NOT advance. Clicking Class 10 clears the notice and auto-advances after 220ms. Class value saved to `profiles.class` matches the button label exactly (e.g. `"Class 11 (Science)"`).
+- **Signup flow collects email + password only** — no name, class, or profile photo at signup. All profile data is collected exclusively in the onboarding modal on dashboard.html. No `profiles` row is inserted at signup; `obFinish()` upserts it.
 - **Input sizing**: name input is `padding:16px 20px; font-size:1.15rem` with a subtle box-shadow. Class buttons are `min-height:70px; padding:22px 16px; font-size:1.1rem; border-radius:14px`.
 - **Step overflow**: each step div has `overflow-y:auto` so content is scrollable on small screens — the parent container keeps `overflow:hidden` for the slide transition animation.
 
@@ -499,6 +506,21 @@ General sizing philosophy: slightly larger than typical — bigger padding, bigg
 - The Supabase anon key is hardcoded in every HTML file — intentional for a pure-frontend app with RLS enabled.
 - Anon key: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd3J2YnRyeWVlc2ZnZXlkeG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMTQ0NDAsImV4cCI6MjA5NDU5MDQ0MH0.3Sp9dlc8cNsrzdHAGy74pCqscjL1MFV9ZWMW90QbhqE`
 
+## terms.html and privacy.html
+
+Both pages use a **dual-layout pattern** — they work whether the user is logged in or not:
+
+- **Body starts at `opacity:0`** — same pattern as all other pages.
+- **Auth check via `onAuthStateChange`**:
+  - If `session` exists: show `#topbar` (breadcrumb + avatar), populate sidebar with user name/avatar/plan, reveal page.
+  - If `event === 'INITIAL_SESSION' && !session`: hide `#sidebar`, set `#main-area` margin-left to 0, show `#guest-header` (navy bar with logo + "Sign in" button), reveal page.
+- **Guest header** (`#guest-header`): navy bar shown only when logged out. Links to the other legal page and back to sign in.
+- **No redirect to `index.html`** when logged out — unlike most sidebar pages. These pages are publicly accessible.
+- **Logo click** uses `handleLogoClick()` — smart redirect to dashboard if logged in, `index.html` if not.
+- The signup modal in `index.html` links to both pages with `target="_blank"` (open in new tab).
+
+Contact email for both pages: **support@studyease.in**
+
 ## settings.html
 
 Full settings page with sidebar layout. Sections:
@@ -573,7 +595,7 @@ Mode display labels: `tibetan → 🎵 Tibetan Bowl`, `ambient → 🌿 Ambient 
 - **Logo images on dark backgrounds** (session players, video player topbar) use `filter:brightness(0) invert(1)` to render white. breathing.html topbar logo does NOT use this filter — it's on a light frosted glass bar.
 - **Voice dictation duplication fix** — NEVER read `e.results[0]` in the `onresult` handler. Always iterate from `e.resultIndex` to avoid replaying already-appended results on each subsequent event.
 - **`studyease_just_onboarded` localStorage flag** — set by `obFinish()` in dashboard.html, cleared after the loading screen plays. If you see the loading screen appearing unexpectedly on dashboard load, this flag is still in localStorage.
-- **supabase-js CDN client does NOT reliably attach the user JWT for INSERT/PATCH on `mood_checkins`** — requests return 403 even when the user is logged in. Fix: use `sb.auth.getSession()` to get `access_token` and pass it manually via `fetch` with `Authorization: Bearer <token>` and `apikey: <anon_key>` headers. Do NOT use `sb.from('mood_checkins').insert()` for this table.
+- **supabase-js CDN client does NOT reliably attach the user JWT for INSERT/PATCH on `mood_checkins`** — requests return 403 even when the user is logged in. Fix: use `sb.auth.getSession()` to get `access_token` and pass it manually via `fetch` with `Authorization: Bearer <token>` and `apikey: <anon_key>` headers. Do NOT use `sb.from('mood_checkins').insert()` for this table. This fix is applied in both `dashboard.html` (mood check-in) and `breathing.html` (`saveSession`).
 - **mood_checkins RLS must use 4 explicit separate policies** (insert_own, select_own, update_own, delete_own) with `(select auth.uid())` — a single `ALL` policy caused 403s because `auth.uid()` didn't resolve correctly in the CDN supabase-js JWT context.
 - **mood check-in save pattern**: INSERT first → if any error → PATCH `?user_id=eq.X&date=eq.Y`. Never use `.upsert()` with `onConflict` on this table — it returns 400 from PostgREST.
 - **`mood_checkins` type column is NOT NULL** — always include `type:'mood'` when saving mood check-ins, `type:'breathing'` or `type:'meditation'` for mindfulness sessions. Omitting it causes insert failures even though the column has a DB default (PostgREST may not honour defaults without explicit values in some cases).

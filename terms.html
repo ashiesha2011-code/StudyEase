@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terms of Service — StudyEase</title>
+  <link rel="icon" href="images/studyease-fav.png" type="image/png"/>
+  <link rel="apple-touch-icon" href="images/studyease-fav.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&display=swap" rel="stylesheet">
+  <style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy: #0A1628; --navy-mid: #132038;
+  --blue: #3B82F6; --blue-dark: #2563EB; --blue-light: #EFF6FF; --blue-mid: #BFDBFE;
+  --white: #FFFFFF; --off-white: #F4F6F9; --surface: #FAFBFC;
+  --text: #1E293B; --text-mid: #475569; --text-muted: #94A3B8;
+  --border: #E4E8EE; --border-soft: #F0F2F6;
+  --emerald: #10B981; --emerald-bg: #ECFDF5;
+  --purple: #8B5CF6; --purple-bg: #F5F3FF;
+  --sidebar-w: 224px; --topbar-h: 62px;
+  --radius: 10px; --radius-lg: 14px;
+  --shadow-sm: 0 1px 4px rgba(10,22,40,0.05);
+  --shadow: 0 4px 18px rgba(10,22,40,0.07);
+}
+html { -webkit-font-smoothing: antialiased; }
+body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--off-white); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+.layout { display: flex; min-height: 100vh; }
+
+/* Sidebar */
+.sidebar { width: var(--sidebar-w); background: var(--navy); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 200; transition: transform 0.28s cubic-bezier(.4,0,.2,1); }
+.sb-logo { display: flex; align-items: center; gap: 12px; padding: 20px 18px 16px; border-bottom: 1px solid rgba(255,255,255,0.07); flex-shrink: 0; }
+.sb-nav { flex: 1; padding: 10px 8px; overflow-y: auto; scrollbar-width: none; }
+.sb-nav::-webkit-scrollbar { display: none; }
+.sb-section-label { font-size: 0.63rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.24); padding: 12px 10px 4px; }
+.sb-item { display: flex; align-items: center; gap: 9px; padding: 8px 10px; border-radius: 8px; font-size: 0.85rem; font-weight: 500; color: rgba(255,255,255,0.5); cursor: pointer; text-decoration: none; transition: all 0.14s; margin-bottom: 1px; }
+.sb-item:hover { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.85); }
+.sb-item.active { background: rgba(59,130,246,0.15); color: white; }
+.sb-item.active .sb-icon { color: var(--blue); opacity: 1; }
+.sb-icon { width: 17px; height: 17px; flex-shrink: 0; opacity: 0.55; transition: opacity 0.14s; }
+.sb-item:hover .sb-icon { opacity: 0.85; }
+.sb-badge { margin-left: auto; background: var(--blue); color: white; font-size: 0.58rem; font-weight: 700; padding: 2px 6px; border-radius: 99px; }
+.sb-bottom { flex-shrink: 0; padding: 10px 8px; border-top: 1px solid rgba(255,255,255,0.07); }
+.plan-box { background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.2); border-radius: 8px; padding: 10px 12px; margin-bottom: 10px; }
+.plan-box-label { font-size: 0.64rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--blue); margin-bottom: 3px; }
+.plan-box-name { font-size: 0.85rem; font-weight: 600; color: white; margin-bottom: 8px; }
+.plan-upgrade-btn { display: block; width: 100%; padding: 6px; background: var(--blue); color: white; border: none; border-radius: 6px; font-family: inherit; font-size: 0.76rem; font-weight: 600; cursor: pointer; transition: background 0.14s; }
+.plan-upgrade-btn:hover { background: var(--blue-dark); }
+.sb-user { display: flex; align-items: center; gap: 9px; padding: 4px 2px; }
+.sb-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; color: white; flex-shrink: 0; overflow: hidden; background-size: cover; background-position: center; }
+.sb-user-info { flex: 1; min-width: 0; }
+.sb-user-name { font-size: 0.82rem; font-weight: 600; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sb-user-plan { font-size: 0.7rem; color: rgba(255,255,255,0.35); }
+.sb-logout { width: 26px; height: 26px; border-radius: 6px; background: rgba(255,255,255,0.06); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.35); transition: all 0.14s; flex-shrink: 0; }
+.sb-logout:hover { background: rgba(239,68,68,0.15); color: #EF4444; }
+
+/* Main */
+.main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+.topbar { height: var(--topbar-h); background: var(--white); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 28px; position: sticky; top: 0; z-index: 100; }
+.topbar-l { display: flex; align-items: center; gap: 12px; }
+.hamburger { display: none; width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border); background: white; align-items: center; justify-content: center; cursor: pointer; color: var(--navy); flex-direction: column; gap: 4px; padding: 8px; }
+.hamburger span { display: block; width: 16px; height: 1.5px; background: currentColor; border-radius: 2px; }
+.topbar-r { display: flex; align-items: center; gap: 10px; }
+.t-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; color: white; cursor: pointer; overflow: hidden; background-size: cover; background-position: center; }
+.breadcrumb { display: flex; align-items: center; gap: 7px; font-size: 0.87rem; }
+.breadcrumb a { color: var(--text-muted); text-decoration: none; font-weight: 500; transition: color 0.14s; }
+.breadcrumb a:hover { color: var(--navy); }
+.breadcrumb-sep { color: var(--border); }
+.breadcrumb-current { font-weight: 700; color: var(--navy); }
+.content { padding: 30px 36px; flex: 1; }
+
+/* Guest header — shown when not logged in */
+.guest-header { display: none; height: 60px; background: var(--navy); align-items: center; padding: 0 28px; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+.guest-header a { color: rgba(255,255,255,0.65); text-decoration: none; font-size: 0.85rem; font-weight: 600; transition: color 0.14s; }
+.guest-header a:hover { color: white; }
+.guest-main { margin-left: 0 !important; }
+
+/* Loader */
+.loader { position: fixed; inset: 0; background: var(--navy); display: flex; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.4s; }
+.loader.gone { opacity: 0; pointer-events: none; }
+.loader-inner { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.loader-mark { width: 48px; height: 48px; border-radius: 13px; background: var(--blue); display: flex; align-items: center; justify-content: center; animation: pulse 1.5s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(.93);opacity:.8} }
+.loader-txt { font-size: 0.82rem; color: rgba(255,255,255,0.35); font-weight: 500; }
+.overlay { display: none; position: fixed; inset: 0; background: rgba(10,22,40,0.5); z-index: 150; }
+
+/* Legal content */
+.legal-wrap { max-width: 740px; }
+.legal-hero { background: var(--navy); border-radius: var(--radius-lg); padding: 32px 36px; margin-bottom: 28px; }
+.legal-hero h1 { font-size: 1.6rem; font-weight: 800; color: white; letter-spacing: -.02em; margin-bottom: 6px; }
+.legal-hero p { color: rgba(255,255,255,0.5); font-size: 0.88rem; }
+.legal-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px 32px; margin-bottom: 16px; }
+.legal-card h2 { font-size: 1rem; font-weight: 800; color: var(--navy); margin-bottom: 12px; letter-spacing: -.01em; display: flex; align-items: center; gap: 8px; }
+.legal-card p { font-size: 0.9rem; color: var(--text-mid); line-height: 1.75; margin-bottom: 10px; }
+.legal-card p:last-child { margin-bottom: 0; }
+.legal-card ul { list-style: none; padding: 0; }
+.legal-card ul li { font-size: 0.9rem; color: var(--text-mid); line-height: 1.75; padding: 4px 0 4px 20px; position: relative; }
+.legal-card ul li::before { content: '→'; position: absolute; left: 0; color: var(--blue); font-weight: 700; }
+.plan-table { width: 100%; border-collapse: collapse; margin-top: 4px; }
+.plan-table th { text-align: left; font-size: 0.76rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); padding: 8px 12px; border-bottom: 1px solid var(--border); }
+.plan-table td { padding: 10px 12px; font-size: 0.88rem; color: var(--text-mid); border-bottom: 1px solid var(--border-soft); }
+.plan-table tr:last-child td { border-bottom: none; }
+.plan-table .plan-name { font-weight: 700; color: var(--navy); }
+.contact-box { background: var(--blue-light); border: 1px solid var(--blue-mid); border-radius: var(--radius); padding: 18px 22px; margin-top: 4px; }
+.contact-box p { color: var(--navy); font-size: 0.9rem; line-height: 1.7; margin: 0; }
+.contact-box a { color: var(--blue); font-weight: 600; text-decoration: none; }
+.contact-box a:hover { text-decoration: underline; }
+.legal-footer { text-align: center; padding: 20px 0 8px; color: var(--text-muted); font-size: 0.8rem; }
+.legal-footer a { color: var(--blue); text-decoration: none; font-weight: 600; }
+
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .overlay.open { display: block; }
+  .main { margin-left: 0; }
+  .hamburger { display: flex; }
+  .content { padding: 18px; }
+  .legal-hero { padding: 22px 20px; }
+  .legal-card { padding: 20px; }
+}
+  </style>
+</head>
+<body style="opacity:0; transition: opacity 0.35s ease;">
+
+<div class="loader" id="loader">
+  <div class="loader-inner">
+    <div class="loader-mark">
+      <img src="images/studyease-fav.png" style="width:28px;height:28px;object-fit:contain"/>
+    </div>
+    <span class="loader-txt">Loading…</span>
+  </div>
+</div>
+
+<div class="overlay" id="overlay"></div>
+
+<div class="layout">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-logo">
+      <a href="#" onclick="handleLogoClick(event)" style="display:block;cursor:pointer">
+        <img src="images/StudyEasemain.png" alt="StudyEase" style="height:32px;width:auto;object-fit:contain;max-width:160px"/>
+      </a>
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-section-label">Main</div>
+      <a href="dashboard.html" class="sb-item">
+        <svg class="sb-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M3 4a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 8a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1v-4zm8-8a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V4zm0 8a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"/></svg>
+        Dashboard
+      </a>
+      <a href="progress.html" class="sb-item">
+        <svg class="sb-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zm6-4a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zm6-3a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/></svg>
+        My Progress
+      </a>
+      <a href="ai.html" class="sb-item">
+        <svg class="sb-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"/></svg>
+        AI Companion
+        <span class="sb-badge">Beta</span>
+      </a>
+      <div class="sb-section-label" style="margin-top:8px;">Subjects</div>
+      <a href="physics.html" class="sb-item">
+        <svg class="sb-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/></svg>
+        Physics
+      </a>
+      <a href="chemistry.html" class="sb-item">
+        <svg class="sb-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7 2a1 1 0 00-.707 1.707L7 4.414v3.758a1 1 0 01-.293.707l-4 4C.817 14.769 2.156 18 4.828 18h10.343c2.673 0 4.012-3.231 2.122-5.121l-4-4A1 1 0 0113 8.172V4.414l.707-.707A1 1 0 0013 2H7zm2 6.172V4h2v4.172a3 3 0 00.879 2.12l1.027 1.028a4 4 0 00-2.171.102l-.47.156a4 4 0 01-2.53 0l-.563-.187a1.993 1.993 0 00-.114-.035l1.063-1.063A3 3 0 009 8.172z" clip-rule="evenodd"/></svg>
+        Chemistry
+      </a>
+      <a href="biology.html" class="sb-item">
+        <svg class="sb-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/></svg>
+        Biology
+      </a>
+      <a href="maths.html" class="sb-item">
+        <svg class="sb-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm2 10a1 1 0 10-2 0v3a1 1 0 102 0v-3zm2-3a1 1 0 011 1v5a1 1 0 11-2 0v-5a1 1 0 011-1zm4-1a1 1 0 10-2 0v6a1 1 0 102 0V8z" clip-rule="evenodd"/></svg>
+        Mathematics
+      </a>
+      <a href="breathing.html" class="sb-item">
+        <img src="images/yoga.png" class="sb-icon" style="filter:brightness(0) invert(1)"/>
+        Mindfulness
+      </a>
+      <div class="sb-section-label" style="margin-top:8px;">Account</div>
+      <a href="settings.html" class="sb-item">
+        <svg class="sb-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/></svg>
+        Settings
+      </a>
+    </nav>
+    <div class="sb-bottom">
+      <div class="plan-box">
+        <div class="plan-box-label">Current Plan</div>
+        <div class="plan-box-name" id="sb-plan-name">Free Plan</div>
+        <button class="plan-upgrade-btn" onclick="window.location.href='index.html#pricing'">Upgrade to Achiever ↗</button>
+      </div>
+      <div class="sb-user">
+        <div class="sb-avatar" id="sb-avatar">?</div>
+        <div class="sb-user-info">
+          <div class="sb-user-name" id="sb-username">Loading…</div>
+          <div class="sb-user-plan" id="sb-userplan">Free Plan</div>
+        </div>
+        <button class="sb-logout" id="logout-btn" title="Log out">
+          <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 001 1h7a1 1 0 100-2H4V5h6a1 1 0 100-2H3zm11.707 4.293a1 1 0 010 1.414L12.414 11H17a1 1 0 110 2h-4.586l2.293 2.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main" id="main-area">
+
+    <!-- Guest header (shown when not logged in) -->
+    <div class="guest-header" id="guest-header">
+      <a href="index.html">
+        <img src="images/StudyEasemain.png" alt="StudyEase" style="height:26px;width:auto;object-fit:contain;filter:brightness(0) invert(1)"/>
+      </a>
+      <div style="display:flex;gap:20px;align-items:center">
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="index.html" style="color:white;background:var(--blue);padding:6px 16px;border-radius:8px;font-size:0.83rem">Sign in</a>
+      </div>
+    </div>
+
+    <!-- Logged-in topbar -->
+    <div class="topbar" id="topbar" style="display:none;">
+      <div class="topbar-l">
+        <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+        <div class="breadcrumb">
+          <a href="dashboard.html">Dashboard</a>
+          <span class="breadcrumb-sep">›</span>
+          <span class="breadcrumb-current">📄 Terms of Service</span>
+        </div>
+      </div>
+      <div class="topbar-r">
+        <div class="t-avatar" id="topbar-avatar">?</div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="legal-wrap">
+
+        <div class="legal-hero">
+          <h1>Terms of Service</h1>
+          <p>Last updated: June 2026 &nbsp;·&nbsp; Questions? <a href="mailto:support@studyease.in" style="color:rgba(255,255,255,0.7);text-decoration:underline">support@studyease.in</a></p>
+        </div>
+
+        <div class="legal-card">
+          <h2>👋 What is StudyEase?</h2>
+          <p>StudyEase is an AI-powered study platform built specifically for CBSE students. It helps you understand concepts, track your progress, practise with quizzes, and manage exam stress through mindfulness tools.</p>
+          <p>We're a student-built platform and we're constantly improving. By using StudyEase, you agree to these terms. We've kept them as short and human as possible — no legal jargon.</p>
+        </div>
+
+        <div class="legal-card">
+          <h2>🎓 Who Can Use StudyEase?</h2>
+          <p>StudyEase is designed for students aged 13 and above. If you're under 13, please get a parent or guardian to create an account on your behalf.</p>
+          <ul>
+            <li>You must provide accurate information when signing up</li>
+            <li>One account per person — don't share your login with others</li>
+            <li>If you're under 18, a parent or guardian should review these terms</li>
+          </ul>
+        </div>
+
+        <div class="legal-card">
+          <h2>🔑 Your Account</h2>
+          <p>You're responsible for keeping your account secure. Choose a strong password and don't share it with anyone.</p>
+          <ul>
+            <li>You're responsible for all activity that happens under your account</li>
+            <li>Tell us immediately at <a href="mailto:support@studyease.in" style="color:var(--blue);font-weight:600">support@studyease.in</a> if you think someone else has accessed your account</li>
+            <li>We reserve the right to suspend accounts that violate these terms</li>
+          </ul>
+        </div>
+
+        <div class="legal-card">
+          <h2>✅ Acceptable Use</h2>
+          <p>StudyEase is here to help you learn. Please use it responsibly.</p>
+          <ul>
+            <li>Use the AI companion for genuine study questions — don't try to misuse or jailbreak it</li>
+            <li>Don't attempt to hack, scrape, or reverse-engineer the platform</li>
+            <li>Don't upload content that is harmful, offensive, or violates anyone's rights</li>
+            <li>Don't use StudyEase for anything illegal</li>
+          </ul>
+          <p>We use Claude AI (by Anthropic) to power our AI companion. It's designed to help with studying and mental health support — not for anything outside that scope.</p>
+        </div>
+
+        <div class="legal-card">
+          <h2>💳 Subscription Plans</h2>
+          <p>We offer three plans. You can use the core features for free, and upgrade any time for more.</p>
+          <table class="plan-table">
+            <thead>
+              <tr>
+                <th>Plan</th>
+                <th>Price</th>
+                <th>What you get</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="plan-name">Free</td>
+                <td>₹0 / month</td>
+                <td>Core features — AI companion, subject pages, mindfulness tools</td>
+              </tr>
+              <tr>
+                <td class="plan-name">Achiever</td>
+                <td>₹199 / month</td>
+                <td>Everything in Free, plus priority AI responses and advanced progress tracking</td>
+              </tr>
+              <tr>
+                <td class="plan-name">Scholar</td>
+                <td>₹299 / month</td>
+                <td>Everything in Achiever, plus personalised study plans and exam-ready features</td>
+              </tr>
+            </tbody>
+          </table>
+          <p style="margin-top:14px">Prices are in Indian Rupees (INR) and inclusive of applicable taxes. We may change plan prices with 30 days' notice to existing subscribers.</p>
+        </div>
+
+        <div class="legal-card">
+          <h2>↩️ Refund Policy</h2>
+          <p>If you're not happy with a paid plan, contact us within <strong>7 days</strong> of your payment and we'll issue a full refund — no questions asked.</p>
+          <p>After 7 days, refunds are considered on a case-by-case basis. To request one, email us at <a href="mailto:support@studyease.in" style="color:var(--blue);font-weight:600">support@studyease.in</a> with your registered email and the reason.</p>
+        </div>
+
+        <div class="legal-card">
+          <h2>©️ Intellectual Property</h2>
+          <p>Everything we've built — the platform design, code, AI system prompts, branding, and original content — belongs to StudyEase.</p>
+          <p>NCERT curriculum content (textbook material, syllabus, question patterns) is produced by the National Council of Educational Research and Training, a Government of India body, and is publicly available. We do not claim ownership of NCERT content. We use it solely to help students study.</p>
+          <p>Your personal data (quiz scores, chat history, uploaded photos) belongs to you. See our <a href="privacy.html" style="color:var(--blue);font-weight:600">Privacy Policy</a> for details.</p>
+        </div>
+
+        <div class="legal-card">
+          <h2>⚠️ Limitation of Liability</h2>
+          <p>StudyEase is provided as-is and is meant as a study aid — not a replacement for your teachers, school, or professional support.</p>
+          <ul>
+            <li>The AI companion can make mistakes. Always verify important information</li>
+            <li>We're not liable for exam results, academic outcomes, or decisions you make based on content from the platform</li>
+            <li>The mindfulness tools are for general wellbeing — they are not medical or psychological advice. If you're in crisis, please speak to a qualified professional or call iCall: <strong>9152987821</strong></li>
+            <li>We do our best to keep the service up, but we can't guarantee 100% uptime</li>
+          </ul>
+        </div>
+
+        <div class="legal-card">
+          <h2>📬 Contact Us</h2>
+          <div class="contact-box">
+            <p>Have a question about these terms? We're real people and we'd love to hear from you.</p>
+            <p style="margin-top:10px">Email: <a href="mailto:support@studyease.in">support@studyease.in</a><br>Website: <a href="https://studyease1.vercel.app" target="_blank">studyease1.vercel.app</a></p>
+          </div>
+        </div>
+
+        <div class="legal-footer">
+          <a href="privacy.html">Privacy Policy</a> &nbsp;·&nbsp;
+          <a href="index.html">Back to StudyEase</a>
+          <p style="margin-top:8px">© 2026 StudyEase. Made with ❤️ for CBSE students.</p>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function() {
+  var SUPABASE_URL = 'https://xiwrvbtryeesfgeydxnf.supabase.co';
+  var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd3J2YnRyeWVlc2ZnZXlkeG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMTQ0NDAsImV4cCI6MjA5NDU5MDQ0MH0.3Sp9dlc8cNsrzdHAGy74pCqscjL1MFV9ZWMW90QbhqE';
+  var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+  function reveal() {
+    document.getElementById('loader').classList.add('gone');
+    setTimeout(function(){ document.getElementById('loader').style.display='none'; }, 420);
+    document.body.style.opacity = '1';
+  }
+
+  function updateAvatarEl(el, initial, avatarUrl) {
+    if (!el) return;
+    if (avatarUrl) {
+      el.style.backgroundImage = 'url(' + avatarUrl + ')';
+      el.style.backgroundSize = 'cover';
+      el.style.backgroundPosition = 'center';
+      el.textContent = '';
+    } else {
+      el.style.backgroundImage = '';
+      el.textContent = initial || '?';
+    }
+  }
+
+  sb.auth.onAuthStateChange(function(event, session) {
+    if (session && session.user) {
+      var user = session.user;
+      document.getElementById('topbar').style.display = 'flex';
+
+      sb.from('profiles').select('name, plan, avatar_url').eq('id', user.id).single().then(function(res) {
+        if (res.data) {
+          var p = res.data;
+          var nameFromAuth = (user.user_metadata && (user.user_metadata.name || user.user_metadata.full_name)) || user.email.split('@')[0];
+          var displayName = p.name || nameFromAuth;
+          var initial = displayName.charAt(0).toUpperCase();
+          var planName = p.plan === 'achiever' ? 'Achiever Plan' : p.plan === 'scholar' ? 'Scholar Plan' : 'Free Plan';
+
+          var snEl = document.getElementById('sb-username');
+          if (snEl) snEl.textContent = displayName;
+          var spEl = document.getElementById('sb-userplan');
+          if (spEl) spEl.textContent = planName;
+          var spnEl = document.getElementById('sb-plan-name');
+          if (spnEl) spnEl.textContent = planName;
+
+          updateAvatarEl(document.getElementById('sb-avatar'), initial, p.avatar_url);
+          updateAvatarEl(document.getElementById('topbar-avatar'), initial, p.avatar_url);
+        }
+      }).catch(function(){});
+
+      reveal();
+    } else if (event === 'INITIAL_SESSION' && !session) {
+      document.getElementById('sidebar').style.display = 'none';
+      document.getElementById('main-area').style.marginLeft = '0';
+      document.getElementById('guest-header').style.display = 'flex';
+      reveal();
+    }
+  });
+
+  var logoutBtn = document.getElementById('logout-btn');
+  if (logoutBtn) logoutBtn.addEventListener('click', async function() { await sb.auth.signOut(); window.location.href = 'index.html'; });
+
+  var sidebarEl = document.getElementById('sidebar');
+  var overlayEl = document.getElementById('overlay');
+  var hamburger = document.getElementById('hamburger');
+  if (hamburger) hamburger.addEventListener('click', function(){ sidebarEl.classList.toggle('open'); overlayEl.classList.toggle('open'); });
+  if (overlayEl) overlayEl.addEventListener('click', function(){ sidebarEl.classList.remove('open'); overlayEl.classList.remove('open'); });
+
+  function handleLogoClick(e) {
+    e.preventDefault();
+    window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON).auth.getSession().then(function(r) {
+      window.location.href = (r.data && r.data.session) ? 'dashboard.html' : 'index.html';
+    });
+  }
+  window.handleLogoClick = handleLogoClick;
+})();
+</script>
+</body>
+</html>
