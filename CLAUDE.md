@@ -173,6 +173,33 @@ Unique constraint `mood_checkins_user_date`: `(user_id, date)` — enforced for 
 - `update_own`: FOR UPDATE USING + WITH CHECK `((select auth.uid()) = user_id)`
 - `delete_own`: FOR DELETE USING `((select auth.uid()) = user_id)`
 
+## index.html — Design
+
+Dark cinematic theme. Background `#0A0F1E`. DM Sans throughout.
+
+**Sections (in order):**
+1. **Navbar** — frosted glass (`backdrop-filter:blur(20px)`), slides down on load via `@keyframes navSlide`. Gets `border-bottom` purple glow when `scrolled` class added at 80px scroll.
+2. **Hero** — full viewport height. Two large blurred orbs (purple + blue) drift with `@keyframes orbDrift`. Headline is 5rem with gradient text on line 2. Floating app mockup card on the right bobs with `@keyframes mockupBob` (3s loop). CTA: `btn-glow` (gradient with purple glow) + `btn-ghost-dark`.
+3. **How It Works** — `#0D1426` background. Three step cards in a grid, stagger-reveal on scroll.
+4. **Features** — Bento grid: large card left (spans 2 rows), two small cards right, full-width card below. Each card has a CSS gradient border via `::before` pseudo-element mask trick. Hover: `translateY(-4px)` + glow.
+5. **Pricing** — Dark cards. Achiever uses `gradient border-box` technique and `scale(1.04)`. "MOST POPULAR" badge glows purple.
+6. **CTA** — Centered, ambient orb glow, `btn-glow`.
+7. **Footer** — Minimal. Logo + Terms/Privacy links + "Built with ❤️ in Manipur, India".
+
+**Animations:**
+- `.reveal` + `IntersectionObserver` — `opacity:0; translateY(40px)` → `visible` state
+- `.reveal-delay-1/2/3/4` — 150ms stagger via `transition-delay`
+- Orbs: `@keyframes orbDrift` — slow 8–11s alternate loop
+- Mockup: `@keyframes mockupBob` — 3s ease-in-out loop, -8px translateY
+- Navbar: `@keyframes navSlide` — slides in from top on load
+- Buttons: `scale(1.02)` + glow intensifies on hover
+
+**No testimonials section** — removed entirely. Do NOT re-add.
+
+**All auth/Supabase JS preserved exactly** — Google OAuth, email+OTP signup, login, session check, pricing toggle, auto-popup at 10s, hamburger mobile menu.
+
+**Splash screen** on returning user uses dark `#0A0F1E` background (not white) to match the dark theme.
+
 ## Sidebar Logo (all sidebar pages)
 
 Every page with a sidebar has this logo HTML:
