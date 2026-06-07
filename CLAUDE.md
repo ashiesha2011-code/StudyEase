@@ -178,7 +178,7 @@ Unique constraint `mood_checkins_user_date`: `(user_id, date)` — enforced for 
 Dark cinematic theme. Background `#0A0F1E`. DM Sans throughout.
 
 **Sections (in order):**
-1. **Navbar** — frosted glass (`backdrop-filter:blur(20px)`), slides down on load via `@keyframes navSlide`. Gets `border-bottom` purple glow when `scrolled` class added at 80px scroll.
+1. **Navbar** — frosted glass (`backdrop-filter:blur(20px)`), slides down on load via `@keyframes navSlide`. Gets `border-bottom` purple glow when `scrolled` class added at 80px scroll. Links: How It Works, Features, Pricing, **Terms** (→ `terms.html`, new tab), **Privacy** (→ `privacy.html`, new tab). Right side: Log in + Get Started Free.
 2. **Hero** — full viewport height. Two large blurred orbs (purple + blue) drift with `@keyframes orbDrift`. Headline is 5rem with gradient text on line 2. Floating app mockup card on the right bobs with `@keyframes mockupBob` (3s loop). CTA: `btn-glow` (gradient with purple glow) + `btn-ghost-dark`.
 3. **How It Works** — `#0D1426` background. Three step cards in a grid, stagger-reveal on scroll.
 4. **Features** — Bento grid: large card left (spans 2 rows), two small cards right, full-width card below. Each card has a CSS gradient border via `::before` pseudo-element mask trick. Hover: `translateY(-4px)` + glow.
