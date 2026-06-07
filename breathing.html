@@ -188,8 +188,15 @@ function saveSession(type,mode,duration){
   localStorage.setItem('se_breath',JSON.stringify(_stored));
   updateBadge();
   if(!_sb||!_uid||duration<5)return;
-  _sb.from('mood_checkins').insert({user_id:_uid,type:type,mode:mode,duration:duration,date:new Date().toDateString()})
-    .then(null,function(){});
+  var ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd3J2YnRyeWVlc2ZnZXlkeG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMTQ0NDAsImV4cCI6MjA5NDU5MDQ0MH0.3Sp9dlc8cNsrzdHAGy74pCqscjL1MFV9ZWMW90QbhqE';
+  _sb.auth.getSession().then(function(sr){
+    var token=sr.data&&sr.data.session?sr.data.session.access_token:ANON;
+    fetch('https://xiwrvbtryeesfgeydxnf.supabase.co/rest/v1/mood_checkins',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','apikey':ANON,'Authorization':'Bearer '+token,'Prefer':'return=minimal'},
+      body:JSON.stringify({user_id:_uid,type:type,mode:mode,duration:duration,date:new Date().toDateString()})
+    }).catch(function(){});
+  });
 }
 
 /* ── Preload logo for canvas ── */

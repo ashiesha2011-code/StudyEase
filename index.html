@@ -1710,22 +1710,8 @@ p { color: var(--text-mid); line-height: 1.75; }
           </button>
           <div class="form-divider">or sign up with email</div>
           <div class="form-group">
-            <label class="form-label" for="signup-name">Your name</label>
-            <input class="form-input" type="text" id="signup-name" placeholder="Your full name" autocomplete="name" />
-          </div>
-          <div class="form-group">
             <label class="form-label" for="signup-email">Email address</label>
             <input class="form-input" type="email" id="signup-email" placeholder="you@example.com" autocomplete="email" />
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="signup-class">Your class</label>
-            <select class="form-input" id="signup-class">
-              <option value="">Select your class</option>
-              <option>Class 9</option>
-              <option>Class 10</option>
-              <option>Class 11</option>
-              <option>Class 12</option>
-            </select>
           </div>
           <div class="form-group">
             <label class="form-label" for="signup-pass">Create password</label>
@@ -1957,8 +1943,6 @@ p { color: var(--text-mid); line-height: 1.75; }
 
   /* ── SIGN UP — Step 1 ───────────────────────────────── */
   var _signupEmail = '';
-  var _signupName  = '';
-  var _signupClass = '';
 
   function showSignupStep1() {
     document.getElementById('signup-step-1').style.display = 'block';
@@ -1968,39 +1952,21 @@ p { color: var(--text-mid); line-height: 1.75; }
   window.showSignupStep1 = showSignupStep1;
 
   document.getElementById('signup-submit-btn').addEventListener('click', async function() {
-    var name     = document.getElementById('signup-name').value.trim();
     var email    = document.getElementById('signup-email').value.trim();
-    var classVal = document.getElementById('signup-class').value;
     var password = document.getElementById('signup-pass').value;
     var btn      = document.getElementById('signup-submit-btn');
 
-    if (!name)               return showError('form-signup', 'Please enter your name.');
     if (!email)              return showError('form-signup', 'Please enter your email.');
-    if (!classVal)           return showError('form-signup', 'Please select your class.');
     if (password.length < 8) return showError('form-signup', 'Password must be at least 8 characters.');
 
     setLoading(btn, true, 'Create Free Account');
     clearErrors();
 
     try {
-      var { data, error } = await supabase.auth.signUp({
-        email: email,
-        password: password,
-        options: { data: { name: name, class: classVal } }
-      });
+      var { data, error } = await supabase.auth.signUp({ email: email, password: password });
       if (error) throw error;
 
-      // Save for OTP step
       _signupEmail = email;
-      _signupName  = name;
-      _signupClass = classVal;
-
-      // Store profile data to insert after OTP verified
-      if (data.user) {
-        await supabase.from('profiles').insert({
-          id: data.user.id, name: name, class: classVal, plan: 'free'
-        }).then(() => {}).catch(() => {});
-      }
 
       // Show OTP step
       document.getElementById('otp-email-display').textContent = email;
