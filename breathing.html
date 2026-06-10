@@ -37,7 +37,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',system-ui,sans-serif
 #mf-header{position:fixed;top:0;left:0;right:0;height:56px;z-index:60;display:flex;align-items:center;justify-content:space-between;padding:0 16px;pointer-events:none;background:rgba(10,15,30,.6);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.1);box-shadow:0 1px 0 rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.04)}
 #mf-back{pointer-events:auto;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.1);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.7);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;text-decoration:none;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,.3)}
 #mf-back:hover{background:rgba(255,255,255,.18);color:white;border-color:rgba(255,255,255,.35)}
-#mf-logo{height:26px;width:auto;opacity:.85;flex-shrink:0;display:block;filter:brightness(0) invert(1)}
+#mf-logo{height:36px;width:auto;opacity:.92;flex-shrink:0;display:block}
 #today-badge{pointer-events:none;font-size:.73rem;font-weight:600;color:rgba(196,181,253,.9);background:rgba(139,92,246,.18);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(139,92,246,.35);border-radius:99px;padding:5px 13px;letter-spacing:.01em;white-space:nowrap;flex-shrink:0}
 
 /* ── Screens ── */
@@ -76,8 +76,9 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',system-ui,sans-serif
 .go-btn:hover{transform:translateY(-2px);box-shadow:0 8px 36px rgba(139,92,246,.65),inset 0 1px 0 rgba(255,255,255,.3)}
 
 /* ── Session cards (staggered fade-up) ── */
-.sc-list{display:flex;flex-direction:column;gap:11px;width:100%;max-width:360px}
-.sc{padding:17px 22px;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.07);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:all .24s;box-shadow:0 2px 12px rgba(0,0,0,.25);opacity:0;transform:translateY(16px);animation:fadeUpIn .4s cubic-bezier(.34,1.2,.64,1) forwards}
+.sc-list{display:flex;flex-direction:column;gap:11px;width:100%;max-width:380px}
+.sc{padding:17px 22px;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.07);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:all .24s;box-shadow:0 2px 12px rgba(0,0,0,.25);opacity:0;transform:translateY(16px);animation:fadeUpIn .4s cubic-bezier(.34,1.2,.64,1) forwards;animation-play-state:paused;min-height:62px}
+.screen.active .sc{animation-play-state:running}
 .sc:nth-child(1){animation-delay:.04s}
 .sc:nth-child(2){animation-delay:.1s}
 .sc:nth-child(3){animation-delay:.16s}
@@ -100,7 +101,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',system-ui,sans-serif
 html[data-theme="light"] body{background:linear-gradient(145deg,#f0fdf4 0%,#ede9fe 52%,#eff6ff 100%)!important}
 html[data-theme="light"] #mf-header{background:rgba(255,255,255,.62);border-bottom-color:rgba(255,255,255,.8);box-shadow:0 1px 0 rgba(10,22,40,.06),inset 0 1px 0 rgba(255,255,255,.95)}
 html[data-theme="light"] #mf-back{background:rgba(255,255,255,.55);border-color:rgba(255,255,255,.85);color:#475569}
-html[data-theme="light"] #mf-logo{filter:none}
+
 html[data-theme="light"] #today-badge{color:#6D28D9;background:rgba(139,92,246,.12);border-color:rgba(139,92,246,.28)}
 html[data-theme="light"] .question{color:#0A1628;text-shadow:none}
 html[data-theme="light"] .pill{background:rgba(255,255,255,.55);border-color:rgba(255,255,255,.85);color:#334155}
@@ -640,21 +641,34 @@ function drawFrame(elMs,phase,prog,isPlaying){
     ctx.restore();
   }
 
-  /* Glow */
+  /* ── Flower of Life breathing mandala ── */
   var cr=getR(phase,prog);
+  var petalR=cr*0.5;
+  var lw=Math.max(1.2,BASE_R*0.011);
   ctx.save();
-  ctx.shadowBlur=80;ctx.shadowColor='rgba(139,92,246,.5)';
-  var grd=ctx.createRadialGradient(CX,CY,0,CX,CY,cr);
-  grd.addColorStop(0,'rgba(196,181,253,.92)');
-  grd.addColorStop(0.5,'rgba(99,102,241,.8)');
-  grd.addColorStop(1,'rgba(59,130,246,.35)');
-  ctx.beginPath();ctx.arc(CX,CY,cr,0,Math.PI*2);
-  ctx.fillStyle=grd;ctx.fill();
-  ctx.shadowBlur=0;ctx.restore();
-
+  /* Outer glow pass */
+  ctx.shadowBlur=36;ctx.shadowColor='rgba(20,184,166,.68)';
+  ctx.strokeStyle='rgba(20,184,166,.52)';ctx.lineWidth=lw;
+  /* Center circle */
+  ctx.beginPath();ctx.arc(CX,CY,petalR,0,Math.PI*2);ctx.stroke();
+  /* 6 petal circles at 60° intervals */
+  for(var _pi=0;_pi<6;_pi++){
+    var _pa=_pi*Math.PI/3;
+    ctx.beginPath();ctx.arc(CX+petalR*Math.cos(_pa),CY+petalR*Math.sin(_pa),petalR,0,Math.PI*2);ctx.stroke();
+  }
+  /* Outer boundary ring — lighter trace */
+  ctx.shadowBlur=0;
+  ctx.strokeStyle='rgba(255,255,255,.13)';ctx.lineWidth=Math.max(0.8,lw*0.65);
+  ctx.beginPath();ctx.arc(CX,CY,petalR*2,0,Math.PI*2);ctx.stroke();
+  ctx.restore();
+  /* Subtle dark disc behind label for legibility */
+  ctx.save();
+  ctx.beginPath();ctx.arc(CX,CY,petalR*0.4,0,Math.PI*2);
+  ctx.fillStyle='rgba(10,15,30,.52)';ctx.fill();
+  ctx.restore();
   /* Circle text */
   var label=sessEnded?'Well done 🙏':(phase==='in'?'Breathe In':'Breathe Out');
-  ctx.font='600 '+Math.round(Math.max(13,BASE_R*0.18))+'px "DM Sans",sans-serif';
+  ctx.font='600 '+Math.round(Math.max(12,BASE_R*0.165))+'px "DM Sans",sans-serif';
   ctx.fillStyle='rgba(255,255,255,.95)';
   ctx.textAlign='center';ctx.textBaseline='middle';
   ctx.fillText(label,CX,CY);

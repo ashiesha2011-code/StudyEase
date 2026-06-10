@@ -30,7 +30,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--off-white);colo
 /* ── Sidebar ── */
 .sidebar{width:var(--sidebar-w);background:var(--navy);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:200;transition:transform .28s}
 .sb-logo{display:flex;align-items:center;gap:12px;padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,.07)}
-.sb-logo-mark{width:150px;height:auto;display:block;filter:invert(1)}
+.sb-logo-mark{width:150px;height:auto;display:block;}
 .sb-logo-text{display:none}
 .sb-logo-text{font-weight:800;font-size:1.25rem;color:white;letter-spacing:-0.03em}
 .sb-nav{flex:1;padding:10px 8px;overflow-y:auto;scrollbar-width:none}
@@ -203,7 +203,7 @@ html[data-theme="device"] .pill,html[data-theme="device"] .opt-l,html[data-theme
   <aside class="sidebar" id="sidebar">
     <div class="sb-logo">
       <a href="#" onclick="handleLogoClick(event)" style="display:block;cursor:pointer">
-        <img src="images/StudyEasemain.png" alt="StudyEase" style="height:32px;width:auto;object-fit:contain;max-width:160px"/>
+        <img src="images/StudyEasemain.png" alt="StudyEase" style="height:36px;width:auto;object-fit:contain;max-width:160px"/>
       </a>
     </div>
     <nav class="sb-nav">

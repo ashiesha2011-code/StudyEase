@@ -30,7 +30,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--off-white);colo
 /* Sidebar */
 .sidebar{width:var(--sidebar-w);background:var(--navy);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:200;transition:transform .28s}
 .sb-logo{display:flex;align-items:center;gap:12px;padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0}
-.sb-logo-mark{width:150px;height:auto;display:block;filter:invert(1)}
+.sb-logo-mark{width:150px;height:auto;display:block;}
 .sb-logo-text{display:none}
 .sb-logo-text{font-weight:800;font-size:1.25rem;color:white;letter-spacing:-0.03em}
 .sb-nav{flex:1;padding:10px 8px;overflow-y:auto;scrollbar-width:none}
@@ -69,11 +69,11 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--off-white);colo
 .page-sub{font-size:.95rem;color:var(--text-muted);font-weight:400}
 
 /* Overall stats */
-.overall-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:28px}
-.overall-stat{background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px 26px}
+.overall-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:28px;align-items:stretch}
+.overall-stat{background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px 26px;display:flex;flex-direction:column}
 .os-val{font-size:2.2rem;font-weight:800;color:var(--navy);letter-spacing:-.03em;line-height:1}
 .os-lbl{font-size:.82rem;color:var(--text-muted);font-weight:500;margin-top:5px}
-.os-sub{font-size:.78rem;font-weight:600;margin-top:6px}
+.os-sub{font-size:.78rem;font-weight:600;margin-top:auto;padding-top:8px}
 
 /* Subject progress cards */
 .subject-progress-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:28px}
@@ -115,8 +115,8 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--off-white);colo
 .sessions-table tr:last-child td{border-bottom:none}
 
 /* Score trend cards */
-.trend-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-bottom:28px}
-.trend-card{background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px 26px}
+.trend-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-bottom:28px;align-items:stretch}
+.trend-card{background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px 26px;display:flex;flex-direction:column}
 .trend-card-title{font-size:.7rem;font-weight:700;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px}
 
 /* Loader */
@@ -164,7 +164,7 @@ html[data-theme="device"] .overall-stat,html[data-theme="device"] .subj-card,htm
   <aside class="sidebar" id="sidebar">
     <div class="sb-logo">
       <a href="#" onclick="handleLogoClick(event)" style="display:block;cursor:pointer">
-        <img src="images/StudyEasemain.png" alt="StudyEase" style="height:32px;width:auto;object-fit:contain;max-width:160px"/>
+        <img src="images/StudyEasemain.png" alt="StudyEase" style="height:36px;width:auto;object-fit:contain;max-width:160px"/>
       </a>
     </div>
     <nav class="sb-nav">

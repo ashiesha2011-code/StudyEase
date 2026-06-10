@@ -51,7 +51,7 @@ supabase db query --linked "SELECT ..."
 
 **Pure HTML/JS, no framework, no bundler.** Every page is a self-contained HTML file with all CSS and JS written inline. There is no shared stylesheet or JS module — each file is independent.
 
-> **breathing.html is the exception to the dark-page rule** — screens 1–4 use a light pastel gradient background; only screen 5 (canvas player) is dark.
+> **breathing.html is now fully dark-themed** — all screens (1–4 and the canvas player) use a dark `#0A0F1E` background with animated background orbs. The old light pastel gradient was replaced in the 2026-06-10 redesign. When `data-theme="light"` is set, screens 1–4 revert to the pastel gradient.
 
 **Stack:**
 - Frontend: plain HTML files, all styles and scripts inline per page
@@ -80,7 +80,7 @@ All image assets live in `images/`. Do NOT put images in the root.
 
 | File | Usage |
 |------|-------|
-| `images/StudyEasemain.png` | Main wordmark logo — used in all sidebars and index.html navbar |
+| `images/StudyEasemain.png` | Main wordmark logo — used in all sidebars and index.html navbar. **NEVER apply any CSS filter (invert, brightness, etc.) to this image.** Always show original colors. Use `height:36px;width:auto;` everywhere. |
 | `images/studyease-fav.png` | Favicon + apple-touch-icon across all pages; also used in splash/loading screens |
 | `images/ailogo.png` | AI companion icon — loader, welcome screen, and chat avatars in ai.html |
 | `images/yoga.png` | Mindfulness icon — breathing.html loading splash, hero header, and sidebar "Mindfulness" icon |
@@ -384,14 +384,12 @@ Standalone page — **no login required** to use, but saves to DB if logged in.
 
 **Fully immersive — no navbar, no sidebar.** Five screens with smooth 0.5s opacity fade transitions.
 
-**Background split:**
-- **Screens 1–4** (mood → intent → music → time): light pastel gradient `linear-gradient(145deg, #f0fdf4 0%, #ede9fe 52%, #eff6ff 100%)` — soft green/purple/blue. Text is dark navy `#0A1628`. Pills, cards, and buttons use white glass styling with dark borders.
-- **Screen 5** (canvas player): `background:#0A0F1E` (explicit dark) — canvas draws its own `#0A0F1E` fill anyway.
+**Background (redesigned 2026-06-10):** All screens now use `background:#0A0F1E` — cinematic dark. Five animated blurred orbs (`#orb-layer`) at different colors (deep purple, teal, soft blue, indigo, sky) use `@keyframes orbFloat` at varying speeds to create a mesmerizing ambient gradient. When `data-theme="light"` is explicitly set, screens 1–4 revert to the original light pastel gradient.
 
-Header (`#mf-header`): frosted white glass `rgba(255,255,255,.62)` with `backdrop-filter:blur(20px)` + white top inset highlight — looks clean on both light (s1–4) and dark (s5) backgrounds.
+Header (`#mf-header`): dark frosted glass `rgba(10,15,30,.6)` with `backdrop-filter:blur(20px)`. The logo uses original colors with no filter. When `data-theme="light"`, the header uses the original white frosted glass.
 
-### Glassmorphism recipe (screens 1–4)
-Every interactive element uses the same layered glass formula:
+### Dark glassmorphism recipe (default, screens 1–4)
+Every interactive element uses dark glass layered formula:
 - `backdrop-filter:blur(Xpx); -webkit-backdrop-filter:blur(Xpx)` — frosted blur
 - `background:rgba(255,255,255,0.45–0.55)` — semi-transparent
 - `border:1.5px solid rgba(255,255,255,0.78–0.85)` — bright white glass border
@@ -462,11 +460,11 @@ Fixed bar `height:56px; z-index:60` across the full page. Three elements:
 Full-screen `<canvas id="pcanvas">` drawn with `requestAnimationFrame`. Device pixel ratio (`dpr`) applied via `ctx.setTransform(dpr,0,0,dpr,0,0)` at the start of every frame.
 
 **Canvas layout (all coordinates in CSS pixels):**
-- Top-left: `images/StudyEasemain.png` drawn via `ctx.drawImage`, `filter:brightness(0) invert(1)`, `globalAlpha:0.5`
+- Top-left: `images/StudyEasemain.png` drawn via `ctx.drawImage`, `globalAlpha:0.5` — **no filter applied**, original logo colors
 - Top-centre: session name at y:76, elapsed time at y:100 (pushed below the 56px fixed header — do NOT set these below y:56)
 - Background progress ring: thin circle at `BASE_R × 1.52` radius, `rgba(255,255,255,.07)`
 - Progress arc: same radius, purple `rgba(139,92,246,.72)`, draws clockwise from top proportional to elapsed/total
-- Breathing circle: radial gradient (lavender → indigo → blue), radius animates between `BASE_R × 0.82` (exhale) and `BASE_R × 1.18` (inhale) using `easeInOutSine`. 4s inhale phase, 4s exhale phase.
+- **Breathing shape (Flower of Life mandala):** 7 overlapping circles — 1 center + 6 at 60° intervals, all with `petalR = getR()*0.5`, stroke-only (no fill) in teal `rgba(20,184,166,.52)` with `shadowBlur:36`. Plus outer boundary ring in `rgba(255,255,255,.13)`. A small dark disc behind the label ensures text legibility. The entire mandala scales with `getR(phase,prog)` breathing animation.
 - Circle text: "Breathe In" / "Breathe Out" (or "Well done 🙏" when done)
 - Below circle: `"X:XX remaining"`
 - Play/Pause button: circle at `(W/2, H-105)`, radius 32 — draws pause bars or play triangle. Glows purple when paused.
@@ -619,7 +617,7 @@ Mode display labels: `tibetan → 🎵 Tibetan Bowl`, `ambient → 🌿 Ambient 
 - **`#vp-popup` must stay inside `#player-wrap`** — moving it to body breaks fullscreen visibility. `position:fixed` inside a non-transformed element escapes `overflow:hidden` correctly.
 - **Onboarding only triggers for truly new accounts** — check `created_at` age, not just `onboarding_done`. Existing users whose `onboarding_done` is null (column added later) must NOT see the modal.
 - **`ai.html?mode=counsellor` sets `subject='Mental Health'`** — messages are sent with prefix `[Mental Health]` which falls through to `GENERAL_SYSTEM` (correct). The URL param is consumed once via `window.history.replaceState`.
-- **Logo images on dark backgrounds** (session players, video player topbar) use `filter:brightness(0) invert(1)` to render white. breathing.html topbar logo does NOT use this filter — it's on a light frosted glass bar.
+- **Logo images NEVER use CSS filters** — `images/StudyEasemain.png` must always display its original colors on ALL pages. Do NOT add `filter:invert()`, `filter:brightness()`, or any other CSS filter to the logo. Height is always `36px;width:auto;`. This applies to sidebars, navbars, topbars, headers, canvas `drawImage`, and splash screens everywhere.
 - **Voice dictation duplication fix** — NEVER read `e.results[0]` in the `onresult` handler. Always iterate from `e.resultIndex` to avoid replaying already-appended results on each subsequent event.
 - **`studyease_just_onboarded` localStorage flag** — set by `obFinish()` in dashboard.html, cleared after the loading screen plays. If you see the loading screen appearing unexpectedly on dashboard load, this flag is still in localStorage.
 - **supabase-js CDN client does NOT reliably attach the user JWT for INSERT/PATCH on `mood_checkins`** — requests return 403 even when the user is logged in. Fix: use `sb.auth.getSession()` to get `access_token` and pass it manually via `fetch` with `Authorization: Bearer <token>` and `apikey: <anon_key>` headers. Do NOT use `sb.from('mood_checkins').insert()` for this table. This fix is applied in both `dashboard.html` (mood check-in) and `breathing.html` (`saveSession`).
@@ -629,3 +627,65 @@ Mode display labels: `tibetan → 🎵 Tibetan Bowl`, `ambient → 🌿 Ambient 
 - **`Math.max.apply(null, [])` returns `-Infinity`** — always guard score calculations with `array.length > 0` before calling `Math.max.apply`. An empty array from filtering (e.g. all sessions left early) will produce `-Infinity%` on screen.
 - **Progress score cards use ALL sessions** — do NOT filter by `!r.early` for avgPct / bestPct. Early-exit sessions still have a valid score and should be included. Only use the `completed` filter for the "X left early" sub-label.
 - **`welcome-hi` name comes from `profiles.name`, not `user_metadata`** — `onAuthStateChange` sets it first using `user_metadata` (instant), then `loadUserProfile()` overwrites it once the DB profile loads. If the welcome greeting shows a wrong/old name, the DB `profiles.name` is the source of truth and will correct it on load. Do NOT remove the overwrite in `loadUserProfile`.
+
+## Theme Toggle (all pages)
+
+Every page has a cycling Light → Dark → Device theme toggle in the top-right of the navbar/topbar/header.
+
+**Anti-flash script** (immediately after `<meta charset>` in `<head>` of every HTML file):
+```html
+<script>(function(){var t=localStorage.getItem('studyease_theme')||'device';document.documentElement.setAttribute('data-theme',t);}());</script>
+```
+
+**LocalStorage key:** `studyease_theme` — values: `'light'`, `'dark'`, `'device'`
+
+**CSS pattern** in each file:
+- `html[data-theme="light"]` — restores light theme CSS variables
+- `html[data-theme="dark"]` — dark theme variable overrides
+- `@media(prefers-color-scheme:dark){ html[data-theme="device"]{ ... } }` — device follows OS
+
+**JS functions** (in every file before `</body>`):
+- `_themeIcons` — SVG icon map (sun/moon/monitor)
+- `_applyThemeIcon()` — sets the correct SVG into `#theme-toggle`
+- `cycleTheme()` — advances light→dark→device, saves to localStorage, calls `_applyThemeIcon()`
+- `document.addEventListener('DOMContentLoaded', _applyThemeIcon)` — sets icon on load
+
+**Button:** `<button id="theme-toggle" onclick="cycleTheme()" title="Switch theme"></button>` — placed in:
+- `index.html` — inside `.navbar__cta`
+- All sidebar pages — inside `.topbar-r`
+- `breathing.html` — inside `#mf-header` right side
+- `session-player.html/ch2` — inside `#top-bar` next to Leave Session button
+
+**ai.html** — already had `[data-theme="dark"]` and `[data-theme="light"]` CSS + `@media :root` dark mode. Updated JS to use `studyease_theme` key. The 3-button `.theme-grp` was replaced with the single cycling `#theme-toggle`.
+
+## Lazy AI Context Fetching (ai.html, video-player pages, session-player pages)
+
+Context is only fetched when the student's message matches keyword patterns — never upfront.
+
+**Keyword patterns:**
+- `TRANSCRIPT_RE` — academic/subject words (maths, polynomial, theorem, hcf, etc.) → fetch VTT transcript
+- `PROGRESS_RE` — performance words (weak, score, struggling, recommend, etc.) → fetch scores from Supabase
+
+**VTT URLs:**
+- Ch1: `https://pub-a103011de70941ba8ab9e8eaeed0d9cb.r2.dev/real%20numbers%20masterclass.vtt`
+- Ch2: `https://pub-a103011de70941ba8ab9e8eaeed0d9cb.r2.dev/StudyEase%20Polynomials.vtt`
+
+**Context appended to message:** `\n\n[Context:\n{transcript}\n{progress}]` — only when context was fetched.
+
+**Session context (session-player pages only):** Always included — builds a summary of `QS` (the questions array) showing which questions were answered correctly/incorrectly, with explanations.
+
+**Progress indicator pills** — animated step tags that appear above the typing bubble while context is loading:
+- CSS classes: `.ctx-pills`, `.ctx-pill`, `.ctx-dot` (ai.html); `.vp-ctx-pills`, `.vp-cpill`, `.vp-cdot` (video-players); `.s-ctx-pills`, `.s-cpill`, `.s-cdot` (session-players)
+- Shows loading state (pulsing dot animation), transitions to done state (✅ prefix) when context is ready
+- Shows "🤔 Thinking…" pill always while waiting for Claude API
+- Container removed from DOM after AI response renders
+
+## breathing.html Animated Background Orbs
+
+`#orb-layer` — fixed-position layer (`z-index:0`) containing 5 `div.orb` elements with:
+- Different colors: deep purple, teal, soft blue, indigo, sky blue
+- CSS `radial-gradient` fills, `filter:blur(80px)`, `opacity:.55`
+- `@keyframes orbFloat` — each orb drifts at a different speed (`--dur` CSS custom property) translating ±4% and scaling ±8% for organic movement
+- `aria-hidden="true"` — decorative only
+
+The canvas player (`#s5`) has `z-index:20` and `background:#0A0F1E` — it paints over the orb layer entirely.
