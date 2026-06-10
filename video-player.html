@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
+  <script>(function(){var t=localStorage.getItem('studyease_theme')||'device';document.documentElement.setAttribute('data-theme',t);}());</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Real Numbers — StudyEase</title>
   <link rel="icon" href="images/studyease-fav.png" type="image/png"/>
@@ -277,6 +278,27 @@ video::-webkit-media-controls-enclosure{display:none!important}
 #vp-send{width:34px;height:34px;border-radius:50%;background:#8B5CF6;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:white;flex-shrink:0;transition:background .14s}
 #vp-send:hover{background:#7C3AED}
 @media(max-width:540px){#vp-popup{width:calc(100vw - 32px);right:16px;bottom:90px}}
+/* ── Context indicator pills ── */
+.vp-ctx-pills{display:flex;flex-direction:column;gap:4px;padding:4px 0 4px 8px}
+.vp-cpill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:99px;font-size:.7rem;font-weight:600;background:#F5F3FF;border:1px solid rgba(139,92,246,.15);color:#7C3AED;opacity:0;transform:translateY(4px);transition:opacity .2s,transform .2s;width:fit-content;white-space:nowrap}
+.vp-cpill.show{opacity:1;transform:none}
+.vp-cpill.done{background:#ECFDF5;border-color:rgba(16,185,129,.2);color:#10B981}
+.vp-cpill.thinking{background:#EFF6FF;border-color:rgba(59,130,246,.15);color:#3B82F6}
+.vp-cdot{width:5px;height:5px;border-radius:50%;background:currentColor;animation:vpcBlink .8s infinite}
+.vp-cpill.done .vp-cdot,.vp-cpill.thinking .vp-cdot{animation:none}
+@keyframes vpcBlink{0%,100%{opacity:1}50%{opacity:.2}}
+/* ─── Theme System ──────────────────────────────────── */
+html[data-theme="light"]{--off-white:#F4F6F9;--white:#FFFFFF;--text:#1E293B;--text-mid:#475569;--text-muted:#94A3B8;--border:#E4E8EE;--border-soft:#F0F2F6;}
+html[data-theme="dark"]{--off-white:#0A0F1E;--white:#111827;--text:#F1F5F9;--text-mid:rgba(241,245,249,.68);--text-muted:rgba(241,245,249,.42);--border:rgba(255,255,255,.08);--border-soft:rgba(255,255,255,.04);}
+html[data-theme="dark"] body{background:#0A0F1E}
+html[data-theme="dark"] .topbar,html[data-theme="dark"] .hamburger{background:#111827!important;border-color:rgba(255,255,255,.08)!important}
+html[data-theme="dark"] .mode-card,html[data-theme="dark"] .ai-panel,html[data-theme="dark"] .concepts-bar,html[data-theme="dark"] .session-bar,html[data-theme="dark"] .session-score{background:#111827!important;border-color:rgba(255,255,255,.08)!important}
+@media(prefers-color-scheme:dark){html[data-theme="device"]{--off-white:#0A0F1E;--white:#111827;--text:#F1F5F9;--text-mid:rgba(241,245,249,.68);--text-muted:rgba(241,245,249,.42);--border:rgba(255,255,255,.08);--border-soft:rgba(255,255,255,.04);}
+html[data-theme="device"] body{background:#0A0F1E}
+html[data-theme="device"] .topbar,html[data-theme="device"] .hamburger{background:#111827!important;border-color:rgba(255,255,255,.08)!important}
+html[data-theme="device"] .mode-card,html[data-theme="device"] .ai-panel,html[data-theme="device"] .concepts-bar,html[data-theme="device"] .session-bar,html[data-theme="device"] .session-score{background:#111827!important;border-color:rgba(255,255,255,.08)!important}}
+#theme-toggle{width:34px;height:34px;border-radius:8px;border:1px solid var(--border);background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-mid);transition:background .18s;flex-shrink:0;padding:0}
+#theme-toggle:hover{background:var(--off-white)}
   </style>
 </head>
 <body style="opacity:0;transition:opacity .35s ease">
@@ -340,7 +362,7 @@ video::-webkit-media-controls-enclosure{display:none!important}
         </div>
       </div>
       <div style="display:flex;align-items:center;gap:9px">
-        
+        <button id="theme-toggle" onclick="cycleTheme()" title="Switch theme"></button>
         <div class="t-avatar" id="topbar-avatar">?</div>
       </div>
     </div>
@@ -1140,27 +1162,55 @@ function addMsg(text,type){
   msgs.appendChild(d);msgs.scrollTop=99999;
 }
 
+var TRANSCRIPT_RE=/\b(maths?|polynomial|real\s*number|theorem|formula|equation|proof|hcf|lcm|irrational|rational|zero(?:e?s)?|degree|parabola|chapter|euclid|prime\s*factor|divisib|number\s*theory|cbse|ncert|quadratic|linear\s+eq)\b/i;
+var PROGRESS_RE=/\b(weak|score|progress|improv|performance|marks|how\s+(am\s+i|i'm)\s+(doing|performing)|what\s+should\s+i\s+study|recommend|suggest|revision|prepar|focus\s+on|struggling)\b/i;
+function _vpFetchVTT(){return fetch('https://pub-a103011de70941ba8ab9e8eaeed0d9cb.r2.dev/real%20numbers%20masterclass.vtt').then(function(r){return r.text();}).then(function(t){return t.replace(/^WEBVTT[^\n]*\n/,'').replace(/\d{2}:\d{2}:\d{2}\.\d{3}\s*-->[^\n]*\n/g,'').replace(/\n{3,}/g,'\n\n').trim().substring(0,4000);}).catch(function(){return null;});}
+function _vpFetchProgress(){
+  if(!currentUserId)return Promise.resolve(null);
+  return Promise.all([sb.from('scores').select('chapter,pct,early').eq('user_id',currentUserId).order('created_at',{ascending:false}).limit(10),sb.from('quiz_scores').select('chapter,pct').eq('user_id',currentUserId).order('created_at',{ascending:false}).limit(10)]).then(function(res){
+    var parts=[];var sess=res[0].data||[];var quiz=res[1].data||[];
+    if(sess.length)parts.push('Sessions: '+sess.map(function(r){return r.chapter+' '+r.pct+'%'+(r.early?' (early)':'');}).join(', '));
+    var weak=sess.filter(function(r){return r.pct<60;});if(weak.length)parts.push('Weak: '+weak.map(function(r){return r.chapter;}).join(', '));
+    if(quiz.length)parts.push('Quizzes: '+quiz.map(function(r){return(r.chapter||'Quiz')+' '+r.pct+'%';}).join(', '));
+    return parts.length?'Student performance — '+parts.join('. '):null;
+  }).catch(function(){return null;});
+}
+function _vpShowPill(id,label,type){
+  var msgs=document.getElementById('vp-msgs');var c=document.getElementById('vpc-'+id+'c');
+  if(!c){c=document.createElement('div');c.id='vpc-container';c.className='vp-row vp-ctx-pills';msgs.appendChild(c);msgs.scrollTop=99999;}
+  var p=document.createElement('div');p.className='vp-cpill '+(type||'');p.id='vpc-'+id;
+  p.innerHTML='<div class="vp-cdot"></div><span>'+label+'</span>';c.appendChild(p);setTimeout(function(){p.classList.add('show');},40);msgs.scrollTop=99999;
+}
+function _vpDonePill(id,label){var p=document.getElementById('vpc-'+id);if(!p)return;p.className='vp-cpill done show';p.innerHTML='<div class="vp-cdot"></div><span>✅ '+label+'</span>';}
+function _vpClearPills(){var c=document.getElementById('vpc-container');if(c)c.remove();}
+
 function sendAI(q){
   if(!q||!q.trim()||aiBusy)return;
   aiBusy=true;
   document.getElementById('vp-popup').classList.add('open');
   addMsg(q,'user');
-  var msgs=document.getElementById('vp-msgs');
-  var td=document.createElement('div');td.className='vp-row';td.id='vp-typing';
-  td.innerHTML='<div class="vp-av vp-av--ai">SE</div><div class="vp-bbl vp-bbl--ai"><div class="vp-typing"><div class="vp-dot"></div><div class="vp-dot"></div><div class="vp-dot"></div></div></div>';
-  msgs.appendChild(td);msgs.scrollTop=99999;
-  fetch(AI_FN,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd3J2YnRyeWVlc2ZnZXlkeG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMTQ0NDAsImV4cCI6MjA5NDU5MDQ0MH0.3Sp9dlc8cNsrzdHAGy74pCqscjL1MFV9ZWMW90QbhqE'},body:JSON.stringify({message:'[Real Numbers] '+q,history:aiHistory})})
-    .then(function(r){return r.json();})
-    .then(function(data){
-      var el=document.getElementById('vp-typing');if(el)el.remove();
-      var reply=data.reply||'Sorry, something went wrong.';
-      addMsg(reply,'ai');
-      aiHistory.push({role:'user',content:q});aiHistory.push({role:'assistant',content:reply});
-      if(aiHistory.length>20)aiHistory=aiHistory.slice(-20);
-      try{if(currentUserId){sb.from('chat_history').insert({user_id:currentUserId,user_message:q,ai_reply:reply,subject:'Maths'}).then(null,function(){});}}catch(e){}
-    })
-    .catch(function(){var el=document.getElementById('vp-typing');if(el)el.remove();addMsg('Network error — check your connection.','ai');})
-    .finally(function(){aiBusy=false;});
+  var needT=TRANSCRIPT_RE.test(q);var needP=PROGRESS_RE.test(q);
+  var tasks=[];
+  if(needT){_vpShowPill('tr','📖 Fetching transcript…');tasks.push(_vpFetchVTT().then(function(v){_vpDonePill('tr','Transcript loaded');return v?'Ch1 context:\n'+v:null;}));}
+  if(needP){_vpShowPill('pr','📊 Loading progress…');tasks.push(_vpFetchProgress().then(function(v){_vpDonePill('pr','Progress loaded');return v;}));}
+  Promise.all(tasks).then(function(ctx){
+    var extras=ctx.filter(Boolean);
+    var fullMsg='[Real Numbers] '+q+(extras.length?'\n\n[Context:\n'+extras.join('\n\n')+']':'');
+    _vpShowPill('think','🤔 Thinking…','thinking');
+    var msgs=document.getElementById('vp-msgs');
+    var td=document.createElement('div');td.className='vp-row';td.id='vp-typing';
+    td.innerHTML='<div class="vp-av vp-av--ai">SE</div><div class="vp-bbl vp-bbl--ai"><div class="vp-typing"><div class="vp-dot"></div><div class="vp-dot"></div><div class="vp-dot"></div></div></div>';
+    msgs.appendChild(td);msgs.scrollTop=99999;
+    return fetch(AI_FN,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd3J2YnRyeWVlc2ZnZXlkeG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMTQ0NDAsImV4cCI6MjA5NDU5MDQ0MH0.3Sp9dlc8cNsrzdHAGy74pCqscjL1MFV9ZWMW90QbhqE'},body:JSON.stringify({message:fullMsg,history:aiHistory})}).then(function(r){return r.json();});
+  }).then(function(data){
+    var el=document.getElementById('vp-typing');if(el)el.remove();
+    _vpClearPills();
+    var reply=data.reply||'Sorry, something went wrong.';
+    addMsg(reply,'ai');
+    aiHistory.push({role:'user',content:q});aiHistory.push({role:'assistant',content:reply});
+    if(aiHistory.length>20)aiHistory=aiHistory.slice(-20);
+    try{if(currentUserId){sb.from('chat_history').insert({user_id:currentUserId,user_message:q,ai_reply:reply,subject:'Maths'}).then(null,function(){});}}catch(e){}
+  }).catch(function(){var el=document.getElementById('vp-typing');if(el)el.remove();_vpClearPills();addMsg('Network error — check your connection.','ai');}).then(function(){aiBusy=false;},function(){aiBusy=false;});
 }
 
 window.sendSugg=function(t){sendAI(t)};
@@ -1185,6 +1235,15 @@ function handleLogoClick(e){
     window.location.href=(r.data&&r.data.session)?'dashboard.html':'index.html';
   });
 }
+// ─── Theme toggle ──────────────────────────────────────
+var _themeIcons={
+  light:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>',
+  dark:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',
+  device:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>'
+};
+function _applyThemeIcon(){var el=document.getElementById('theme-toggle');if(!el)return;var t=document.documentElement.getAttribute('data-theme')||'device';el.innerHTML=_themeIcons[t]||_themeIcons.device;}
+function cycleTheme(){var order=['light','dark','device'];var cur=document.documentElement.getAttribute('data-theme')||'device';var next=order[(order.indexOf(cur)+1)%order.length];document.documentElement.setAttribute('data-theme',next);localStorage.setItem('studyease_theme',next);_applyThemeIcon();}
+document.addEventListener('DOMContentLoaded',_applyThemeIcon);
 </script>
 </body>
 </html>

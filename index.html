@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <script>(function(){var t=localStorage.getItem('studyease_theme')||'device';document.documentElement.setAttribute('data-theme',t);}());</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>StudyEase — AI-powered CBSE Board Prep</title>
   <meta name="description" content="India's first AI study companion that actually remembers you. Solve CBSE doubts, master board exam writing, and manage exam stress — starting at ₹0." />
@@ -269,6 +270,22 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
   .section{padding:72px 0}
   .hero{padding-bottom:60px}
 }
+/* ─── Theme System ──────────────────────────────────── */
+html[data-theme="light"]{--bg:#FFFFFF;--bg2:#F0F4FF;--bg3:#FFFFFF;--navy:#0A1628;--white:#FFFFFF;--text:#0A1628;--text-mid:#475569;--text-muted:#94A3B8;--border:rgba(10,22,40,.09);--border-glow:rgba(139,92,246,.35);}
+html[data-theme="dark"]{--bg:#0A0F1E;--bg2:#0D1426;--bg3:#0A0F1E;--navy:#F1F5F9;--white:#111827;--text:#F1F5F9;--text-mid:rgba(241,245,249,.7);--text-muted:rgba(241,245,249,.45);--border:rgba(255,255,255,.09);--border-glow:rgba(139,92,246,.35);}
+html[data-theme="dark"] .navbar{background:rgba(10,15,30,.9)!important}
+html[data-theme="dark"] .navbar.scrolled{border-bottom-color:rgba(139,92,246,.2)!important;box-shadow:0 4px 24px rgba(0,0,0,.3)}
+html[data-theme="dark"] .btn-ghost-dark{border-color:rgba(255,255,255,.2)!important;color:#F1F5F9!important;background:rgba(255,255,255,.05)!important}
+@media(prefers-color-scheme:dark){
+  html[data-theme="device"]{--bg:#0A0F1E;--bg2:#0D1426;--bg3:#0A0F1E;--navy:#F1F5F9;--white:#111827;--text:#F1F5F9;--text-mid:rgba(241,245,249,.7);--text-muted:rgba(241,245,249,.45);--border:rgba(255,255,255,.09);--border-glow:rgba(139,92,246,.35);}
+  html[data-theme="device"] .navbar{background:rgba(10,15,30,.9)!important}
+  html[data-theme="device"] .navbar.scrolled{border-bottom-color:rgba(139,92,246,.2)!important}
+  html[data-theme="device"] .btn-ghost-dark{border-color:rgba(255,255,255,.2)!important;color:#F1F5F9!important;background:rgba(255,255,255,.05)!important}
+}
+#theme-toggle{width:34px;height:34px;border-radius:8px;border:1px solid var(--border);background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-mid);transition:background .18s;flex-shrink:0;padding:0}
+#theme-toggle:hover{background:rgba(10,22,40,.06)}
+html[data-theme="dark"] #theme-toggle:hover{background:rgba(255,255,255,.08)}
+html[data-theme="device"] #theme-toggle:hover{background:rgba(255,255,255,.08)}
   </style>
 </head>
 <body>
@@ -288,6 +305,7 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
         <a href="privacy.html" target="_blank">Privacy</a>
       </div>
       <div class="navbar__cta">
+        <button id="theme-toggle" onclick="cycleTheme()" title="Switch theme"></button>
         <a href="#" class="nav-login" id="nav-login-btn">Log in</a>
         <a href="#" class="btn-nav" id="nav-signup-btn">Get Started Free</a>
       </div>
@@ -1077,6 +1095,15 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
   });
 
 })();
+// ─── Theme toggle ──────────────────────────────────────
+var _themeIcons={
+  light:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>',
+  dark:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',
+  device:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>'
+};
+function _applyThemeIcon(){var el=document.getElementById('theme-toggle');if(!el)return;var t=document.documentElement.getAttribute('data-theme')||'device';el.innerHTML=_themeIcons[t]||_themeIcons.device;}
+function cycleTheme(){var order=['light','dark','device'];var cur=document.documentElement.getAttribute('data-theme')||'device';var next=order[(order.indexOf(cur)+1)%order.length];document.documentElement.setAttribute('data-theme',next);localStorage.setItem('studyease_theme',next);_applyThemeIcon();}
+document.addEventListener('DOMContentLoaded',_applyThemeIcon);
 </script>
 </body>
 </html>

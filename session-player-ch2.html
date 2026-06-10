@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
+  <script>(function(){var t=localStorage.getItem('studyease_theme')||'device';document.documentElement.setAttribute('data-theme',t);}());</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Session · Polynomials — StudyEase</title>
   <link rel="icon" href="images/studyease-fav.png" type="image/png"/>
@@ -339,6 +340,18 @@ html,body{
 #s-ai-send{width:34px;height:34px;border-radius:50%;background:#8B5CF6;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:white;flex-shrink:0;transition:background .14s}
 #s-ai-send:hover{background:#7C3AED}
 @media(max-width:540px){#s-ai-popup{width:calc(100vw - 32px);right:16px}}
+/* ── Context indicator pills ── */
+.s-ctx-pills{display:flex;flex-direction:column;gap:4px;padding:4px 0 4px 8px}
+.s-cpill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:99px;font-size:.68rem;font-weight:600;background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.2);color:#8B5CF6;opacity:0;transform:translateY(4px);transition:opacity .2s,transform .2s;width:fit-content;white-space:nowrap}
+.s-cpill.show{opacity:1;transform:none}
+.s-cpill.done{background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.2);color:#10B981}
+.s-cpill.thinking{background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.15);color:#3B82F6}
+.s-cdot{width:5px;height:5px;border-radius:50%;background:currentColor;animation:scBlink .8s infinite}
+.s-cpill.done .s-cdot,.s-cpill.thinking .s-cdot{animation:none}
+@keyframes scBlink{0%,100%{opacity:1}50%{opacity:.2}}
+/* ─── Theme toggle ──────────────────────────────────── */
+#theme-toggle{width:30px;height:30px;border-radius:7px;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(255,255,255,.6);transition:background .18s;flex-shrink:0;padding:0}
+#theme-toggle:hover{background:rgba(255,255,255,.1)}
   </style>
 </head>
 <body>
@@ -370,7 +383,10 @@ html,body{
     <span class="session-tag">⚡ Session Active</span>
     <div class="q-progress-chips" id="q-chips"></div>
   </div>
-  <button id="leave-btn" onclick="showLeaveConfirm()">Leave Session</button>
+  <div style="display:flex;align-items:center;gap:8px">
+    <button id="theme-toggle" onclick="cycleTheme()" title="Switch theme"></button>
+    <button id="leave-btn" onclick="showLeaveConfirm()">Leave Session</button>
+  </div>
 </div>
 
 <!-- Custom controls -->
@@ -1212,26 +1228,64 @@ function hide(id){
     msgs.appendChild(d);msgs.scrollTop=99999;
   }
 
+  var TRANSCRIPT_RE=/\b(maths?|polynomial|real\s*number|theorem|formula|equation|proof|hcf|lcm|irrational|rational|zero(?:e?s)?|degree|parabola|chapter|euclid|prime\s*factor|divisib|number\s*theory|cbse|ncert|quadratic|linear\s+eq)\b/i;
+  var PROGRESS_RE=/\b(weak|score|progress|improv|performance|marks|how\s+(am\s+i|i'm)\s+(doing|performing)|what\s+should\s+i\s+study|recommend|suggest|revision|prepar|focus\s+on|struggling)\b/i;
+  function _sFetchVTT(){return fetch('https://pub-a103011de70941ba8ab9e8eaeed0d9cb.r2.dev/StudyEase%20Polynomials.vtt').then(function(r){return r.text();}).then(function(t){return t.replace(/^WEBVTT[^\n]*\n/,'').replace(/\d{2}:\d{2}:\d{2}\.\d{3}\s*-->[^\n]*\n/g,'').replace(/\n{3,}/g,'\n\n').trim().substring(0,3000);}).catch(function(){return null;});}
+  function _sGetSessionCtx(){
+    if(typeof QS==='undefined')return null;
+    var done=QS.filter(function(q){return q.done;});
+    if(!done.length)return null;
+    var lines=done.map(function(q){return 'Q: '+q.q+' → '+(q.skipped?'skipped':q.correct?'✓ correct':'✗ wrong (correct: '+q.opts[q.ans]+'). '+q.exp);});
+    return 'Session results so far:\n'+lines.join('\n');
+  }
+  function _sShowPill(id,label,type){
+    var c=document.getElementById('sc-container');
+    if(!c){c=document.createElement('div');c.id='sc-container';c.className='s-ai-row s-ctx-pills';msgs.appendChild(c);msgs.scrollTop=99999;}
+    var p=document.createElement('div');p.className='s-cpill '+(type||'');p.id='scp-'+id;
+    p.innerHTML='<div class="s-cdot"></div><span>'+label+'</span>';c.appendChild(p);setTimeout(function(){p.classList.add('show');},40);msgs.scrollTop=99999;
+  }
+  function _sDonePill(id,label){var p=document.getElementById('scp-'+id);if(!p)return;p.className='s-cpill done show';p.innerHTML='<div class="s-cdot"></div><span>✅ '+label+'</span>';}
+  function _sClearPills(){var c=document.getElementById('sc-container');if(c)c.remove();}
+
   function sendSAI(){
     var q=inp.value.trim();
     if(!q||aiBusy)return;
     aiBusy=true;inp.value='';
     addMsg(q,'user');
-    var td=document.createElement('div');td.className='s-ai-row';td.id='s-ai-typing';
-    td.innerHTML='<div class="s-ai-av s-ai-av--ai">SE</div><div class="s-ai-bbl s-ai-bbl--ai"><div class="s-ai-typing"><div class="s-ai-dot"></div><div class="s-ai-dot"></div><div class="s-ai-dot"></div></div></div>';
-    msgs.appendChild(td);msgs.scrollTop=99999;
-    fetch(AI_FN,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd3J2YnRyeWVlc2ZnZXlkeG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMTQ0NDAsImV4cCI6MjA5NDU5MDQ0MH0.3Sp9dlc8cNsrzdHAGy74pCqscjL1MFV9ZWMW90QbhqE'},body:JSON.stringify({message:'[Maths] '+q,history:aiHistory})})
-      .then(function(r){return r.json();})
-      .then(function(data){
-        var el=document.getElementById('s-ai-typing');if(el)el.remove();
-        var reply=data.reply||'Sorry, something went wrong.';
-        addMsg(reply,'ai');
-        aiHistory.push({role:'user',content:q});aiHistory.push({role:'assistant',content:reply});
-        if(aiHistory.length>20)aiHistory=aiHistory.slice(-20);
-        try{if(window._SB&&window._sessUid){window._SB.from('chat_history').insert({user_id:window._sessUid,user_message:q,ai_reply:reply,subject:'Maths'}).then(null,function(){});}}catch(e){}
-      })
-      .catch(function(){var el=document.getElementById('s-ai-typing');if(el)el.remove();addMsg('Network error — check your connection.','ai');})
-      .finally(function(){aiBusy=false;});
+    var needT=TRANSCRIPT_RE.test(q);var needP=PROGRESS_RE.test(q);
+    var tasks=[];
+    _sShowPill('sess','📝 Loading session data…');
+    var sessCtx=_sGetSessionCtx();
+    tasks.push(Promise.resolve(sessCtx).then(function(v){_sDonePill('sess','Session data loaded');return v;}));
+    if(needT){_sShowPill('tr','📖 Fetching transcript…');tasks.push(_sFetchVTT().then(function(v){_sDonePill('tr','Transcript loaded');return v?'Ch2 context:\n'+v:null;}));}
+    if(needP&&window._SB&&window._sessUid){
+      _sShowPill('pr','📊 Loading progress…');
+      tasks.push(Promise.all([window._SB.from('scores').select('chapter,pct,early').eq('user_id',window._sessUid).order('created_at',{ascending:false}).limit(10),window._SB.from('quiz_scores').select('chapter,pct').eq('user_id',window._sessUid).order('created_at',{ascending:false}).limit(10)]).then(function(res){
+        _sDonePill('pr','Progress loaded');
+        var parts=[];var sess=res[0].data||[];var quiz=res[1].data||[];
+        if(sess.length)parts.push('Sessions: '+sess.map(function(r){return r.chapter+' '+r.pct+'%';}).join(', '));
+        var weak=sess.filter(function(r){return r.pct<60;});if(weak.length)parts.push('Weak: '+weak.map(function(r){return r.chapter;}).join(', '));
+        if(quiz.length)parts.push('Quizzes: '+quiz.map(function(r){return(r.chapter||'Q')+' '+r.pct+'%';}).join(', '));
+        return parts.length?'Performance — '+parts.join('. '):null;
+      }).catch(function(){return null;}));
+    }
+    Promise.all(tasks).then(function(ctx){
+      var extras=ctx.filter(Boolean);
+      var fullMsg='[Maths] '+q+(extras.length?'\n\n[Context:\n'+extras.join('\n\n')+']':'');
+      _sShowPill('think','🤔 Thinking…','thinking');
+      var td=document.createElement('div');td.className='s-ai-row';td.id='s-ai-typing';
+      td.innerHTML='<div class="s-ai-av s-ai-av--ai">SE</div><div class="s-ai-bbl s-ai-bbl--ai"><div class="s-ai-typing"><div class="s-ai-dot"></div><div class="s-ai-dot"></div><div class="s-ai-dot"></div></div></div>';
+      msgs.appendChild(td);msgs.scrollTop=99999;
+      return fetch(AI_FN,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd3J2YnRyeWVlc2ZnZXlkeG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMTQ0NDAsImV4cCI6MjA5NDU5MDQ0MH0.3Sp9dlc8cNsrzdHAGy74pCqscjL1MFV9ZWMW90QbhqE'},body:JSON.stringify({message:fullMsg,history:aiHistory})}).then(function(r){return r.json();});
+    }).then(function(data){
+      var el=document.getElementById('s-ai-typing');if(el)el.remove();
+      _sClearPills();
+      var reply=data.reply||'Sorry, something went wrong.';
+      addMsg(reply,'ai');
+      aiHistory.push({role:'user',content:q});aiHistory.push({role:'assistant',content:reply});
+      if(aiHistory.length>20)aiHistory=aiHistory.slice(-20);
+      try{if(window._SB&&window._sessUid){window._SB.from('chat_history').insert({user_id:window._sessUid,user_message:q,ai_reply:reply,subject:'Maths'}).then(null,function(){});}}catch(e){}
+    }).catch(function(){var el=document.getElementById('s-ai-typing');if(el)el.remove();_sClearPills();addMsg('Network error — check your connection.','ai');}).then(function(){aiBusy=false;},function(){aiBusy=false;});
   }
 
   document.getElementById('s-ai-send').addEventListener('click',sendSAI);
@@ -1248,6 +1302,15 @@ function hide(id){
   var origPollRemove=pollEl.classList.remove.bind(pollEl.classList);
   pollEl.classList.remove=function(c){if(c==='show')showSAIFab();origPollRemove(c);};
 })();
+// ─── Theme toggle ──────────────────────────────────────
+var _themeIcons={
+  light:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>',
+  dark:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',
+  device:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>'
+};
+function _applyThemeIcon(){var el=document.getElementById('theme-toggle');if(!el)return;var t=document.documentElement.getAttribute('data-theme')||'device';el.innerHTML=_themeIcons[t]||_themeIcons.device;}
+function cycleTheme(){var order=['light','dark','device'];var cur=document.documentElement.getAttribute('data-theme')||'device';var next=order[(order.indexOf(cur)+1)%order.length];document.documentElement.setAttribute('data-theme',next);localStorage.setItem('studyease_theme',next);_applyThemeIcon();}
+document.addEventListener('DOMContentLoaded',_applyThemeIcon);
 </script>
 </body>
 </html>

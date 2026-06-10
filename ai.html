@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
+  <script>(function(){var t=localStorage.getItem('studyease_theme')||'device';document.documentElement.setAttribute('data-theme',t);}());</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>AI Companion — StudyEase</title>
   <link rel="icon" href="images/studyease-fav.png" type="image/png"/>
@@ -179,17 +180,8 @@ body{
 #lock-icon.snap{animation:lock-snap .38s cubic-bezier(.36,.07,.19,.97) both;}
 #lock-icon.bounce{animation:unlock-bounce .36s cubic-bezier(.36,.07,.19,.97) both;}
 
-.theme-grp{
-  display:flex;align-items:center;background:var(--surface);
-  border:1px solid var(--border);border-radius:99px;padding:3px;gap:1px;
-}
-.tbtn{
-  width:30px;height:28px;border-radius:99px;border:none;
-  background:transparent;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  color:var(--text-mid);transition:all .13s;
-}
-.tbtn.active{background:var(--text);color:var(--bg);}
+#theme-toggle{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-mid);transition:background .18s;flex-shrink:0;padding:0}
+#theme-toggle:hover{background:var(--surface)}
 
 /* ── Subject strip ── */
 #subj-strip{
@@ -360,6 +352,15 @@ body{
   #subj-strip{padding:8px 12px;}
   #input-area{padding:12px 14px 16px;}
 }
+/* ── Context / Progress indicator pills ── */
+.ctx-pills{display:flex;flex-direction:column;gap:5px;padding:0 0 8px 44px}
+.ctx-pill{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:99px;font-size:.74rem;font-weight:600;background:var(--surface);border:1px solid var(--border);color:var(--text-mid);opacity:0;transform:translateY(6px);transition:opacity .22s,transform .22s;width:fit-content;white-space:nowrap}
+.ctx-pill.show{opacity:1;transform:translateY(0)}
+.ctx-pill.done{background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.2);color:#10B981}
+.ctx-pill.thinking{background:rgba(59,130,246,.08);border-color:rgba(59,130,246,.15);color:var(--accent)}
+.ctx-dot{width:6px;height:6px;border-radius:50%;background:currentColor;animation:ctxBlink .8s ease-in-out infinite}
+.ctx-pill.done .ctx-dot,.ctx-pill.thinking .ctx-dot{animation:none}
+@keyframes ctxBlink{0%,100%{opacity:1}50%{opacity:.25}}
   </style>
 </head>
 <body style="opacity:0;transition:opacity .3s ease">
@@ -415,17 +416,7 @@ body{
           </span>
           <span id="priv-label">Privacy</span>
         </button>
-        <div class="theme-grp">
-          <button class="tbtn" data-t="light" title="Light">
-            <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"/></svg>
-          </button>
-          <button class="tbtn" data-t="device" title="Device">
-            <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.22l.123.489.804.804A1 1 0 0113 18H7a1 1 0 01-.707-1.707l.804-.804L7.22 15H5a2 2 0 01-2-2V5zm5.771 7H5V5h10v7H8.771z" clip-rule="evenodd"/></svg>
-          </button>
-          <button class="tbtn" data-t="dark" title="Dark">
-            <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/></svg>
-          </button>
-        </div>
+        <button id="theme-toggle" onclick="cycleTheme()" title="Switch theme"></button>
       </div>
     </header>
 
@@ -534,17 +525,15 @@ body{
   });
 
   /* ── Theme ── */
-  var curTheme=localStorage.getItem('se-ai-theme')||'device';
-  setTheme(curTheme);
-  document.querySelectorAll('.tbtn').forEach(function(b){
-    b.addEventListener('click',function(){setTheme(b.dataset.t);});
-  });
-  function setTheme(t){
-    curTheme=t;localStorage.setItem('se-ai-theme',t);
-    if(t==='device')document.documentElement.removeAttribute('data-theme');
-    else document.documentElement.setAttribute('data-theme',t);
-    document.querySelectorAll('.tbtn').forEach(function(b){b.classList.toggle('active',b.dataset.t===t);});
-  }
+  var _themeIcons={
+    light:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>',
+    dark:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',
+    device:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>'
+  };
+  function _applyThemeIcon(){var el=document.getElementById('theme-toggle');if(!el)return;var t=document.documentElement.getAttribute('data-theme')||'device';el.innerHTML=_themeIcons[t]||_themeIcons.device;}
+  function cycleTheme(){var order=['light','dark','device'];var cur=document.documentElement.getAttribute('data-theme')||'device';var next=order[(order.indexOf(cur)+1)%order.length];document.documentElement.setAttribute('data-theme',next);localStorage.setItem('studyease_theme',next);_applyThemeIcon();}
+  window.cycleTheme=cycleTheme;
+  document.addEventListener('DOMContentLoaded',_applyThemeIcon);
 
   /* ── Attachment dropdown ── */
   var attMenu=document.getElementById('att-menu');
@@ -749,34 +738,95 @@ body{
     row.appendChild(av);row.appendChild(dots);msgs.appendChild(row);scrollBottom();
   }
 
+  // ── Lazy context fetching ──────────────────────────────
+  var TRANSCRIPT_RE=/\b(maths?|physics|chemistry|biology|polynomial|real\s*number|theorem|formula|equation|proof|hcf|lcm|irrational|rational|zero(?:e?s)?|degree|parabola|chapter|euclid|prime\s*factor|divisib|number\s*theory|coordinate|quadratic|linear\s+eq|cbse|ncert)\b/i;
+  var PROGRESS_RE=/\b(weak|score|progress|improv|performance|marks|how\s+(i|am\s+i|i'm)\s+(doing|performing)|what\s+should\s+i\s+study|recommend|suggest|revision|prepar|focus\s+on|struggling)\b/i;
+
+  function _fetchVTT(url){
+    return fetch(url).then(function(r){return r.text();}).then(function(t){
+      return t.replace(/^WEBVTT[^\n]*\n/,'').replace(/\d{2}:\d{2}:\d{2}\.\d{3}\s*-->[^\n]*\n/g,'').replace(/\n{3,}/g,'\n\n').trim().substring(0,4000);
+    }).catch(function(){return null;});
+  }
+  function _fetchProgress(){
+    if(!currentUserId)return Promise.resolve(null);
+    return Promise.all([
+      sb.from('scores').select('chapter,pct,early,created_at').eq('user_id',currentUserId).order('created_at',{ascending:false}).limit(10),
+      sb.from('quiz_scores').select('chapter,pct,created_at').eq('user_id',currentUserId).order('created_at',{ascending:false}).limit(10)
+    ]).then(function(results){
+      var parts=[];
+      var sess=results[0].data||[];var quiz=results[1].data||[];
+      if(sess.length)parts.push('Recent sessions: '+sess.map(function(r){return r.chapter+' '+r.pct+'%'+(r.early?' (early)':'');}).join(', '));
+      var weak=sess.filter(function(r){return r.pct<60;});
+      if(weak.length)parts.push('Weak: '+weak.map(function(r){return r.chapter;}).join(', '));
+      if(quiz.length)parts.push('Recent quizzes: '+quiz.map(function(r){return (r.chapter||'Quiz')+' '+r.pct+'%';}).join(', '));
+      return parts.length?'Student performance — '+parts.join('. '):null;
+    }).catch(function(){return null;});
+  }
+
+  function _showCtxPill(id,label,type){
+    var container=document.getElementById('ctx-pills-container');
+    if(!container){container=document.createElement('div');container.id='ctx-pills-container';container.className='ctx-pills';msgs.appendChild(container);scrollBottom();}
+    var pill=document.createElement('div');pill.className='ctx-pill '+(type||'');pill.id='cpill-'+id;
+    pill.innerHTML='<div class="ctx-dot"></div><span>'+label+'</span>';
+    container.appendChild(pill);
+    setTimeout(function(){pill.classList.add('show');},40);
+    scrollBottom();
+  }
+  function _doneCtxPill(id,label){
+    var p=document.getElementById('cpill-'+id);if(!p)return;
+    p.className='ctx-pill done show';p.innerHTML='<div class="ctx-dot"></div><span>✅ '+label+'</span>';
+  }
+  function _removeCtxPills(){var c=document.getElementById('ctx-pills-container');if(c)c.remove();}
+
   function send(){
     if(viewMode)return;
     var t=inp.value.trim();if(!t||busy)return;
     busy=true;sendBtn.disabled=true;
-    var msg=subject?'['+subject+'] '+t:t;
-    addUser(t);inp.value='';inp.style.height='auto';addTyping();
-    fetch('https://xiwrvbtryeesfgeydxnf.supabase.co/functions/v1/ai-chat',{
-      method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd3J2YnRyeWVlc2ZnZXlkeG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMTQ0NDAsImV4cCI6MjA5NDU5MDQ0MH0.3Sp9dlc8cNsrzdHAGy74pCqscjL1MFV9ZWMW90QbhqE'},
-      body:JSON.stringify({message:msg,history:privacy?[]:chatHistory})
-    })
-    .then(function(r){return r.json();})
-    .then(function(d){
+    var baseMsg=subject?'['+subject+'] '+t:t;
+    addUser(t);inp.value='';inp.style.height='auto';
+
+    var needTranscript=TRANSCRIPT_RE.test(t);
+    var needProgress=PROGRESS_RE.test(t);
+    var fetchTasks=[];
+
+    if(needTranscript){
+      // ai.html can fetch both chapters
+      _showCtxPill('tr1','📖 Fetching transcript…');
+      fetchTasks.push(_fetchVTT('https://pub-a103011de70941ba8ab9e8eaeed0d9cb.r2.dev/real%20numbers%20masterclass.vtt').then(function(v){_doneCtxPill('tr1','Transcript loaded');return v?'Ch1 transcript context:\n'+v:null;}));
+      _showCtxPill('tr2','📖 Fetching Ch.2 transcript…');
+      fetchTasks.push(_fetchVTT('https://pub-a103011de70941ba8ab9e8eaeed0d9cb.r2.dev/StudyEase%20Polynomials.vtt').then(function(v){_doneCtxPill('tr2','Ch.2 transcript loaded');return v?'Ch2 transcript context:\n'+v:null;}));
+    }
+    if(needProgress){
+      _showCtxPill('prog','📊 Loading your progress…');
+      fetchTasks.push(_fetchProgress().then(function(v){_doneCtxPill('prog','Progress loaded');return v;}));
+    }
+
+    Promise.all(fetchTasks).then(function(contexts){
+      var extras=contexts.filter(Boolean);
+      var fullMsg=baseMsg+(extras.length?'\n\n[Context for your reference:\n'+extras.join('\n\n')+']':'');
+      _showCtxPill('think','🤔 Thinking…','thinking');
+      addTyping();
+      return fetch('https://xiwrvbtryeesfgeydxnf.supabase.co/functions/v1/ai-chat',{
+        method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd3J2YnRyeWVlc2ZnZXlkeG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMTQ0NDAsImV4cCI6MjA5NDU5MDQ0MH0.3Sp9dlc8cNsrzdHAGy74pCqscjL1MFV9ZWMW90QbhqE'},
+        body:JSON.stringify({message:fullMsg,history:privacy?[]:chatHistory})
+      }).then(function(r){return r.json();});
+    }).then(function(d){
       var el=document.getElementById('typing-row');if(el)el.remove();
+      _removeCtxPills();
       var reply=d.reply||'Sorry, something went wrong.';
       addAI(reply);
       if(!privacy&&currentUserId){
         sb.from('chat_history').insert({user_id:currentUserId,user_message:t,ai_reply:reply,subject:subject||'General'})
           .then(function(r){if(!r.error)loadHistory();});
-        chatHistory.push({role:'user',content:msg});
+        chatHistory.push({role:'user',content:baseMsg});
         chatHistory.push({role:'assistant',content:reply});
         if(chatHistory.length>20)chatHistory=chatHistory.slice(-20);
       }
-    })
-    .catch(function(){
+    }).catch(function(){
       var el=document.getElementById('typing-row');if(el)el.remove();
+      _removeCtxPills();
       addAI('Network error — please check your connection.');
-    })
-    .finally(function(){busy=false;if(!viewMode)sendBtn.disabled=!inp.value.trim();});
+    }).then(function(){busy=false;if(!viewMode)sendBtn.disabled=!inp.value.trim();},function(){busy=false;if(!viewMode)sendBtn.disabled=!inp.value.trim();});
   }
 
   function scrollBottom(){document.getElementById('chat-main').scrollTop=9999999;}
